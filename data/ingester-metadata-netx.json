@@ -1,0 +1,209 @@
+[
+  {
+   "irn": "1002",
+   "number": "YPME.000715",
+   "date": { "start": "2014", "end": "2014" },
+   "department": "Historical Scientific Instruments, Botany, Entomology",
+   "description": "Of Green Leaf and Flower: Artist Books and the Natural World",
+   "type": "Exhibition",
+   "concat": "1002|YPME.000715|2014|2014|Historical Scientific Instruments, Botany, Entomology|Of Green Leaf and Flower: Artist Books and the Natural World|Exhibition"
+  },
+  {
+   "irn": "1003",
+   "number": "YPME.000716",
+   "date": { "start": "2014", "end": "2014" },
+   "department": "Historical Scientific Instruments",
+   "description": "Sculpture Victorius: Art in the Age of Inventions 1837-1901",
+   "type": "Exhibition",
+   "concat": "1003|YPME.000716|2014|2014|Historical Scientific Instruments|Sculpture Victorius: Art in the Age of Inventions 1837-1901|Exhibition"
+  },
+  {
+   "irn": "1350",
+   "number": "YPME.001032",
+   "date": { "start": "2015", "end": "2016" },
+   "department": "Anthropology",
+   "description": "Samurai and The Culture of Japan's Great Peace (installation in process)",
+   "type": "Exhibition",
+   "concat": "1350|YPME.001032|2015|2016|Anthropology|Samurai and The Culture of Japan's Great Peace (installation in process)|Exhibition"
+  },
+  {
+   "irn": "1408",
+   "number": "YPME.001089",
+   "date": { "start": "2015", "end": "2015" },
+   "department": "Anthropology",
+   "description": "Curator's Choice: Survival and Souvenirs: Connecticut's Indigenous Basketmakers",
+   "type": "Exhibition",
+   "concat": "1408|YPME.001089|2015|2015|Anthropology|Curator's Choice: Survival and Souvenirs: Connecticut's Indigenous Basketmakers|Exhibition"
+  },
+  {
+   "irn": "1829",
+   "number": "YPME.001462",
+   "date": { "start": "2015", "end": "2015" },
+   "department": "Anthropology",
+   "description": "Maya and Olmec",
+   "type": "Exhibition",
+   "concat": "1829|YPME.001462|2015|2015|Anthropology|Maya and Olmec|Exhibition"
+  },
+  {
+   "irn": "1978",
+   "number": "YPME.001600",
+   "date": { "start": "2015", "end": "2016" },
+   "department": "Anthropology",
+   "description": "Samurai and The Culture of Japan's Great Peace (finished installation)",
+   "type": "Exhibition",
+   "concat": "1978|YPME.001600|2015|2016|Anthropology|Samurai and The Culture of Japan's Great Peace (finished installation)|Exhibition"
+  },
+  {
+   "irn": "2129",
+   "number": "YPME.001734",
+   "date": { "start": "2016", "end": "2017" },
+   "department": "Anthropology",
+   "description": "Treasures of the Peabody: 150th Anniversary Exhibit (ANT objects)",
+   "type": "Exhibition",
+   "concat": "2129|YPME.001734|2016|2017|Anthropology|Treasures of the Peabody: 150th Anniversary Exhibit (ANT objects)|Exhibition"
+  },
+  {
+   "irn": "2241",
+   "number": "YPME.001838",
+   "date": { "start": "2016", "end": "2016" },
+   "department": "Anthropology",
+   "description": "Egyptian Ceramics",
+   "type": "Exhibition",
+   "concat": "2241|YPME.001838|2016|2016|Anthropology|Egyptian Ceramics|Exhibition"
+  },
+  {
+   "irn": "229",
+   "number": "YPME.000017",
+   "date": { "start": "2011", "end": "2012" },
+   "department": "Entomology",
+   "description": "The Fabric of Life: Ecological Symmetries",
+   "type": "Exhibition",
+   "concat": "229|YPME.000017|2011|2012|Entomology|The Fabric of Life: Ecological Symmetries|Exhibition"
+  },
+  {
+   "irn": "2320",
+   "number": "YPME.001910",
+   "date": { "start": "2016", "end": "2017" },
+   "department": "Anthropology",
+   "description": "Peabody2: Identity, Difference, and Understanding: Lessons from Oceania and Southeast Asia",
+   "type": "Exhibition",
+   "concat": "2320|YPME.001910|2016|2017|Anthropology|Peabody2: Identity, Difference, and Understanding: Lessons from Oceania and Southeast Asia|Exhibition"
+  },
+  {
+   "irn": "2449",
+   "number": "YPME.002016",
+   "date": { "start": "2016", "end": "" },
+   "department": "Anthropology",
+   "description": "Peabody Education Historical Exhibit",
+   "type": "Exhibition",
+   "concat": "2449|YPME.002016|2016||Anthropology|Peabody Education Historical Exhibit|Exhibition"
+  },
+  {
+   "irn": "314",
+   "number": "YPME.000090",
+   "date": { "start": "2007", "end": "" },
+   "department": "Invertebrate Paleontology",
+   "description": "Curator's Choice: Eurypterids",
+   "type": "Exhibition",
+   "concat": "314|YPME.000090|2007||Invertebrate Paleontology|Curator's Choice: Eurypterids|Exhibition"
+  },
+  {
+   "irn": "3493",
+   "number": "YPME.002901",
+   "date": { "start": "2016", "end": "2017" },
+   "department": "Historical Scientific Instruments",
+   "description": "Treasures of the Peabody: 150th Anniversary Exhibit (HSI objects)",
+   "type": "Exhibition",
+   "concat": "3493|YPME.002901|2016|2017|Historical Scientific Instruments|Treasures of the Peabody: 150th Anniversary Exhibit (HSI objects)|Exhibition"
+  },
+  {
+   "irn": "4382",
+   "number": "YPME.003717",
+   "date": { "start": "2017", "end": "2018" },
+   "department": "Invertebrate Paleontology",
+   "description": "Object Study Gallery: History of Life",
+   "type": "Exhibition",
+   "concat": "4382|YPME.003717|2017|2018|Invertebrate Paleontology|Object Study Gallery: History of Life|Exhibition"
+  },
+  {
+   "irn": "535",
+   "number": "YPME.000290",
+   "date": { "start": "2013", "end": "2014" },
+   "department": "Historical Scientific Instruments",
+   "description": "Curator's Choice: Microcosm of Wonders: Highlights from the Lentz Collection",
+   "type": "Exhibition",
+   "concat": "535|YPME.000290|2013|2014|Historical Scientific Instruments|Curator's Choice: Microcosm of Wonders: Highlights from the Lentz Collection|Exhibition"
+  },
+  {
+   "irn": "542",
+   "number": "YPME.000300",
+   "date": { "start": "2005", "end": "" },
+   "department": "Yale Peabody Museum",
+   "description": "Elephants!",
+   "type": "Exhibition",
+   "concat": "542|YPME.000300|2005||Yale Peabody Museum|Elephants!|Exhibition"
+  },
+  {
+   "irn": "543",
+   "number": "YPME.000301",
+   "date": { "start": "2009", "end": "" },
+   "department": "Yale Peabody Museum",
+   "description": "Darwin: 150 Years of Evolutionary Thinking",
+   "type": "Exhibition",
+   "concat": "543|YPME.000301|2009||Yale Peabody Museum|Darwin: 150 Years of Evolutionary Thinking|Exhibition"
+  },
+  {
+   "irn": "6307",
+   "number": "YPME.005538",
+   "date": { "start": "1965", "end": "" },
+   "department": "Invertebrate Paleontology",
+   "description": "Hall of Invertebrates",
+   "type": "Exhibition",
+   "concat": "6307|YPME.005538|1965||Invertebrate Paleontology|Hall of Invertebrates|Exhibition"
+  },
+  {
+   "irn": "6893",
+   "number": "YPME.006082",
+   "date": { "start": "2019", "end": "2020" },
+   "department": "YPM Registrar",
+   "description": "Ancient Mesopotamia Speaks",
+   "type": "Exhibition",
+   "concat": "6893|YPME.006082|2019|2020|YPM Registrar|Ancient Mesopotamia Speaks|Exhibition"
+  },
+  {
+   "irn": "7044",
+   "number": "YPME.006223",
+   "date": { "start": "2018", "end": "" },
+   "department": "YPM Exhibits and Graphics",
+   "description": "The Artist's Eye: Figurines of the Paleolithic",
+   "type": "Exhibition",
+   "concat": "7044|YPME.006223|2018||YPM Exhibits and Graphics|The Artist's Eye: Figurines of the Paleolithic|Exhibition"
+  },
+  {
+   "irn": "7045",
+   "number": "YPME.006224",
+   "date": { "start": "2018", "end": "" },
+   "department": "YPM Exhibits and Graphics",
+   "description": "Shipwreck and Starfall: astronomy at early Yale",
+   "type": "Exhibition",
+   "concat": "7045|YPME.006224|2018||YPM Exhibits and Graphics|Shipwreck and Starfall: astronomy at early Yale|Exhibition"
+  },
+  {
+   "irn": "915",
+   "number": "YPME.000635",
+   "date": { "start": "2011", "end": "2012" },
+   "department": "Entomology",
+   "description": "Fabric of Life",
+   "type": "Exhibition",
+   "concat": "915|YPME.000635|2011|2012|Entomology|Fabric of Life|Exhibition"
+  },
+  {
+   "irn": "916",
+   "number": "YPME.000636",
+   "date": { "start": "2013", "end": "2013" },
+   "department": "Entomology",
+   "description": "Return of the 17-Year Cicadas",
+   "type": "Exhibition",
+   "concat": "916|YPME.000636|2013|2013|Entomology|Return of the 17-Year Cicadas|Exhibition"
+  }
+ ]

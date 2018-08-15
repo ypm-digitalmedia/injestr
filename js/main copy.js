@@ -304,14 +304,7 @@ $(document).ready(function () {
 		//		event.preventDefault();
 	});
 
-	$('input').on('keyup keypress', function (e) {
-		var keyCode = e.keyCode || e.which;
-		if (keyCode === 13) {
-			e.preventDefault();
-			$(this).blur();
-			return false;
-		}
-	});
+
 
 
 
@@ -464,7 +457,7 @@ $(document).ready(function () {
 
 		// make custom selectPickers
 		$('.selectpicker').selectpicker({
-			style: 'btn-info',
+			style: 'btn-default',
 			size: 4
 		});
 
@@ -495,15 +488,18 @@ $(document).ready(function () {
 
 		// ============ Description ======================================================
 
-		var optsEvents = {
-			url: "data/ingester-metadata-netx.json",
+		var optsEventsDescription = {
+			url: "data/netx-events.json",
 
-			//			getValue: "description",
+			getValue: "description",
 			listLocation: function (el) {
 				return el;
 			},
-			getValue: function (element) {
-				return element.concat;
+			template: {
+				type: "custom",
+				method: function (value, item) {
+					return value + "<br /><span class='smaller'>IRN " + item.irn + " &bull; " + item.number + "</span>";
+				}
 			},
 			list: {
 				maxNumberOfElements: 10,
@@ -517,34 +513,97 @@ $(document).ready(function () {
 					var value = $("#searchEventDescription").getSelectedItemData();
 				}
 			},
-			template: {
-				type: "custom",
-				method: function (value, item) {
-					//					return value + "<br /><span class='smaller'>IRN " + item.irn + " &bull; " + item.number + "</span>";
 
-					var valArr = value.split("|");
-					var html = "";
-
-					html += "<span class='result-line'><em>" + valArr[5] + "</em></span>";
-					html += "<span class='result-line'>" + valArr[6] + "&nbsp;&bull;&nbsp;" + valArr[2] + "&mdash;" + valArr[3] + "</span>";
-					html += "<span class='result-line smaller space-top'>" + valArr[4] + "</span>";
-					html += "<span class='result-line smaller'>IRN&nbsp;" + valArr[0] + "&nbsp;&bull;&nbsp;" + valArr[1] + "</span>";
-
-					return html;
-
-				}
-			},
-			//			theme: "blue-light"
 			theme: "bootstrap"
 		};
 
-		$("#searchEventDescription").easyAutocomplete(optsEvents);
+		$("#searchEventDescription").easyAutocomplete(optsEventsDescription);
+
+		// ============ IRN ======================================================
+
+		var optsEventsIrn = {
+			url: "data/netx-events.json",
+
+			getValue: "irn",
+			listLocation: function (el) {
+				return el;
+			},
+			template: {
+				type: "custom",
+				method: function (value, item) {
+					return "<strong</strong>IRN " + value + " &bull; " + item.number + "<br /><span class='smaller'>" + item.description + "</span>";
+				}
+			},
+			categories: [
+				{
+					listLocation: "",
+					header: "irn"
+			},
+						],
+			list: {
+				maxNumberOfElements: 10,
+				match: {
+					enabled: true
+				},
+				sort: {
+					enabled: true
+				},
+				onChooseEvent: function () {
+					var value = $("#searchEventIrn").getSelectedItemData();
+				}
+			},
+
+			theme: "bootstrap"
+		};
+
+		$("#searchEventIrn").easyAutocomplete(optsEventsIrn);
+
+		// ============ Number ======================================================	
+
+		var optsEventsNumber = {
+			url: "data/netx-events.json",
+
+			getValue: "number",
+			listLocation: function (el) {
+				return el;
+			},
+			template: {
+				type: "custom",
+				method: function (value, item) {
+					return "IRN " + item.irn + " &bull; <strong>YPME.</strong>" + value.split(".")[1] + "<br /><span class='smaller'>" + item.description + "</span>";
+				}
+			},
+			list: {
+				maxNumberOfElements: 10,
+				match: {
+					enabled: true
+				},
+				sort: {
+					enabled: true
+				},
+				onChooseEvent: function () {
+					var value = $("#searchEventNumber").getSelectedItemData();
+					$("#searchEventNumber").val(value.number.split(".")[1]);
+				}
+			},
+
+			theme: "bootstrap"
+		};
+
+		$("#searchEventNumber").easyAutocomplete(optsEventsNumber);
 
 
 	}
 
 
-
+	// workaround for $(".result-select-button").click()
+	$("body").click(function (ev) {
+		if ($(ev.target).hasClass('result-select-button')) {
+			var type = $(ev.target).attr("data-type");
+			var target = "#result_" + $(ev.target).attr("data-parent");
+			selectResult(target, type);
+		};
+	})
 
 
 	function loadJsonAsVar(url) {
@@ -568,6 +627,16 @@ $(document).ready(function () {
 
 });
 
+function selectResult(target, type) {
+	if (type == "event") {
+
+		$(target).removeClass("alert-success").addClass("alert-success");
+		$('.result-container').not(target).slideUp();
+		$("#searchResultsEventHeader").text("Target Event:");
+	} else if (type == "record") {
+
+	}
+}
 
 function printSearchResults(results, dest, type) {
 	clearSearchResults(type);
@@ -593,13 +662,24 @@ function printSearchResults(results, dest, type) {
 
 	_.forEach(results, function (r) {
 
+		if (r.number.indexOf(".") > -1) {
+			var idString = r.irn + "_" + r.number.split(".")[1];
+		} else {
+			idString = r.irn + "_" + r.number;
+		}
+
+
 		var tplEdit = tpl.replace("{{{description}}}", r.description);
+		tplEdit = tplEdit.replace("{{{buttontype}}}", type);
+		tplEdit = tplEdit.replace("{{{resulttype}}}", type);
 		tplEdit = tplEdit.replace("{{{type}}}", r.type);
 		tplEdit = tplEdit.replace("{{{startDate}}}", r.date.start);
 		tplEdit = tplEdit.replace("{{{endDate}}}", r.date.end);
 		tplEdit = tplEdit.replace("{{{department}}}", r.department);
 		tplEdit = tplEdit.replace("{{{irn}}}", r.irn);
 		tplEdit = tplEdit.replace("{{{number}}}", r.number);
+		tplEdit = tplEdit.replace("{{{id}}}", idString);
+		tplEdit = tplEdit.replace("{{{buttonid}}}", idString);
 
 		$(dest).append(tplEdit);
 	});
