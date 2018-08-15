@@ -1,0 +1,58 @@
+{
+    "data": {
+        "dateCreated": "Wed Aug 01 2018 13:03:30 GMT-0400 (EDT)",
+        "uuid": "c274d143-17c5-41d9-87d7-6144d68f544d",
+        "events": [
+            {
+                "irn": "229",
+                "number": "YPME.000017",
+                "type": "exhibition",
+                "date": {
+                    "start": "2011",
+                    "end": "2012"
+                },
+                "description": "The Fabric of Life - Ecological Symmetries, an exhibit mounted in the Environmental Science Center rotunda from fall 2011 through spring 2012, featuring specimens from the Entomology Division collection that artist John Arabalos had used to make computer-generated mosaic designs."
+            },
+            {
+                "irn": "314",
+                "number": "YPME.000090",
+                "type": "exhibition",
+                "date": {
+                    "start": "3/1/07",
+                    "end": ""
+                },
+                "description": "Curator's Choice: Eurypterids"
+            },
+            {
+                "irn": "454",
+                "number": "YPME.000218",
+                "type": "public program",
+                "date": {
+                    "start": "10/12/13",
+                    "end": "10/14/13"
+                },
+                "description": "Several anthropology division objects were displayed during Fiesta Latina, a Peabody Museum public event.  The same objects, plus one more, were used during this event the previous year."
+            },
+            {
+                "irn": "511",
+                "number": "YPME.000270",
+                "type": "exhibition",
+                "date": {
+                    "start": "1992",
+                    "end": ""
+                },
+                "description": "LOAN to the Albers Museum in Bottrop Germany for exhibition. 1999 formal loan established on 2 year renewable."
+            },
+            {
+                "irn": "515",
+                "number": "YPME.000274",
+                "type": "public program",
+                "date": {
+                    "start": "2/21/14",
+                    "end": "2/21/14"
+                },
+                "description": "Talk, CT Entomological Society: Fossil record of insects, collections of the Peabody Museum"
+            }
+        ]
+    }
+}

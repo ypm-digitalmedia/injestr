@@ -1,0 +1,33 @@
+{
+    "data": {
+        "dateCreated": "Wed Aug 01 2018 13:09:42 GMT-0400 (EDT)",
+        "uuid": "c743e823-fd41-4acd-b154-6ca687af8a7c",
+        "records": [
+            {
+                "irn": "1117742",
+                "catalogNumber": "MAM.000000.01",
+                "description": "MAM.000000.01: Equus:. [skeleton]."
+            },
+            {
+                "irn": "565238",
+                "catalogNumber": "MAM.000161",
+                "description": "MAM.000161: Condylura cristata cristata: Connecticut. New Haven County. West Haven. Coll: Morrill, R. C. 21 Jun 1937. female [skeleton]."
+            },
+            {
+                "irn": "565355",
+                "catalogNumber": "MAM.000278",
+                "description": "MAM.000278: Lasionycteris noctivagans: Connecticut. Middlesex County. Clinton. Coll: Short, V. R.  Sep 1936. female [skeleton]."
+            },
+            {
+                "irn": "565725",
+                "catalogNumber": "MAM.000648",
+                "description": "MAM.000648: Ondatra zibethicus zibethicus: Minnesota. Polk County. Eastern half of Polk County. Coll: Sundrud, O. [skeleton]."
+            },
+            {
+                "irn": "565727",
+                "catalogNumber": "MAM.000650",
+                "description": "MAM.000650: Tamiops mcclellandi: India. Assam State. Mount Japvo. \"Naga Hills\". Elev: 7700-7700 ft. Coll: Ripley, S. D. 06 Nov 1950. male [skeleton]."
+            }
+        ]
+    }
+}

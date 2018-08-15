@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>TEST</title>
+
+	<!--    <link href="css/bootstrap-4.1.3.min.css" rel="stylesheet" />-->
+	<link href="css/jquery-ui.css" rel="stylesheet" />
+	<link href="css/jquery-ui.structure.css" rel="stylesheet" />
+	<link href="css/jquery-ui.theme.css" rel="stylesheet" />
+	<link href="css/bootstrap-3.2.0.min.css" rel="stylesheet" />
+	<link href="css/bootstrap-toggle.min.css" rel="stylesheet" />
+	<link href="css/bootstrap-select.css" rel="stylesheet" />
+	<link href="css/dropzone.css" rel="stylesheet" />
+	<link href="css/fonts.css" rel="stylesheet" />
+	<link href="fonts/FontAwesome-5.2.0/css/all.min.css" rel="stylesheet" />
+	<link href="css/easy-autocomplete.css" rel="stylesheet" />
+	<link href="css/easy-autocomplete.themes.css" rel="stylesheet" />
+	<link href="css/easy-autocomplete-custom.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+					<a class="navbar-brand" href="http://peabody.yale.edu" target="_blank">
+                    <img class="logo-single" src="img/ypm_wordmark_single_small_white.png" />
+                    <img class="logo-double" src="img/ypm_wordmark_double_small_white.png" />
+                </a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<div class="login pull-right">
+						<i class="fas fa-user"></i>
+						<strong class="login-link-item" id="userName" title=""></strong>
+						<a href="javascript:void(0)" title="Log out" class="login-link-item" id="logoutLink">Log out</a>
+					</div>
+				</div>
+				<!--/.navbar-collapse -->
+			</div>
+		</nav>
+	</header>
+	<main>
+		<form id="mainForm" action="test.php" method="POST" data-toggle="validator" role="form">
+			<div class="container" class="toplogo">
+				<a href="index.html" title="Home">
+					<div class="logo pull-left">
+						<img src="img/injestr_logo.png" />
+					</div>
+					<div class="title pull-left">
+						<h1 class="main-title">Injestr</h1>
+						<h3 class="main-subtitle">NetX-Preservica Asset Uploader</h3>
+					</div>
+
+				</a>
+			</div>
+
+
+
+
+
+			<div class="container">
+				<div class="wrapper">
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="active" id="tabcontrol1">
+							<a href="#tab1" data-toggle="tab" role="tab">
+								<strong class="tab-btn">
+									<span class="tab-icon" id="tab1_Icon">
+<!--										<i class="far fa-square"></i>-->
+									</span>&nbsp;Search</strong></a></li>
+						<li id="tabcontrol2">
+							<a href="#tab2" data-toggle="tab" role="tab">
+								<strong class="tab-btn">
+									<span class="tab-icon" id="tab2_Icon">
+<!--										<i class="far fa-square"></i>-->
+									</span>&nbsp;Upload</strong></a></li>
+						<li id="tabcontrol3">
+							<a href="#tab3" data-toggle="tab" role="tab">
+								<strong class="tab-btn">
+									<span class="tab-icon" id="tab3_Icon">
+<!--										<i class="far fa-square"></i>-->
+									</span>&nbsp;Edit</strong></a></li>
+					</ul>
+				</div>
+				<div class="tab-content">
+					<div class="tab-pane fade in active" id="tab1">
+
+
+						<!-- SEARCH TYPE SELECTOR -->
+
+						<div class="container-fluid search-pane" id="searchPaneSelector">
+							<div class="row row-pad">
+								<div class="col-xs-12">
+									<!--									<p align="center">-->
+									<span id="searchByLabel"><strong>Search by&nbsp;</strong><strong id="searchByLabelRecord">Record</strong><strong id="searchByLabelEvent">Event</strong></span>
+									<input type="checkbox" id="lookupToggle" checked></input>
+									<!--									</p>-->
+								</div>
+							</div>
+						</div>
+
+
+
+						<!-- SEARCH BY EVENT -->
+
+						<div class="container-fluid search-pane" id="searchPaneEvent">
+							<div class="row row-pad-bottom">
+								<div class="form-group col-sm-6">
+									<label for="searchEventIrn" class="control-label">IRN</label>
+									<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchEventIrn" placeholder="" data-error="Please enter only numbers." onchange="searchByEventIrn(this.value)">
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="searchEventNumber" class="control-label">Number</label>
+									<div class="input-group">
+										<span class="input-group-addon">YPME.</span>
+										<!--							<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchEventNumber" placeholder="" data-error="Please enter only numbers.">-->
+										<input type="text" maxlength="15" class="form-control" id="searchEventNumber" placeholder="" onchange="searchByEventNumber(this.value)">
+									</div>
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+							<div class="row row-pad-bottom">
+								<div class="form-group col-sm-6">
+									<label for="searchEventType" class="control-label">Type</label>
+									<select class="selectpicker form-control" id="searchEventType" onchange="searchByEventType(this.value)">
+								<option value="" selected>(select)</option>
+								<option value="exhibition">Exhibition</option>
+								<option value="presentation">Presentation</option>
+								<option value="public program">Public Program</option>
+							</select>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="searchEventDepartment" class="control-label">Department</label>
+									<select class="selectpicker form-control" id="searchEventDepartment" onchange="searchByEventDepartment(this.value)">
+								<option value="" selected>(select)</option>
+								<option value="Anthropology">Anthropology</option>
+								<option value="Babylonian">Babylonian Collection</option>
+								<option value="Botany">Botany</option>
+								<option value="Entomology">Entomology</option>
+								<option value="Historical Scientific Instruments">Historical Scientific Instruments</option>
+								<option value="Invertebrate Paleontology">Invertebrate Paleontology</option>
+								<option value="Invertebrate Zoology">Invertebrate Zoology</option>
+								<option value="Mineralogy and Meteoritics">Mineralogy and Meteoritics</option>
+								<option value="Paleobotany">Paleobotany</option>
+								<option value="Vertebrate Paleontology">Vertebrate Paleontology</option>
+								<option value="Vertebrate Zoology">Vertebrate Zoology</option>
+							</select>
+								</div>
+							</div>
+							<div class="row row-pad-bottom">
+								<div class="form-group col-sm-6">
+									<label for="searchEventStart" class="control-label">Start</label>
+									<input type="text" class="form-control datepicker" id="searchEventStart" onchange="searchByEventDateStart(this.value)" pattern="(?:[1-9][0-9]{3})" maxlength="4" data-error="Please enter a valid date." />
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="searchEventEnd" class="control-label">End</label>
+									<input type="text" class="form-control datepicker" id="searchEventEnd" onchange="searchByEventDateEnd(this.value)" pattern="(?:[1-9][0-9]{3})" maxlength="4" data-error="Please enter a valid date." value="2018" />
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+							<div class="row row-pad-bottom">
+								<div class="form-group col-xs-12">
+									<label for="searchEventDescription" class="control-label">Description</label>
+									<input type="text" class="form-control" id="searchEventDescription" placeholder="" onchange="searchByEventDescription(this.value)" />
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+
+							<div class="row row-pad">
+								<div class="col-xs-12">
+									<div id="searchResultsEventHeader"></div>
+									<div id="searchResultsEvent" class="search-results-container"></div>
+								</div>
+							</div>
+
+						</div>
+
+						<!-- END -->
+
+
+						<!-- SEARCH BY RECORD -->
+
+						<div class="container-fluid search-pane" id="searchPaneRecord">
+							<div class="row row-pad-bottom">
+								<div class="form-group col-sm-6">
+									<label for="searchRecordIrn" class="control-label">IRN</label>
+									<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchRecordIrn" placeholder="" data-error="Please enter only numbers.">
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="searchRecordCatalogNumber" class="control-label">Catalog Number</label>
+									<div class="input-group">
+										<span class="input-group-addon input-group-addon-custom dropdown-custom">
+								<select class="selectpicker selectpicker-custom" data-width="fit">
+									<option value="ANT">ANT.</option>
+									<option value="BC">BC.</option>
+									<option value="BOT">BOT.</option>
+									<option value="ENT">ENT.</option>
+									<option value="HSI">HSI.</option>
+									<option value="IP">IP.</option>
+									<option value="IZ">IZ.</option>
+									<option value="MIN">MIN.</option>
+									<option value="PB">PB.</option>
+									<option value="VP">VP.</option>
+									<option value="VZ">VZ.</option>
+									<option value="YU">YU.</option>
+								</select>
+							</span>
+										<input type="text" pattern="[+-]?([0-9]*[.-])?[0-9]+" maxlength="15" class="form-control" id="searchRecordCatalogNumber" placeholder="" data-error="Please enter a valid catalog number.">
+									</div>
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+							<div class="row row-pad-bottom">
+								<div class="form-group col-xs-12">
+									<label for="searchRecordDescription" class="control-label">Description</label>
+									<input type="text" class="form-control" id="searchRecordDescription" placeholder="">
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+
+							<div class="row row-pad">
+								<div class="col-xs-12">
+									<div id="searchResultsRecordHeader"></div>
+									<div id="searchResultsRecord" class="search-results-container"></div>
+								</div>
+							</div>
+
+						</div>
+
+
+						<!-- END -->
+
+
+
+
+
+
+
+
+
+
+					</div>
+					<div class="tab-pane fade" id="tab2">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xs-12">
+									<span>selected item here</span>
+									<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="tab3">tab3</div>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+			<div class="container">
+				<div class="row row-pad">
+					<div class="col-xs-12 align-center">
+						<p align="center" class="align-center">
+							<button type="submit" class="btn btn-disabled btn-lg">Submit <i class="fas fa-arrow-alt-circle-right"></i></button>
+						</p>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+		</form>
+
+	</main>
+
+
+
+
+	<footer></footer>
+
+	<!-- TEMPLATES START ----------------------------------------------------------------------------->
+
+	<!-- DROPZONE THUMB -->
+
+	<div id="tpl">
+		<div class="dz-preview dz-file-preview">
+			<div class="dz-details">
+				<div class="dz-filename"><span data-dz-name></span></div>
+				<div class="dz-size" data-dz-size></div>
+				<img data-dz-thumbnail />
+			</div>
+			<div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+			<div class="dz-success-mark"><span>✔</span></div>
+			<div class="dz-error-mark"><span>✘</span></div>
+			<div class="dz-error-message"><span data-dz-errormessage></span></div>
+		</div>
+	</div>
+
+	<!-- SEARCH RESULTS - EVENT -->
+
+	<div id="tplEvent">
+		<div class="result container-fluid">
+			<div class="row">
+				<div class="col col-xs-12 col-sm-9">
+					<span class="result-line"><em>{{{description}}}</em></span>
+					<span class="result-line">{{{type}}}&nbsp;&bull;&nbsp;{{{startDate}}}&nbsp;&ndash;&nbsp;{{{endDate}}}</span>
+					<span class="result-line smaller space-top">{{{department}}}</span>
+					<span class="result-line smaller"><strong>IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</strong></span>
+				</div>
+				<div class="col col-xs-12 col-sm-3">
+					<button class="btn btn-info pull-right"><i class="fas fa-check-square"></i>&nbsp;Select</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- SEARCH RESULTS - RECORD -->
+
+	<div id="tplRecord">
+
+	</div>
+
+	<!-- TEMPLATES START ----------------------------------------------------------------------------->
+
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery-ui.min.js"></script>
+	<script src="js/jquery.easy-autocomplete.min.js"></script>
+	<!--	<script src="js/require.min.js"></script>-->
+	<!--	<script src="js/tether.min.js"></script>-->
+	<script src="js/moment.min.js"></script>
+	<script src="fonts/FontAwesome-5.2.0/js/all.min.js"></script>
+	<!--    <script src="js/bootstrap-4.1.3.min.js"></script> -->
+	<script src="js/bootstrap-3.2.0.min.js"></script>
+	<script src="js/validator.min.js"></script>
+	<script src="js/bootstrap-toggle.min.js"></script>
+	<script src="js/bootstrap-select.min.js"></script>
+	<script src="js/lodash.min.js"></script>
+	<script src="js/dropzone.min.js"></script>
+
+	<script src="js/main.js"></script>
+</body>
+
+</html>

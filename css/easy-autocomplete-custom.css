@@ -1,0 +1,9 @@
+.easy-autocomplete-container {
+	/*	max-height: 200px !important;*/
+	/*	overflow-y: scroll !important;*/
+	/*	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5) !important;*/
+}
+
+.easy-autocomplete-container b {
+	font-family: "Mallory MP Bold", sans-serif !important;
+}

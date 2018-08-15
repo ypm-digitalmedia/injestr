@@ -1,0 +1,255 @@
+[
+	{
+		"irn": "1002",
+		"number": "YPME.000715",
+		"type": "exhibition",
+		"department": "Historical Scientific Instruments, Botany, Entomology",
+		"date": {
+			"start": "2014",
+			"end": "2014"
+		},
+		"description": "Of Green Leaf and Flower: Artist Books and the Natural World"
+  },
+	{
+		"irn": "1003",
+		"number": "YPME.000716",
+		"type": "exhibition",
+		"department": "Historical Scientific Instruments",
+		"date": {
+			"start": "2014",
+			"end": "2014"
+		},
+		"description": "Sculpture Victorius: Art in the Age of Inventions 1837-1901"
+  },
+	{
+		"irn": "1350",
+		"number": "YPME.001032",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2015",
+			"end": "2016"
+		},
+		"description": "Samurai and The Culture of Japan's Great Peace (installation in process)"
+  },
+	{
+		"irn": "1408",
+		"number": "YPME.001089",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2015",
+			"end": "2015"
+		},
+		"description": "Curator's Choice: Survival and Souvenirs: Connecticut's Indigenous Basketmakers"
+  },
+	{
+		"irn": "1829",
+		"number": "YPME.001462",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2015",
+			"end": "2015"
+		},
+		"description": "Maya and Olmec"
+  },
+	{
+		"irn": "1978",
+		"number": "YPME.001600",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2015",
+			"end": "2016"
+		},
+		"description": "Samurai and The Culture of Japan's Great Peace (finished installation)"
+  },
+	{
+		"irn": "2129",
+		"number": "YPME.001734",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2016",
+			"end": "2017"
+		},
+		"description": "Treasures of the Peabody: 150th Anniversary Exhibit (ANT objects)"
+  },
+	{
+		"irn": "2241",
+		"number": "YPME.001838",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2016",
+			"end": "2016"
+		},
+		"description": "Egyptian Ceramics"
+  },
+	{
+		"irn": "229",
+		"number": "YPME.000017",
+		"type": "exhibition",
+		"department": "Entomology",
+		"date": {
+			"start": "2011",
+			"end": "2012"
+		},
+		"description": "The Fabric of Life: Ecological Symmetries"
+  },
+	{
+		"irn": "2320",
+		"number": "YPME.001910",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2016",
+			"end": "2017"
+		},
+		"description": "Peabody2: Identity, Difference, and Understanding: Lessons from Oceania and Southeast Asia"
+  },
+	{
+		"irn": "2449",
+		"number": "YPME.002016",
+		"type": "exhibition",
+		"department": "Anthropology",
+		"date": {
+			"start": "2016",
+			"end": ""
+		},
+		"description": "Peabody Education Historical Exhibit"
+  },
+	{
+		"irn": "314",
+		"number": "YPME.000090",
+		"type": "exhibition",
+		"department": "Invertebrate Paleontology",
+		"date": {
+			"start": "2007",
+			"end": ""
+		},
+		"description": "Curator's Choice: Eurypterids"
+  },
+	{
+		"irn": "3493",
+		"number": "YPME.002901",
+		"type": "exhibition",
+		"department": "Historical Scientific Instruments",
+		"date": {
+			"start": "2016",
+			"end": "2017"
+		},
+		"description": "Treasures of the Peabody: 150th Anniversary Exhibit (HSI objects)"
+  },
+	{
+		"irn": "4382",
+		"number": "YPME.003717",
+		"type": "exhibition",
+		"department": "Invertebrate Paleontology",
+		"date": {
+			"start": "2017",
+			"end": "2018"
+		},
+		"description": "Object Study Gallery: History of Life"
+  },
+	{
+		"irn": "535",
+		"number": "YPME.000290",
+		"type": "exhibition",
+		"department": "Historical Scientific Instruments",
+		"date": {
+			"start": "2013",
+			"end": "2014"
+		},
+		"description": "Curator's Choice: Microcosm of Wonders: Highlights from the Lentz Collection"
+  },
+	{
+		"irn": "542",
+		"number": "YPME.000300",
+		"type": "exhibition",
+		"department": "Yale Peabody Museum",
+		"date": {
+			"start": "2005",
+			"end": ""
+		},
+		"description": "Elephants!"
+  },
+	{
+		"irn": "543",
+		"number": "YPME.000301",
+		"type": "exhibition",
+		"department": "Yale Peabody Museum",
+		"date": {
+			"start": "2009",
+			"end": ""
+		},
+		"description": "Darwin: 150 Years of Evolutionary Thinking"
+  },
+	{
+		"irn": "6307",
+		"number": "YPME.005538",
+		"type": "exhibition",
+		"department": "Invertebrate Paleontology",
+		"date": {
+			"start": "1965",
+			"end": ""
+		},
+		"description": "Hall of Invertebrates"
+  },
+	{
+		"irn": "6893",
+		"number": "YPME.006082",
+		"type": "exhibition",
+		"department": "YPM Registrar",
+		"date": {
+			"start": "2019",
+			"end": "2020"
+		},
+		"description": "Ancient Mesopotamia Speaks"
+  },
+	{
+		"irn": "7044",
+		"number": "YPME.006223",
+		"type": "exhibition",
+		"department": "YPM Exhibits and Graphics",
+		"date": {
+			"start": "2018",
+			"end": ""
+		},
+		"description": "The Artist's Eye: Figurines of the Paleolithic"
+  },
+	{
+		"irn": "7045",
+		"number": "YPME.006224",
+		"type": "exhibition",
+		"department": "YPM Exhibits and Graphics",
+		"date": {
+			"start": "2018",
+			"end": ""
+		},
+		"description": "Shipwreck and Starfall: astronomy at early Yale"
+  },
+	{
+		"irn": "915",
+		"number": "YPME.000635",
+		"type": "exhibition",
+		"department": "Entomology",
+		"date": {
+			"start": "2011",
+			"end": "2012"
+		},
+		"description": "Fabric of Life"
+  },
+	{
+		"irn": "916",
+		"number": "YPME.000636",
+		"type": "exhibition",
+		"department": "Entomology",
+		"date": {
+			"start": "2013",
+			"end": "2013"
+		},
+		"description": "Return of the 17-Year Cicadas"
+  }
+ ]

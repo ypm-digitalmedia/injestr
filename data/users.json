@@ -1,0 +1,17 @@
+{
+	"scope": {
+		"dateCreated": "Fri Aug 03 2018 11:32:21 GMT-0400 (EDT)",
+		"uuid": "b24b880d-0cfe-4bc4-a899-cc90f9b27953",
+		"records": [
+            "gjw22"
+        ],
+		"events": [
+			"abc"
+        ],
+		"both": [
+            "ner36",
+            "am2946",
+            "lfg2"
+		]
+	}
+}
