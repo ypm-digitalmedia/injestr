@@ -113,75 +113,19 @@
 
 						<!-- SEARCH BY EVENT -->
 
-						<div class="container-fluid search-pane" id="searchPaneEvent">
-							<div class="row row-pad-bottom">
-								<div class="form-group col-sm-6">
-									<label for="searchEventIrn" class="control-label">IRN</label>
-									<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchEventIrn" placeholder="" data-error="Please enter only numbers." onchange="searchByEventIrn(this.value)">
-									<div class="help-block with-errors"></div>
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="searchEventNumber" class="control-label">Number</label>
-									<div class="input-group">
-										<span class="input-group-addon">YPME.</span>
-										<!--							<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchEventNumber" placeholder="" data-error="Please enter only numbers.">-->
-										<input type="text" maxlength="15" class="form-control" id="searchEventNumber" placeholder="" onchange="searchByEventNumber(this.value)">
-									</div>
-									<div class="help-block with-errors"></div>
-								</div>
-							</div>
-							<div class="row row-pad-bottom">
-								<div class="form-group col-sm-6">
-									<label for="searchEventType" class="control-label">Type</label>
-									<select class="selectpicker form-control" id="searchEventType" onchange="searchByEventType(this.value)">
-								<option value="" selected>(select)</option>
-								<option value="exhibition">Exhibition</option>
-								<option value="presentation">Presentation</option>
-								<option value="public program">Public Program</option>
-							</select>
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="searchEventDepartment" class="control-label">Department</label>
-									<select class="selectpicker form-control" id="searchEventDepartment" onchange="searchByEventDepartment(this.value)">
-								<option value="" selected>(select)</option>
-								<option value="Anthropology">Anthropology</option>
-								<option value="Babylonian">Babylonian Collection</option>
-								<option value="Botany">Botany</option>
-								<option value="Entomology">Entomology</option>
-								<option value="Historical Scientific Instruments">Historical Scientific Instruments</option>
-								<option value="Invertebrate Paleontology">Invertebrate Paleontology</option>
-								<option value="Invertebrate Zoology">Invertebrate Zoology</option>
-								<option value="Mineralogy and Meteoritics">Mineralogy and Meteoritics</option>
-								<option value="Paleobotany">Paleobotany</option>
-								<option value="Vertebrate Paleontology">Vertebrate Paleontology</option>
-								<option value="Vertebrate Zoology">Vertebrate Zoology</option>
-							</select>
-								</div>
-							</div>
-							<div class="row row-pad-bottom">
-								<div class="form-group col-sm-6">
-									<label for="searchEventStart" class="control-label">Start</label>
-									<input type="text" class="form-control datepicker" id="searchEventStart" onchange="searchByEventDateStart(this.value)" pattern="(?:[1-9][0-9]{3})" maxlength="4" data-error="Please enter a valid date." />
-									<div class="help-block with-errors"></div>
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="searchEventEnd" class="control-label">End</label>
-									<input type="text" class="form-control datepicker" id="searchEventEnd" onchange="searchByEventDateEnd(this.value)" pattern="(?:[1-9][0-9]{3})" maxlength="4" data-error="Please enter a valid date." value="2018" />
-									<div class="help-block with-errors"></div>
-								</div>
-							</div>
-							<div class="row row-pad-bottom">
-								<div class="form-group col-xs-12">
-									<label for="searchEventDescription" class="control-label">Description</label>
-									<input type="text" class="form-control" id="searchEventDescription" placeholder="" onchange="searchByEventDescription(this.value)" />
-									<div class="help-block with-errors"></div>
-								</div>
-							</div>
+						<div class="search-pane" id="searchPaneEvent">
 
+							<div class="row">
+								<div class="form-group col-xs-12">
+									<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, number, type" />
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
 							<div class="row row-pad">
 								<div class="col-xs-12">
 									<div id="searchResultsEventHeader"></div>
 									<div id="searchResultsEvent" class="search-results-container"></div>
+									<div id="searchResultsEventFooter"></div>
 								</div>
 							</div>
 
@@ -192,49 +136,19 @@
 
 						<!-- SEARCH BY RECORD -->
 
-						<div class="container-fluid search-pane" id="searchPaneRecord">
-							<div class="row row-pad-bottom">
-								<div class="form-group col-sm-6">
-									<label for="searchRecordIrn" class="control-label">IRN</label>
-									<input type="text" pattern="[0-9]+" maxlength="15" class="form-control" id="searchRecordIrn" placeholder="" data-error="Please enter only numbers.">
-									<div class="help-block with-errors"></div>
-								</div>
-								<div class="form-group col-sm-6">
-									<label for="searchRecordCatalogNumber" class="control-label">Catalog Number</label>
-									<div class="input-group">
-										<span class="input-group-addon input-group-addon-custom dropdown-custom">
-								<select class="selectpicker selectpicker-custom" data-width="fit">
-									<option value="ANT">ANT.</option>
-									<option value="BC">BC.</option>
-									<option value="BOT">BOT.</option>
-									<option value="ENT">ENT.</option>
-									<option value="HSI">HSI.</option>
-									<option value="IP">IP.</option>
-									<option value="IZ">IZ.</option>
-									<option value="MIN">MIN.</option>
-									<option value="PB">PB.</option>
-									<option value="VP">VP.</option>
-									<option value="VZ">VZ.</option>
-									<option value="YU">YU.</option>
-								</select>
-							</span>
-										<input type="text" pattern="[+-]?([0-9]*[.-])?[0-9]+" maxlength="15" class="form-control" id="searchRecordCatalogNumber" placeholder="" data-error="Please enter a valid catalog number.">
-									</div>
-									<div class="help-block with-errors"></div>
-								</div>
-							</div>
-							<div class="row row-pad-bottom">
-								<div class="form-group col-xs-12">
-									<label for="searchRecordDescription" class="control-label">Description</label>
-									<input type="text" class="form-control" id="searchRecordDescription" placeholder="">
-									<div class="help-block with-errors"></div>
-								</div>
-							</div>
+						<div class="search-pane" id="searchPaneRecord">
 
+							<div class="row">
+								<div class="form-group col-xs-12">
+									<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter description, catalog #, department" />
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
 							<div class="row row-pad">
 								<div class="col-xs-12">
 									<div id="searchResultsRecordHeader"></div>
 									<div id="searchResultsRecord" class="search-results-container"></div>
+									<div id="searchResultsRecordFooter"></div>
 								</div>
 							</div>
 
@@ -319,19 +233,22 @@
 	<!-- SEARCH RESULTS - EVENT -->
 
 	<div id="tplEvent">
-		<div class="result container-fluid">
+		<div class="alert alert-success">
 			<div class="row">
 				<div class="col col-xs-12 col-sm-9">
+					<span class="result-line"><i class="fas fa-check-circle"></i>&nbsp;<strong>SELECTED</strong></span>
 					<span class="result-line"><em>{{{description}}}</em></span>
-					<span class="result-line">{{{type}}}&nbsp;&bull;&nbsp;{{{startDate}}}&nbsp;&ndash;&nbsp;{{{endDate}}}</span>
-					<span class="result-line smaller space-top">{{{department}}}</span>
-					<span class="result-line smaller"><strong>IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</strong></span>
+					<span class="result-line smaller space-top">{{{type}}}&nbsp;&bull;&nbsp;{{{startDate}}}&nbsp;&ndash;&nbsp;{{{endDate}}}</span>
+					<span class="result-line smaller">{{{department}}}</span>
+					<span class="result-line smaller">IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</span>
 				</div>
 				<div class="col col-xs-12 col-sm-3">
-					<button class="btn btn-info pull-right"><i class="fas fa-check-square"></i>&nbsp;Select</button>
+					<button class="btn btn-primary pull-right" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 				</div>
 			</div>
 		</div>
+		<p align="center"><a id="eventEditSearchLink" href="javascript:void(0)"><i class="fas fa-pencil-alt"></i>&nbsp;Edit search</a></p>
+
 	</div>
 
 	<!-- SEARCH RESULTS - RECORD -->

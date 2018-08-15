@@ -7,6 +7,9 @@ var formData = {
 	error: []
 };
 
+var searchTextEvent = "";
+var searchTextRecord = "";
+
 var selectedEvent = null;
 var selectedRecord = null;
 
@@ -202,94 +205,7 @@ $(document).ready(function () {
 		//		makeTab(entry);
 	};
 
-	//
-	//	var makeTab = function (entry) {
-	//		console.log(entry);
-	//		var idPrefix = "img";
-	//		var titlePrefix = "Image"
-	//		var id = $(".nav-tabs").children().length;
-	//		var tabId = idPrefix + '_' + id;
-	//		var tabTarget = $(".add-tab");
-	//
-	//		tabTarget.closest('li').before('<li><a href="#' + idPrefix + '_' + id + '">' + titlePrefix + ' ' + id + '</a> <span> <i class="fas fa-times"></i> </span></li>');
-	//		$('.tab-content').append('<div class="tab-pane" id="' + tabId + '"><h2>Image ' + id + '</h2><pre>' + syntaxHighlight(JSON.stringify(entry, undefined, 4)) + '</pre></div>');
-	//		$('.nav-tabs li:nth-child(' + id + ') a').click();
-	//
-	//		reAdjust();
-	//
-	//
-	//	};
 
-
-
-
-
-
-
-	//
-	//	var widthOfList = function () {
-	//		var itemsWidth = 0;
-	//		$('.list li').each(function () {
-	//			var itemWidth = $(this).outerWidth();
-	//			itemsWidth += itemWidth;
-	//		});
-	//		return itemsWidth;
-	//	};
-	//
-	//	var widthOfHidden = function () {
-	//		return (($('.wrapper').outerWidth()) - widthOfList() - getLeftPosi()) - scrollBarWidths;
-	//	};
-	//
-	//	var getLeftPosi = function () {
-	//		return $('.list').position().left;
-	//	};
-	//
-	//	var reAdjust = function () {
-	//		if (($('.wrapper').outerWidth()) < widthOfList()) {
-	//			$('.scroller-right').show();
-	//		} else {
-	//			$('.scroller-right').hide();
-	//		}
-	//
-	//		if (getLeftPosi() < 0) {
-	//			$('.scroller-left').show();
-	//		} else {
-	//			$('.item').animate({
-	//				left: "-=" + getLeftPosi() + "px"
-	//			}, 'slow');
-	//			$('.scroller-left').hide();
-	//		}
-	//	}
-	//
-	//	reAdjust();
-	//
-	//	$(window).on('resize', function (e) {
-	//		reAdjust();
-	//	});
-
-	//	$('.scroller-right').click(function () {
-	//
-	//		$('.scroller-left').fadeIn('slow');
-	//		$('.scroller-right').fadeOut('slow');
-	//
-	//		$('.list').animate({
-	//			left: "+=" + widthOfHidden() + "px"
-	//		}, 'slow', function () {
-	//
-	//		});
-	//	});
-	//
-	//	$('.scroller-left').click(function () {
-	//
-	//		$('.scroller-right').fadeIn('slow');
-	//		$('.scroller-left').fadeOut('slow');
-	//
-	//		$('.list').animate({
-	//			left: "-=" + getLeftPosi() + "px"
-	//		}, 'slow', function () {
-	//
-	//		});
-	//	});
 
 	$("#logoutLink").click(function () {
 		var newUrl = stripQs('cas');
@@ -298,23 +214,11 @@ $(document).ready(function () {
 
 
 
-	$("form").submit(function (event) {
-		//		console.log($(this).serializeArray());
-		//		console.log($(this).serialize());
-		//		event.preventDefault();
-	});
 
-	$('input').on('keyup keypress', function (e) {
-		var keyCode = e.keyCode || e.which;
-		if (keyCode === 13) {
-			e.preventDefault();
-			$(this).blur();
-			return false;
-		}
-	});
-
-
-
+	$('#searchEventAll').on('keyup keypress click', function (e) {
+		searchTextEvent = $(this).val();
+		//		console.log(searchTextEvent);
+	})
 
 
 
@@ -459,41 +363,10 @@ $(document).ready(function () {
 			});
 		}
 
-
-
-
-		// make custom selectPickers
-		$('.selectpicker').selectpicker({
-			style: 'btn-info',
-			size: 4
-		});
-
-		// initiate datepickers
-		$("#searchEventStart").datepicker({
-			dropupAuto: false,
-			dateFormat: 'yy',
-			onSelect: function (dateText, inst) {
-				//				console.warn(inst)
-				searchByEventDateStart(inst);
-			}
-		});
-
-		$("#searchEventEnd").datepicker({
-			dropupAuto: false,
-			dateFormat: 'yy',
-			onSelect: function (dateText, inst) {
-				//				console.warn(inst)
-				searchByEventDateEnd(inst);
-			}
-		});
-
-		// initiate autocomplete
-
 		// ===============================================================================
 		// ======================== LOOKUP - EVENTS ======================================
 		// ===============================================================================
 
-		// ============ Description ======================================================
 
 		var optsEvents = {
 			url: "data/ingester-metadata-netx.json",
@@ -506,7 +379,7 @@ $(document).ready(function () {
 				return element.concat;
 			},
 			list: {
-				maxNumberOfElements: 10,
+				maxNumberOfElements: 500,
 				match: {
 					enabled: true
 				},
@@ -514,7 +387,12 @@ $(document).ready(function () {
 					enabled: true
 				},
 				onChooseEvent: function () {
-					var value = $("#searchEventDescription").getSelectedItemData();
+					var obj = $("#searchEventAll").getSelectedItemData();
+
+					$("#searchEventAll").val(searchTextEvent);
+
+					printSearchResults(obj, "event");
+
 				}
 			},
 			template: {
@@ -526,8 +404,8 @@ $(document).ready(function () {
 					var html = "";
 
 					html += "<span class='result-line'><em>" + valArr[5] + "</em></span>";
-					html += "<span class='result-line'>" + valArr[6] + "&nbsp;&bull;&nbsp;" + valArr[2] + "&mdash;" + valArr[3] + "</span>";
-					html += "<span class='result-line smaller space-top'>" + valArr[4] + "</span>";
+					html += "<span class='result-line smaller space-top'>" + valArr[6] + "&nbsp;&bull;&nbsp;" + valArr[2] + "&mdash;" + valArr[3] + "</span>";
+					html += "<span class='result-line smaller'>" + valArr[4] + "</span>";
 					html += "<span class='result-line smaller'>IRN&nbsp;" + valArr[0] + "&nbsp;&bull;&nbsp;" + valArr[1] + "</span>";
 
 					return html;
@@ -538,10 +416,25 @@ $(document).ready(function () {
 			theme: "bootstrap"
 		};
 
-		$("#searchEventDescription").easyAutocomplete(optsEvents);
+		$("#searchEventAll").easyAutocomplete(optsEvents);
 
 
 	}
+
+
+
+	$("#eventStepOneNextButton").click(function () {
+
+		alert("next!")
+	})
+
+
+	// dynamic DOM elements workaround
+	$("body").click(function (event) {
+		if ($(event.target).is("#eventEditSearchLink")) {
+			$("#searchEventAll").focus();
+		}
+	})
 
 
 
@@ -569,41 +462,29 @@ $(document).ready(function () {
 });
 
 
-function printSearchResults(results, dest, type) {
+function printSearchResults(obj, type) {
 	clearSearchResults(type);
 	if (type == "event") {
 		var tpl = document.querySelector("#tplEvent").innerHTML;
+		var dest = $("#searchResultsEvent");
 		var destH = $("#searchResultsEventHeader");
+		var destF = $("#searchResultsEventFooter");
 	} else if (type == "record") {
 		var tpl = document.querySelector("#tplRecord").innerHTML;
 		var destH = $("#searchResultsRecordHeader");
+		var destH = $("#searchResultsRecordFooter");
+		var dest = $("#searchResultsRecord");
 	}
 
-	var pluralString = "s";
-	if (results.length == 1) {
-		pluralString = "";
-	}
-	$(destH).append("<h3>" + results.length + " result" + pluralString + "</h3>");
+	var tplEdit = tpl.replace("{{{description}}}", obj.description);
+	tplEdit = tplEdit.replace("{{{type}}}", obj.type);
+	tplEdit = tplEdit.replace("{{{startDate}}}", obj.date.start);
+	tplEdit = tplEdit.replace("{{{endDate}}}", obj.date.end);
+	tplEdit = tplEdit.replace("{{{department}}}", obj.department);
+	tplEdit = tplEdit.replace("{{{irn}}}", obj.irn);
+	tplEdit = tplEdit.replace("{{{number}}}", obj.number);
 
-	if (results.length == 0) {
-		$(destH).empty();
-		$(dest).html('<p align="center"><em>No results.  Try simplifying your search.</em></p>');
-	}
-
-
-	_.forEach(results, function (r) {
-
-		var tplEdit = tpl.replace("{{{description}}}", r.description);
-		tplEdit = tplEdit.replace("{{{type}}}", r.type);
-		tplEdit = tplEdit.replace("{{{startDate}}}", r.date.start);
-		tplEdit = tplEdit.replace("{{{endDate}}}", r.date.end);
-		tplEdit = tplEdit.replace("{{{department}}}", r.department);
-		tplEdit = tplEdit.replace("{{{irn}}}", r.irn);
-		tplEdit = tplEdit.replace("{{{number}}}", r.number);
-
-		$(dest).append(tplEdit);
-	});
-
+	$(dest).append(tplEdit);
 
 }
 
@@ -611,13 +492,16 @@ function clearSearchResults(type) {
 	if (type == "event") {
 		var dest = $("#searchResultsEvent");
 		var destH = $("#searchResultsEventHeader");
+		var destF = $("#searchResultsEventFooter");
 	} else if (type == "record") {
 		var dest = $("#searchResultsRecord");
 		var destH = $("#searchResultsRecordHeader");
+		var destF = $("#searchResultsRecordFooter");
 	}
 
 	$(dest).empty();
 	$(destH).empty();
+	$(destF).empty();
 }
 
 function getPageWidth() {
@@ -716,175 +600,21 @@ function stripQs(parameter, url) {
 // ============================================================
 
 
-function searchByEventDateStart(date) {
-	if (typeof (date) === 'object') {
-		//valid datepicker object
-		//parse year automatically with "dateformat: 'yy'" in options
-		var date_parsed = date.selectedYear;
-	} else {
-		//convert text to moment, grab year if possible
-		var date_obj = moment(new Date(date));
-		if (date_obj._isValid) {
-			var date_parsed = date_obj.clone().year() + 1;
-			console.warn(date_parsed);
-		} else {
-			var date_parsed = "";
-		}
-	}
-	//	$("#searchEventStart").val(date_parsed);
-	console.log(date_parsed);
-	searchByEvent();
-}
-
-function searchByEventDateEnd(date) {
-	if (typeof (date) === 'object') {
-		//valid datepicker object
-		//parse year automatically with "dateformat: 'yy'" in options
-		var date_parsed = date.selectedYear;
-	} else {
-		//convert text to moment, grab year if possible
-		var date_obj = moment(new Date(date));
-		if (date_obj._isValid) {
-			var date_parsed = date_obj.clone().year() + 1;
-			console.warn(date_parsed);
-		} else {
-			var date_parsed = "";
-		}
-	}
-	//	$("#searchEventEnd").val(date_parsed);
-	console.log(date_parsed);
-	searchByEvent();
-}
-
-//function searchByEventDate(date) {
-//
-//	console.log(date);
-//	searchByEvent();
-//}
-
-function searchByEventDepartment(dept) {
-
-	console.log(dept);
-	searchByEvent();
-}
-
-function searchByEventType(type) {
-
-	console.log(type);
-	searchByEvent();
-}
-
-function searchByEventIrn(irn) {
-
-	console.log(irn);
-	searchByEvent();
-}
-
-function searchByEventNumber(number) {
-	if (number.toString().indexOf(".") == -1) {
-		if (number.length == 0 || !number || number == "") {
-			number_parsed = "";
-		} else {
-			var number_parsed = "YPME." + number;
-		}
-	} else {
-		var number_parsed = number;
-	}
-	console.log(number_parsed);
-	searchByEvent();
-}
-
-function searchByEventDescription(desc) {
-
-	console.log(desc);
-	searchByEvent();
-}
-
-// ============================================================
-
-function searchByEvent() {
-	$("#mainForm").validator('validate');
-	var eIrn = $("#searchEventIrn").val();
-
-	var eNumRaw = $("#searchEventNumber").val();
-	if (eNumRaw.toString().indexOf(".") == -1) {
-		if (eNumRaw.length == 0 || !eNumRaw || eNumRaw == "") {
-			eNum = "";
-		} else {
-			//			var eNum = "YPME." + eNumRaw;
-			var eNum = eNumRaw;
-		}
-	} else {
-		var eNum = eNumRaw;
-	}
-
-	var eDateS = $("#searchEventStart").val();
-	var eDateE = $("#searchEventEnd").val();
-
-	var dateValS = parseInt(eDateS);
-	var dateValE = parseInt(eDateE);
-
-	if (isNaN(dateValS) || dateValS < 1000 || dateValS > 9999) {
-		eDateS = "";
-	}
-
-	if (isNaN(dateValE) || dateValE < 1000 || dateValE > 9999) {
-		eDateE = "";
-	}
-
-	var eDesc = $("#searchEventDescription").val();
-	var eType = $("#searchEventType").val();
-	var eDept = $("#searchEventDepartment").val();
+function searchByEvent(obj) {
 
 	var filterEvalArr = [];
-
-	//	var sseIrn = "";
-	//	var sseNum = "";
-	//	var sseDateS = "";
-	//	var sseDateE = "";
-	//	var sseDesc = "";
-	//	var sseType = "";
-	//	var sseDept = "";
-
-	if (eIrn != "") {
-		filterEvalArr.push('o.irn.indexOf("' + eIrn + '") > -1');
-	}
-	if (eNum != "") {
-		filterEvalArr.push('o.number.indexOf("' + eNum + '") > -1');
-	}
-	if (eDateS != "") {
-		filterEvalArr.push('parseInt( o.date.start ) >= parseInt(' + eDateS + ')');
-	}
-	if (eDateE != "") {
-		filterEvalArr.push('parseInt( o.date.end ) <= parseInt(' + eDateE + ')');
-	}
-	if (eDesc != "") {
-		filterEvalArr.push('o.description.indexOf("' + eDesc + '") > -1');
-	}
-	if (eType != "") {
-		filterEvalArr.push('o.type.indexOf("' + eType + '") > -1');
-	}
-	if (eDept != "") {
-		filterEvalArr.push('o.department.indexOf("' + eDept + '") > -1');
-	}
 
 	var filterEvalString = filterEvalArr.join(" && ");
 
 	console.log(filterEvalString);
 
-	console.log("\n\n\n\neIrn: " + eIrn + "\neNum: " + eNum + "\neDateS: " + eDateS + "\neDateE: " + eDateE + "\neDesc: " + eDesc + "\neType: " + eType + "\neDept: " + eDept + "\n\n\n\n")
 
 	var results = _.filter(jsonDataEvents, function (o) {
 		return eval(filterEvalString);
 	})
 
-	//print the JSON
-	//	var pre = "<pre></pre>";
-	//	var json = $(pre).text(JSON.stringify(results, null, 2));
-	//	$("#searchResultsEvent").append(json);
 
-	//or, send the JSON to a function
-	printSearchResults(results, "#searchResultsEvent", "event");
+	//	printSearchResults(results, "#searchResultsEvent", "event");
 }
 
 
