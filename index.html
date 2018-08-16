@@ -11,6 +11,7 @@
 	<link href="css/jquery-ui.css" rel="stylesheet" />
 	<link href="css/jquery-ui.structure.css" rel="stylesheet" />
 	<link href="css/jquery-ui.theme.css" rel="stylesheet" />
+	<link href="css/jquery.tagsinput.min.css" rel="stylesheet" />
 	<link href="css/bootstrap-3.2.0.min.css" rel="stylesheet" />
 	<link href="css/bootstrap-toggle.min.css" rel="stylesheet" />
 	<link href="css/bootstrap-select.css" rel="stylesheet" />
@@ -19,6 +20,8 @@
 	<link href="fonts/FontAwesome-5.2.0/css/all.min.css" rel="stylesheet" />
 	<link href="css/easy-autocomplete.css" rel="stylesheet" />
 	<link href="css/easy-autocomplete.themes.css" rel="stylesheet" />
+
+	<link href="css/jquery.tagsinput.min-custom.css" rel="stylesheet" />
 	<link href="css/easy-autocomplete-custom.css" rel="stylesheet" />
 	<link href="css/style.css" rel="stylesheet" />
 </head>
@@ -168,11 +171,63 @@
 
 					</div>
 					<div class="tab-pane fade" id="tab2">
-						<div class="container-fluid">
+						<div class="container-fluid" id="uploadsArea">
 							<div class="row">
 								<div class="col-xs-12">
 									<span>selected item here</span>
 									<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
+								</div>
+							</div>
+						</div>
+						<div class="container-fluid search-pane" id="uploadsInfoCommon">
+							<div class="row">
+								<div class="col-xs-12">
+									<h3>Common metadata</h3>
+								</div>
+							</div>
+							<div class="row row-pad-top">
+								<div class="form-group col-sm-5">
+									<label for="uploadsInfoCommonCreatorLast" class="control-label">Creator Name</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorLast" placeholder="Last name" required data-error="Last name required.">
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-5">
+									<label for="uploadsInfoCommonCreatorFirst" class="control-label">&nbsp;</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorFirst" placeholder="First name" required data-error="First name required.">
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-2">
+									<label for="uploadsInfoCommonCreatorMiddle" class="control-label">&nbsp;</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorMiddle" placeholder="Middle">
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-sm-6">
+									<label for="uploadsInfoCommonTitle" class="control-label">Brief Descriptive Title</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required.">
+									<div class="help-block with-errors"></div>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="uploadsInfoCommonDate" class="control-label">Date</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
+									<div class="help-block with-errors" onchange="#"></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-xs-12">
+									<label for="uploadsInfoCommonKeywords" class="control-label">Additional Keywords</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonKeywords" placeholder="Enter keyword" required data-error="Keywords required.">
+									<div class="help-block with-errors"></div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-sm-6">
+									<label for="uploadsInfoCommonSpecialCreditLine" class="control-label">Special Credit Line</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonSpecialCreditLine" placeholder="Enter special credit line"><span class="smaller"><em>(If applicable)</em></span>
+								</div>
+								<div class="form-group col-sm-6">
+									<label for="uploadsInfoCommonSpecialUsage" class="control-label">Special Usage Permissions</label>
+									<input type="text" class="form-control" id="uploadsInfoCommonSpecialUsage" placeholder="Enter special usage permissions"><span class="smaller"><em>(If applicable)</em></span>
 								</div>
 							</div>
 						</div>
@@ -235,19 +290,19 @@
 	<div id="tplEvent">
 		<div class="alert alert-success">
 			<div class="row">
-				<div class="col col-xs-12 col-sm-9">
+				<div class="col col-xs-12 col-sm-8">
 					<span class="result-line"><i class="fas fa-check-circle"></i>&nbsp;<strong>SELECTED</strong></span>
 					<span class="result-line"><em>{{{description}}}</em></span>
 					<span class="result-line smaller space-top">{{{type}}}&nbsp;&bull;&nbsp;{{{startDate}}}&nbsp;&ndash;&nbsp;{{{endDate}}}</span>
 					<span class="result-line smaller">{{{department}}}</span>
 					<span class="result-line smaller">IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</span>
 				</div>
-				<div class="col col-xs-12 col-sm-3">
-					<button class="btn btn-primary pull-right" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+				<div class="col col-xs-12 col-sm-4">
+					<button class="btn btn-primary pull-right" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+					<button class="btn btn-default pull-right" style="clear: both" type="button" id="eventEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Search</button>
 				</div>
 			</div>
 		</div>
-		<p align="center"><a id="eventEditSearchLink" href="javascript:void(0)"><i class="fas fa-pencil-alt"></i>&nbsp;Edit search</a></p>
 
 	</div>
 
@@ -263,6 +318,7 @@
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery-ui.min.js"></script>
 	<script src="js/jquery.easy-autocomplete.min.js"></script>
+	<script src="js/jquery.tagsinput.min.js"></script>
 	<!--	<script src="js/require.min.js"></script>-->
 	<!--	<script src="js/tether.min.js"></script>-->
 	<script src="js/moment.min.js"></script>

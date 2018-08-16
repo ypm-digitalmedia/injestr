@@ -429,6 +429,55 @@ $(document).ready(function () {
 	})
 
 
+
+
+
+
+
+	// ===============================================================================
+	// ======================== UPLOADS / COMMON METADATA ============================
+	// ===============================================================================
+
+
+
+
+	// initiate datepickers
+	$("#uploadsInfoCommonDate").datepicker({
+		dropupAuto: false,
+		onSelect: function (dateText, inst) {
+			$("#mainForm").validator("validate");
+			//				console.warn(inst)
+			//				searchByEventDateStart(inst);
+		}
+	});
+
+
+
+
+	$("#uploadsInfoCommonKeywords").tagsInput({
+		'height': '68px',
+		'width': '100%',
+		'interactive': true,
+		'defaultText': "Enter keyword",
+		'onAddTag': function () {},
+		'onRemoveTag': function () {},
+		'onChange': function () {
+			$("#mainForm").validator("validate");
+		},
+		'delimiter': [',', ';'], // Or a string with a single delimiter. Ex: ';'
+		'removeWithBackspace': true,
+		'minChars': 0,
+		'maxChars': 0, // if not provided there is no limit
+	});
+
+
+
+
+
+
+
+	// ============================================================================
+
 	// dynamic DOM elements workaround
 	$("body").click(function (event) {
 		if ($(event.target).is("#eventEditSearchLink")) {
