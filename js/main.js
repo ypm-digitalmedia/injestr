@@ -77,7 +77,7 @@ $(document).ready(function () {
 		acceptedMimeTypes: null, //DEPRECATED
 		autoProcessQueue: true, //if false, files will be added to the queue but the queue will not be processed automatically.
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default. 
-		addRemoveLinks: false, //add a link to every file preview to remove or cancel
+		addRemoveLinks: true, //add a link to every file preview to remove or cancel
 		previewsContainer: null, //null=dropzone container|$("#element).dropzone-previews
 		hiddenInputContainer: "body",
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
@@ -118,18 +118,28 @@ $(document).ready(function () {
 
 
 	myDropzone.on("addedfile", function (file) {
+		var package = {
+			name: file.name,
+			size: file.size,
+			type: file.type
+
+		};
 		if (this.files.length) {
-			var _i, _len;
-			for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
-			{
-				if (this.files[_i].name === file.name && this.files[_i].size === file.size) {
-					this.removeFile(file);
-					console.log(file.upload.filename + " already exists.  skipping...");
-				} else {
-					console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
+			if (this.files.length == 1) {
+				setFormData("assets", package);
+			} else {
+				var _i, _len;
+				for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) {
+					if (this.files[_i].name === file.name && this.files[_i].size === file.size && this.files[_i].lastModified.toString() === file.lastModified.toString()) {
+						this.removeFile(file);
+						console.log(file.upload.filename + " already exists.  skipping...");
+					} else {
+						console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
 
-					console.log(file)
+						setFormData("assets", package);
+						console.log(file)
 
+					}
 				}
 			}
 			$("#uploadsInfoCommon").fadeIn();
@@ -148,7 +158,7 @@ $(document).ready(function () {
 
 	myDropzone.on("complete", function (file) {
 		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") processed.");
-		makeData(file);
+		//		makeData(file);
 	});
 
 
@@ -191,36 +201,6 @@ $(document).ready(function () {
 		$('.nav-tabs li:nth-child(' + id + ') a').click();
 		reAdjust();
 	});
-
-
-
-	var makeData = function (file) {
-		//        console.log(file)
-		var guid = createHexId(32);
-		var filename = file.upload.filename;
-		var extension = filename.substr(file.upload.filename.lastIndexOf(".") + 1);
-		var truncateLength = 8;
-		var filesize = formatBytes(file.size);
-		var sports = dallas();
-
-		var shortFilename = "";
-		if (filename.length <= truncateLength + extension.length) {
-			shortFilename = filename;
-		} else {
-			shortFilename = filename.substring(0, truncateLength) + "~." + extension;
-		}
-
-		var entry = {
-			data: file,
-			guid: guid,
-			filename: filename,
-			shortFilename: shortFilename,
-			filesize: filesize,
-			dallas: sports
-		};
-		formData.success.push(entry);
-		//		makeTab(entry);
-	};
 
 
 
@@ -428,10 +408,17 @@ $(document).ready(function () {
 
 					$("#searchEventAll").val(searchTextEvent);
 
-					$("#eventStepOneNextButton").prop("disabled", false);
-					$("#eventStepOneNextButton").removeClass("btn-disabled").addClass("btn-primary");
+					if ($("#eventStepOneNextButton").hasClass("btn-disabled")) {
+						$("#eventStepOneNextButton").prop("disabled", false);
+						$("#eventStepOneNextButton").removeClass("btn-disabled").addClass("btn-primary");
+						showTabTwo();
 
-					$("#dropzoneArea").show();
+						$("#eventStepOneNextButton").click(function () {
+							showTabTwo();
+						});
+
+						$("#dropzoneArea").show();
+					}
 
 					printSearchResults(obj, "event");
 					setFormData("target", obj);
@@ -463,11 +450,29 @@ $(document).ready(function () {
 
 	}
 
+	function showTabOne() {
+		$('.nav-tabs a[href="#tab1"]').tab('show');
+	}
+
+
+	function showTabTwo() {
+		$('.nav-tabs a[href="#tab2"]').tab('show');
+	}
+
+	function showTabThree() {
+		$('.nav-tabs a[href="#tab3"]').tab('show');
+	}
+
+
+
+
+
+
 
 
 
 	function setFormData(key, value) {
-
+		console.log(key, value)
 		if (!key && !value) {
 			//generic form data set
 			console.warn("bad function call")
@@ -479,6 +484,23 @@ $(document).ready(function () {
 			// set specific key/value
 
 			if (key == "assets") {
+				var obj = {
+					creatorName: {
+						first: $("#uploadsInfoCommonCreatorFirst").val(),
+						middle: $("#uploadsInfoCommonCreatorMiddle").val(),
+						last: $("#uploadsInfoCommonCreatorLast").val()
+					},
+					title: $("#uploadsInfoCommonTitle").val(),
+					date: $("#uploadsInfoCommonDate").val(),
+					keywords: $("#uploadsInfoCommonKeywords").val(),
+					credit: $("#uploadsInfoCommonSpecialCreditLine").val(),
+					usage: $("#uploadsInfoCommonSpecialUsage").val(),
+					filename: value.name,
+					filesize: value.size,
+					filetype: value.type
+				};
+
+				formData[key].push(obj);
 
 			} else {
 				formData[key] = value;
@@ -510,6 +532,7 @@ $(document).ready(function () {
 	// initiate datepickers
 	$("#uploadsInfoCommonDate").datepicker({
 		dropupAuto: false,
+		dateFormat: "yy-mm-dd",
 		onSelect: function (dateText, inst) {
 			$("#mainForm").validator("validate");
 			//				console.warn(inst)
@@ -520,28 +543,31 @@ $(document).ready(function () {
 
 
 
-	$("#uploadsInfoCommonKeywords").tagsInput({
-		'height': '68px',
-		'width': '100%',
-		'interactive': true,
-		'defaultText': "Enter keyword",
-		'onAddTag': function () {},
-		'onRemoveTag': function () {},
-		'onChange': function () {
-			//			$("#mainForm").validator("validate");
-			var tags = $(this).val();
-			//			if (tags == "") {
-			//				$("#mainForm").validator("validate", function () {
-			//
-			//					$("#uploadsInfoCommonKeywords").focus();
-			//				});
-			//			}
-		},
-		'delimiter': [',', ';', '|'], // Or a string with a single delimiter. Ex: ';'
-		'removeWithBackspace': true,
-		'minChars': 0,
-		'maxChars': 0, // if not provided there is no limit
-	});
+	//	$("#uploadsInfoCommonKeywords").tagsInput({
+	//		'height': '68px',
+	//		'width': '100%',
+	//		'interactive': true,
+	//		'defaultText': "Enter keyword",
+	//		'onAddTag': function () {
+	//
+	//			//			$("#mainForm").validator('validate');
+	//		},
+	//		'onRemoveTag': function () {},
+	//		'onChange': function () {
+	//			//			$("#mainForm").validator("validate");
+	//			var tags = $(this).val();
+	//			//			if (tags == "") {
+	//			//				$("#mainForm").validator("validate", function () {
+	//			//
+	//			//					$("#uploadsInfoCommonKeywords").focus();
+	//			//				});
+	//			//			}
+	//		},
+	//		'delimiter': [',', ';', '|'], // Or a string with a single delimiter. Ex: ';'
+	//		'removeWithBackspace': true,
+	//		'minChars': 0,
+	//		'maxChars': 0, // if not provided there is no limit
+	//	});
 
 
 
@@ -595,6 +621,13 @@ $(document).ready(function () {
 
 });
 
+
+
+function editCommonMetadata(key, value) {
+
+	console.warn(key + " | " + value)
+
+}
 
 function printSearchResults(obj, type) {
 	clearSearchResults(type);

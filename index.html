@@ -206,23 +206,23 @@
 							<div class="row row-pad-top">
 								<div class="form-group col-sm-5">
 									<label for="uploadsInfoCommonCreatorLast" class="control-label">Creator Name</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonCreatorLast" placeholder="Last name" required data-error="Last name required.">
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorLast" placeholder="Last name" required data-error="Last name required." onchange="editCommonMetadata('creatorName.last',this.value)">
 									<div class="help-block with-errors"></div>
 								</div>
 								<div class="form-group col-sm-5">
 									<label for="uploadsInfoCommonCreatorFirst" class="control-label">&nbsp;</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonCreatorFirst" placeholder="First name" required data-error="First name required.">
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorFirst" placeholder="First name" required data-error="First name required." onchange="editCommonMetadata('creatorName.first',this.value)">
 									<div class="help-block with-errors"></div>
 								</div>
 								<div class="form-group col-sm-2">
 									<label for="uploadsInfoCommonCreatorMiddle" class="control-label">&nbsp;</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonCreatorMiddle" placeholder="Middle">
+									<input type="text" class="form-control" id="uploadsInfoCommonCreatorMiddle" placeholder="Middle" onchange="editCommonMetadata('creatorName.middle',this.value)">
 								</div>
 							</div>
 							<div class="row">
 								<div class="form-group col-sm-6">
 									<label for="uploadsInfoCommonTitle" class="control-label">Brief Descriptive Title</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required.">
+									<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
 									<div class="help-block with-errors"></div>
 								</div>
 								<div class="form-group col-sm-6">
@@ -234,18 +234,18 @@
 							<div class="row">
 								<div class="form-group col-xs-12">
 									<label for="uploadsInfoCommonKeywords" class="control-label">Additional Keywords</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonKeywords" placeholder="Enter keyword" required data-error="Keywords required."><span class="smaller"><em>separate tags with , ; | [tab] [enter]</em></span>
+									<input type="text" class="form-control" required id="uploadsInfoCommonKeywords" placeholder="Enter keyword" data-error="Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
 									<div class="help-block with-errors"></div>
 								</div>
 							</div>
 							<div class="row">
 								<div class="form-group col-sm-6">
 									<label for="uploadsInfoCommonSpecialCreditLine" class="control-label">Special Credit Line</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonSpecialCreditLine" placeholder="Enter special credit line"><span class="smaller"><em>(If applicable)</em></span>
+									<input type="text" class="form-control" id="uploadsInfoCommonSpecialCreditLine" placeholder="Enter special credit line" onchange="editCommonMetadata('credit',this.value)"><span class="smaller"><em>(If applicable)</em></span>
 								</div>
 								<div class="form-group col-sm-6">
 									<label for="uploadsInfoCommonSpecialUsage" class="control-label">Special Usage Permissions</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonSpecialUsage" placeholder="Enter special usage permissions"><span class="smaller"><em>(If applicable)</em></span>
+									<input type="text" class="form-control" id="uploadsInfoCommonSpecialUsage" placeholder="Enter special usage permissions" onchange="editCommonMetadata('usage',this.value)"><span class="smaller"><em>(If applicable)</em></span>
 								</div>
 							</div>
 						</div>
