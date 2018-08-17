@@ -5,7 +5,8 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>TEST</title>
+	<title>Injestr | NetX-Preservica Asset Upload</title>
+	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 
 	<!--    <link href="css/bootstrap-4.1.3.min.css" rel="stylesheet" />-->
 	<link href="css/jquery-ui.css" rel="stylesheet" />
@@ -56,7 +57,7 @@
 	<main>
 		<form id="mainForm" action="test.php" method="POST" data-toggle="validator" role="form">
 			<div class="container" class="toplogo">
-				<a href="index.html" title="Home">
+				<a href="javascript:void(0)">
 					<div class="logo pull-left">
 						<img src="img/injestr_logo.png" />
 					</div>
@@ -76,23 +77,14 @@
 				<div class="wrapper">
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="active" id="tabcontrol1">
-							<a href="#tab1" data-toggle="tab" role="tab">
-								<strong class="tab-btn">
-									<span class="tab-icon" id="tab1_Icon">
-<!--										<i class="far fa-square"></i>-->
-									</span>&nbsp;Search</strong></a></li>
+							<a href="#tab1" data-toggle="tab" role="tab"><strong>Search</strong></a>
+						</li>
 						<li id="tabcontrol2">
-							<a href="#tab2" data-toggle="tab" role="tab">
-								<strong class="tab-btn">
-									<span class="tab-icon" id="tab2_Icon">
-<!--										<i class="far fa-square"></i>-->
-									</span>&nbsp;Upload</strong></a></li>
+							<a href="#tab2" data-toggle="tab" role="tab"><strong>Upload</strong></a>
+						</li>
 						<li id="tabcontrol3">
-							<a href="#tab3" data-toggle="tab" role="tab">
-								<strong class="tab-btn">
-									<span class="tab-icon" id="tab3_Icon">
-<!--										<i class="far fa-square"></i>-->
-									</span>&nbsp;Edit</strong></a></li>
+							<a href="#tab3" data-toggle="tab" role="tab"><strong>Edit</strong></a>
+						</li>
 					</ul>
 				</div>
 				<div class="tab-content">
@@ -126,9 +118,15 @@
 							</div>
 							<div class="row row-pad">
 								<div class="col-xs-12">
-									<div id="searchResultsEventHeader"></div>
 									<div id="searchResultsEvent" class="search-results-container"></div>
-									<div id="searchResultsEventFooter"></div>
+								</div>
+							</div>
+
+							<div class="row row-pad">
+								<div class="col-xs-12 align-center">
+									<p align="center" class="align-center">
+										<button class="btn btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+									</p>
 								</div>
 							</div>
 
@@ -149,11 +147,20 @@
 							</div>
 							<div class="row row-pad">
 								<div class="col-xs-12">
-									<div id="searchResultsRecordHeader"></div>
 									<div id="searchResultsRecord" class="search-results-container"></div>
-									<div id="searchResultsRecordFooter"></div>
 								</div>
 							</div>
+
+							<div class="row row-pad">
+								<div class="col-xs-12 align-center">
+									<p align="center" class="align-center">
+										<button class="btn btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+									</p>
+								</div>
+							</div>
+
+
+
 
 						</div>
 
@@ -172,15 +179,26 @@
 					</div>
 					<div class="tab-pane fade" id="tab2">
 						<div class="container-fluid" id="uploadsArea">
+							<div class="row row-pad">
+								<div class="col-xs-12">
+									<div id="confirmedResultStepTwo" class="search-results-container">
+										<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a target</a> first.</p>
+									</div>
+								</div>
+							</div>
 							<div class="row">
 								<div class="col-xs-12">
-									<span>selected item here</span>
+									<h3>Upload assets</h3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
 									<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
 								</div>
 							</div>
 						</div>
 						<div class="container-fluid search-pane" id="uploadsInfoCommon">
-							<div class="row">
+							<div class="row row-pad-top">
 								<div class="col-xs-12">
 									<h3>Common metadata</h3>
 								</div>
@@ -216,7 +234,7 @@
 							<div class="row">
 								<div class="form-group col-xs-12">
 									<label for="uploadsInfoCommonKeywords" class="control-label">Additional Keywords</label>
-									<input type="text" class="form-control" id="uploadsInfoCommonKeywords" placeholder="Enter keyword" required data-error="Keywords required.">
+									<input type="text" class="form-control" id="uploadsInfoCommonKeywords" placeholder="Enter keyword" required data-error="Keywords required."><span class="smaller"><em>separate tags with , ; | [tab] [enter]</em></span>
 									<div class="help-block with-errors"></div>
 								</div>
 							</div>
@@ -232,7 +250,31 @@
 							</div>
 						</div>
 					</div>
-					<div class="tab-pane fade" id="tab3">tab3</div>
+					<div class="tab-pane fade" id="tab3">
+
+
+
+
+						<div class="container-fluid" id="editArea">
+							<div class="row row-pad">
+								<div class="col-xs-12">
+									<div id="confirmedResultStepThree" class="search-results-container">
+										<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a target</a> first.</p>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<h3>Edit metadata</h3>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
+					</div>
 				</div>
 			</div>
 
@@ -246,9 +288,22 @@
 			<div class="container">
 				<div class="row row-pad">
 					<div class="col-xs-12 align-center">
+						<!--
 						<p align="center" class="align-center">
-							<button type="submit" class="btn btn-disabled btn-lg">Submit <i class="fas fa-arrow-alt-circle-right"></i></button>
+							<button type="button" class="btn btn-disabled btn-lg">NEXT <i class="fas fa-arrow-alt-circle-right"></i></button>
 						</p>
+-->
+
+
+
+						<pre id="output"></pre>
+
+
+
+
+
+
+
 					</div>
 				</div>
 			</div>
@@ -298,8 +353,8 @@
 					<span class="result-line smaller">IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</span>
 				</div>
 				<div class="col col-xs-12 col-sm-4">
-					<button class="btn btn-primary pull-right" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-					<button class="btn btn-default pull-right" style="clear: both" type="button" id="eventEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Search</button>
+					<!--					<button class="btn btn-primary pull-right" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>-->
+					<button class="btn btn-default pull-right edit-event-search-link" style="clear: both" type="button" id="eventEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Search</button>
 				</div>
 			</div>
 		</div>

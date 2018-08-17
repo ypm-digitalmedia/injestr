@@ -1,10 +1,12 @@
 var myDropzone;
 
-var theToggler;
 
 var formData = {
-	success: [],
-	error: []
+	targetType: null,
+	target: null,
+	guid: null,
+	user: null,
+	assets: []
 };
 
 var searchTextEvent = "";
@@ -12,21 +14,19 @@ var searchTextRecord = "";
 
 var selectedEvent = null;
 var selectedRecord = null;
-
-var hidWidth;
-var scrollBarWidths = 40;
+var selectedTarget = null;
 
 var jsonDataUsers = {};
 var jsonDataEvents = {};
 var jsonDataRecords = {};
+
+var initialSearchType = "";
 
 var CASuser = {
 	name: "",
 	type: ""
 };
 
-var optsEventsBase;
-var optsRecordsBase;
 
 Dropzone.autoDiscover = false;
 $(document).ready(function () {
@@ -36,6 +36,7 @@ $(document).ready(function () {
 	getPageWidth();
 	resetSelects();
 
+	clearForm();
 
 	$(window).resize(function () {
 		getPageWidth();
@@ -43,9 +44,9 @@ $(document).ready(function () {
 
 
 	myDropzone = new Dropzone("div#dropzoneArea", {
-		url: "/file/post",
+		url: "upload.php",
 		paramName: "file", // The name that will be used to transfer the file
-		maxFilesize: 2, // MB
+		maxFilesize: 256, // MB
 		method: "post",
 		withCredentials: false,
 		timeout: 30000, //ms
@@ -57,7 +58,6 @@ $(document).ready(function () {
 		parallelChunkUploads: false,
 		retryChunks: false,
 		retryChunksLimit: 3,
-		maxFileSize: 256, //number of files to handle
 		createImageTHumbnails: true,
 		maxThumbnailFilesize: 10, //mb
 		thumbnailWidth: 120, //px
@@ -66,10 +66,10 @@ $(document).ready(function () {
 		resizeWidth: null, //images will be resized to these dimensions before being uploaded
 		resizeHeight: null, //images will be resized to these dimensions before being uploaded
 		resizeMimeType: null, //mime type of the resized image
-		resizeQuality: 0.8,
+		resizeQuality: 1,
 		resizeMethod: "contain", //crop|contain
 		filesizeBase: 1000, //1000|1024
-		maxFiles: null, //limit the maximum number of files that will be handled by this Dropzone
+		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
 		headers: null, //json object to send to server
 		clickable: true,
 		ignoreHiddenFiles: true,
@@ -84,7 +84,7 @@ $(document).ready(function () {
 		renameFilename: null, //DEPRECATED
 		renameFile: null, //function that is invoked before the file is uploaded to the server and renames the file
 		forceFallback: false,
-		dictDefaultMessage: "<h1 class='pulsate align-center'>DROP FILES HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h1>",
+		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
 		dictFallbackMessage: "",
 		dictFallbackText: "",
 		dictFileTooBig: "",
@@ -118,7 +118,24 @@ $(document).ready(function () {
 
 
 	myDropzone.on("addedfile", function (file) {
-		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
+		if (this.files.length) {
+			var _i, _len;
+			for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
+			{
+				if (this.files[_i].name === file.name && this.files[_i].size === file.size) {
+					this.removeFile(file);
+					console.log(file.upload.filename + " already exists.  skipping...");
+				} else {
+					console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
+
+					console.log(file)
+
+				}
+			}
+			$("#uploadsInfoCommon").fadeIn();
+		} else {
+			$("#uploadsInfoCommon").fadeOut();
+		}
 	});
 
 	//    myDropzone.on("success", function (file) {
@@ -253,20 +270,24 @@ $(document).ready(function () {
 				console.warn("logged in as record-based user " + noUser);
 				CASuser.type = "record";
 				CASuser.type = "record";
+				initialSearchType = "record";
 			} else {
 				//check for event-based
 				if (_.includes(eventBasedUsers, noUser)) {
 					console.warn("logged in as event-based user " + noUser);
 					CASuser.type = "event";
+					initialSearchType = "event";
 				} else {
 					//check for both-based
 					if (_.includes(bothBasedUsers, noUser)) {
 						console.warn("logged in as both event- and record-based user " + noUser);
 						CASuser.type = "both";
+						initialSearchType = "event";
 					} else {
 						//default
 						console.warn("logged in as event-based user " + noUser);
 						CASuser.type = "event";
+						initialSearchType = "event";
 					}
 				}
 			}
@@ -287,20 +308,24 @@ $(document).ready(function () {
 				console.warn("logged in as record-based user " + CASuser.name);
 				CASuser.type = "record";
 				CASuser.type = "record";
+				initialSearchType = "record";
 			} else {
 				//check for event-based
 				if (_.includes(eventBasedUsers, CASuser.name)) {
 					console.warn("logged in as event-based user " + CASuser.name);
 					CASuser.type = "event";
+					initialSearchType = "event";
 				} else {
 					//check for both-based
 					if (_.includes(bothBasedUsers, CASuser.name)) {
 						console.warn("logged in as both event- and record-based user " + CASuser.name);
 						CASuser.type = "both";
+						initialSearchType = "event";
 					} else {
 						//default
 						console.warn("logged in as event-based user " + CASuser.name);
 						CASuser.type = "event";
+						initialSearchType = "event";
 					}
 				}
 			}
@@ -316,6 +341,18 @@ $(document).ready(function () {
 
 			makeUserLink(CASuser);
 			makeLookupSwitcher();
+		}
+
+		setFormData("targetType", initialSearchType);
+		setFormData("user", CASuser.name);
+		setFormData("guid", makeGUID());
+
+
+		//focus search pane initially
+		if (initialSearchType == "event") {
+			$("#searchEventAll").focus();
+		} else {
+			$("#searchRecordAll").focus();
 		}
 
 	}
@@ -391,8 +428,13 @@ $(document).ready(function () {
 
 					$("#searchEventAll").val(searchTextEvent);
 
-					printSearchResults(obj, "event");
+					$("#eventStepOneNextButton").prop("disabled", false);
+					$("#eventStepOneNextButton").removeClass("btn-disabled").addClass("btn-primary");
 
+					$("#dropzoneArea").show();
+
+					printSearchResults(obj, "event");
+					setFormData("target", obj);
 				}
 			},
 			template: {
@@ -423,15 +465,35 @@ $(document).ready(function () {
 
 
 
-	$("#eventStepOneNextButton").click(function () {
 
-		alert("next!")
-	})
+	function setFormData(key, value) {
+
+		if (!key && !value) {
+			//generic form data set
+			console.warn("bad function call")
+		} else {
+			if (!value) {
+				value = "not set"
+			}
+
+			// set specific key/value
+
+			if (key == "assets") {
+
+			} else {
+				formData[key] = value;
+			}
+		}
 
 
+		printFormData();
+
+	}
 
 
-
+	function printFormData() {
+		$("#output").html(JSON.stringify(formData, null, 2));
+	}
 
 
 	// ===============================================================================
@@ -439,7 +501,11 @@ $(document).ready(function () {
 	// ===============================================================================
 
 
+	function clearForm() {
+		$('.form-control').val("");
+		$("#mainForm select").val($("#mainForm select option:first").val());
 
+	}
 
 	// initiate datepickers
 	$("#uploadsInfoCommonDate").datepicker({
@@ -462,9 +528,16 @@ $(document).ready(function () {
 		'onAddTag': function () {},
 		'onRemoveTag': function () {},
 		'onChange': function () {
-			$("#mainForm").validator("validate");
+			//			$("#mainForm").validator("validate");
+			var tags = $(this).val();
+			//			if (tags == "") {
+			//				$("#mainForm").validator("validate", function () {
+			//
+			//					$("#uploadsInfoCommonKeywords").focus();
+			//				});
+			//			}
 		},
-		'delimiter': [',', ';'], // Or a string with a single delimiter. Ex: ';'
+		'delimiter': [',', ';', '|'], // Or a string with a single delimiter. Ex: ';'
 		'removeWithBackspace': true,
 		'minChars': 0,
 		'maxChars': 0, // if not provided there is no limit
@@ -474,18 +547,30 @@ $(document).ready(function () {
 
 
 
-
-
 	// ============================================================================
 
 	// dynamic DOM elements workaround
 	$("body").click(function (event) {
-		if ($(event.target).is("#eventEditSearchLink")) {
+		//		if ($(event.target).is("#eventEditSearchLink")) {
+		if ($(event.target).hasClass("edit-event-search-link")) {
+			$('.nav-tabs a[href="#tab1"]').tab('show');
 			$("#searchEventAll").focus();
 		}
 	})
 
+	$('.nav-tabs a[href="#tab1"]').on('shown.bs.tab', function (e) {
+		//e.target // newly activated tab
+		//e.relatedTarget // previous active tab
+		//		$("#searchEventAll").focus();
 
+		if (initialSearchType == "event") {
+
+			$("#searchEventAll").focus();
+		} else {
+
+			$("#searchRecordAll").focus();
+		}
+	})
 
 
 
@@ -515,14 +600,15 @@ function printSearchResults(obj, type) {
 	clearSearchResults(type);
 	if (type == "event") {
 		var tpl = document.querySelector("#tplEvent").innerHTML;
-		var dest = $("#searchResultsEvent");
-		var destH = $("#searchResultsEventHeader");
-		var destF = $("#searchResultsEventFooter");
+		var destFirst = $("#searchResultsEvent");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
+
 	} else if (type == "record") {
 		var tpl = document.querySelector("#tplRecord").innerHTML;
-		var destH = $("#searchResultsRecordHeader");
-		var destH = $("#searchResultsRecordFooter");
-		var dest = $("#searchResultsRecord");
+		var destFirst = $("#searchResultsRecord");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
 	}
 
 	var tplEdit = tpl.replace("{{{description}}}", obj.description);
@@ -533,24 +619,26 @@ function printSearchResults(obj, type) {
 	tplEdit = tplEdit.replace("{{{irn}}}", obj.irn);
 	tplEdit = tplEdit.replace("{{{number}}}", obj.number);
 
-	$(dest).append(tplEdit);
+	$(destFirst).append(tplEdit);
+	$(destSecond).append(tplEdit);
+	$(destThird).append(tplEdit);
 
 }
 
 function clearSearchResults(type) {
 	if (type == "event") {
-		var dest = $("#searchResultsEvent");
-		var destH = $("#searchResultsEventHeader");
-		var destF = $("#searchResultsEventFooter");
+		var destFirst = $("#searchResultsEvent");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
 	} else if (type == "record") {
-		var dest = $("#searchResultsRecord");
-		var destH = $("#searchResultsRecordHeader");
-		var destF = $("#searchResultsRecordFooter");
+		var destFirst = $("#searchResultsRecord");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
 	}
 
-	$(dest).empty();
-	$(destH).empty();
-	$(destF).empty();
+	$(destFirst).empty();
+	$(destSecond).empty();
+	$(destThird).empty();
 }
 
 function getPageWidth() {
@@ -575,6 +663,43 @@ function createHexId(length) {
 	}
 
 	return hexString;
+}
+
+function makeGUID() {
+	var choices = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+	var groups = [[], [], [], [], []];
+
+	//group 1
+	for (var i = 0; i < 8; i++) {
+		groups[0].push(_.sample(choices));
+	}
+	groups[0] = groups[0].join("");
+
+	//group 2
+	for (var i = 0; i < 4; i++) {
+		groups[1].push(_.sample(choices));
+	}
+	groups[1] = groups[1].join("");
+
+	//group 3
+	for (var i = 0; i < 4; i++) {
+		groups[2].push(_.sample(choices));
+	}
+	groups[2] = groups[2].join("");
+
+	//group 4
+	for (var i = 0; i < 4; i++) {
+		groups[3].push(_.sample(choices));
+	}
+	groups[3] = groups[3].join("");
+
+	//group 5
+	for (var i = 0; i < 12; i++) {
+		groups[4].push(_.sample(choices));
+	}
+	groups[4] = groups[4].join("");
+
+	return groups.join("-");
 }
 
 function syntaxHighlight(json) {
@@ -668,8 +793,6 @@ function searchByEvent(obj) {
 
 
 // ============================================================
-
-
 
 
 
