@@ -453,7 +453,7 @@ $(document).ready(function () {
 
 		var optsEvents = {
 			//			url: "data/ingester-metadata-netx.json",
-			url: "../../data/ingester-metadata-netx.json",
+			url: "../data/ingester-metadata-netx.json",
 
 			//			getValue: "description",
 			listLocation: function (el) {
