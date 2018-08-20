@@ -44,76 +44,96 @@ $(document).ready(function () {
 
 
 	myDropzone = new Dropzone("div#dropzoneArea", {
-		url: "upload.php",
-		paramName: "file", // The name that will be used to transfer the file
-		maxFilesize: 256, // MB
-		method: "post",
-		withCredentials: false,
-		timeout: 30000, //ms
-		parallelUploads: 2,
-		uploadMultiple: false,
+		acceptedFiles: null, //ex: image/*,application/pdf,.psd
+		acceptedMimeTypes: null, //DEPRECATED
+		autoProcessQueue: true, //if false, files will be added to the queue but the queue will not be processed automatically.
+		//		addRemoveLinks: true, //add a link to every file preview to remove or cancel
+		autoQueue: true, //if false, files added to the dropzone will not be queued by default. 
+		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: false,
-		forceChunking: false,
 		chunkSize: 2000000, //bytes
-		parallelChunkUploads: false,
-		retryChunks: false,
-		retryChunksLimit: 3,
+		clickable: true,
 		createImageTHumbnails: true,
+		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES / CLICK HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
+		//		dictRemoveFile: "",
+		filesizeBase: 1000, //1000|1024
+		forceChunking: false,
+		forceFallback: false,
+		headers: null, //json object to send to server
+		hiddenInputContainer: "body",
+		ignoreHiddenFiles: false,
+		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
+		maxFilesize: 256, // MB
 		maxThumbnailFilesize: 10, //mb
-		thumbnailWidth: 120, //px
-		thumbnailHeight: 120, //px
-		thumbnailMethod: "crop", //crop|contain
+		method: "post",
+		parallelChunkUploads: false,
+		parallelUploads: 2,
+		paramName: "file", // The name that will be used to transfer the file
+		previewsContainer: null, //null=dropzone container|$("#element).dropzone-previews
+		previewTemplate: document.querySelector('#tpl2').innerHTML,
+		renameFile: null, //function that is invoked before the file is uploaded to the server and renames the file
+		renameFilename: null, //DEPRECATED
 		resizeWidth: null, //images will be resized to these dimensions before being uploaded
 		resizeHeight: null, //images will be resized to these dimensions before being uploaded
 		resizeMimeType: null, //mime type of the resized image
 		resizeQuality: 1,
 		resizeMethod: "contain", //crop|contain
-		filesizeBase: 1000, //1000|1024
-		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
-		headers: null, //json object to send to server
-		clickable: true,
-		ignoreHiddenFiles: true,
-		acceptedFiles: null, //ex: image/*,application/pdf,.psd
-		acceptedMimeTypes: null, //DEPRECATED
-		autoProcessQueue: true, //if false, files will be added to the queue but the queue will not be processed automatically.
-		autoQueue: true, //if false, files added to the dropzone will not be queued by default. 
-		addRemoveLinks: true, //add a link to every file preview to remove or cancel
-		previewsContainer: null, //null=dropzone container|$("#element).dropzone-previews
-		hiddenInputContainer: "body",
-		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
-		renameFilename: null, //DEPRECATED
-		renameFile: null, //function that is invoked before the file is uploaded to the server and renames the file
-		forceFallback: false,
-		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
-		dictFallbackMessage: "",
-		dictFallbackText: "",
-		dictFileTooBig: "",
-		dictInvalidFileType: "",
-		dictCancelUpload: "",
-		dictUploadCanceled: "",
-		dictCancelUploadConfirmation: "",
-		dictRemoveFile: "",
-		dictRemoveFileConfirmation: "",
-		dictMaxFilesExceeded: "",
-		dictFileSizeUnits: "",
+		retryChunks: false,
+		retryChunksLimit: 3,
+		thumbnailWidth: 120, //px
+		thumbnailHeight: 120, //px
+		thumbnailMethod: "crop", //crop|contain
+		timeout: 30000, //ms
+		uploadMultiple: false,
+		url: "upload.php",
+		withCredentials: false,
 
 
 
-		accept: function (file, done) {
-			if (file.name == "justinbieber.jpg") {
-				done("Naha, you don't.");
-			} else {
-				done();
+		//		accept: function (file, done) {
+		//			if (file.name == "justinbieber.jpg") {
+		//				done("Naha, you don't.");
+		//			} else {
+		//				done();
+		//			}
+		//		},
+
+		uploadprogress: function (file, progress, bytesSent) {
+			if (file.previewElement) {
+				var progressElement = file.previewElement.querySelector("[data-dz-uploadprogress]");
+				progressElement.style.width = progress + "%";
+				progressElement.querySelector(".progress-text").textContent = progress + "%";
 			}
-		},
+		}
 
-		//        params: function() {},
 
-		//        chunksUploaded: function () {},
-		//        fallback: function () {},
-		//        resize: function () {},
-		//        transformFile: function (file, done) {},
-		//        previewTemplate: document.querySelector('#tpl').innerHTML
+	});
+
+	myDropzone.on("removedfile", function (file) {
+
+		_.remove(formData.assets, {
+			filename: file.name,
+			filesize: file.size,
+			filetype: file.type
+		});
+		printFormData();
+
+		if (this.files.length) {
+			$("#metadataStartButton").prop("disabled", false).removeClass("disabled").removeClass("btn-disabled").addClass("btn-primary");
+		} else {
+			$("#enterMetadataMessage").fadeOut();
+			$("#metadataStartButton").prop("disabled", "disabled").addClass("disabled").removeClass("btn-primary").addClass("btn-disabled");
+		}
+
+	});
+
+	myDropzone.on("queuecomplete", function (file) {
+		if (this.files.length) {
+			$("#enterMetadataMessage").fadeIn();
+		} else {
+			$("#enterMetadataMessage").fadeOut();
+		}
+		console.log("QUEUE COMPLETE");
 	});
 
 
@@ -121,13 +141,14 @@ $(document).ready(function () {
 		var package = {
 			name: file.name,
 			size: file.size,
-			type: file.type
-
+			type: file.type,
+			id: file.upload.uuid
 		};
 		if (this.files.length) {
 			if (this.files.length == 1) {
 				setFormData("assets", package);
 			} else {
+				$("#enterMetadataMessage").fadeOut();
 				var _i, _len;
 				for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) {
 					if (this.files[_i].name === file.name && this.files[_i].size === file.size && this.files[_i].lastModified.toString() === file.lastModified.toString()) {
@@ -142,19 +163,16 @@ $(document).ready(function () {
 					}
 				}
 			}
-			$("#uploadsInfoCommon").fadeIn();
+			$("#metadataStartButton").prop("disabled", false).removeClass("disabled").removeClass("btn-disabled").addClass("btn-primary");
+			//			$("#uploadsInfoCommon").fadeIn();
+
+
 		} else {
-			$("#uploadsInfoCommon").fadeOut();
+			$("#metadataStartButton").prop("disabled", "disabled").addClass("disabled").removeClass("btn-primary").addClass("btn-disabled");
+			//			$("#uploadsInfoCommon").fadeOut();
 		}
 	});
 
-	//    myDropzone.on("success", function (file) {
-	//        console.log(file.upload.filename + " (" + formatBytes(file.size) + ") uploaded successfully.");
-	//    });
-	//
-	//    myDropzone.on("error", function (file) {
-	//        console.warn(file.upload.filename + " (" + formatBytes(file.size) + ") upload failed.");
-	//    });
 
 	myDropzone.on("complete", function (file) {
 		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") processed.");
@@ -162,15 +180,63 @@ $(document).ready(function () {
 	});
 
 
-	myDropzone.on("queuecomplete", function () {
-		console.log("QUEUE COMPLETE");
+
+
+
+
+
+
+
+	$("#metadataStartButton").click(function () {
+		makeFilesClickable();
+		$("#uploadsInfoCommon").fadeIn();
+		myDropzone.removeEventListeners();
+		//		document.getElementById("dropzoneHeading").scrollIntoView();
 	});
 
+	function makeFilesClickable() {
+		$("a.dz-remove").slideUp();
+		$("#dropzoneArea").css("cursor", "auto");
+		$("#enterMetadataMessageContainer").fadeOut();
+		_.forEach(myDropzone.files, function (file) {
+			$(file.previewElement).children(".dz-image").addClass("red-border");
+
+			file.previewElement.addEventListener("click", function () {
+				//				console.log(file);
+				//				if ($(file.previewElement).children(".dz-image").hasClass("red-border")) {
+				//					$(file.previewElement).children(".dz-image").removeClass("red-border").addClass("red-border-selected");
+				//				} else {
+				//					$(file.previewElement).children(".dz-image").removeClass("green-border").addClass("green-border-selected");
+				//				}
+				activateMetadata(file);
+			});
+
+		});
+
+		// initialize first upload
+		activateMetadata(myDropzone.files[0]);
+	}
+
+	function activateMetadata(file) {
+
+		var asset = _.find(formData.assets, function (a) {
+			return a._id == file.upload.uuid;
+		});
+		var num = formData.assets.indexOf(asset);
+		console.log(num);
+		console.log(asset);
+
+		var upload = myDropzone.files[num];
+		console.log(upload);
+
+		if (asset.edited == false) {}
 
 
 
 
-	//formData.push(file);
+
+	}
+
 
 
 
@@ -386,7 +452,8 @@ $(document).ready(function () {
 
 
 		var optsEvents = {
-			url: "data/ingester-metadata-netx.json",
+			//			url: "data/ingester-metadata-netx.json",
+			url: "../../data/ingester-metadata-netx.json",
 
 			//			getValue: "description",
 			listLocation: function (el) {
@@ -485,6 +552,8 @@ $(document).ready(function () {
 
 			if (key == "assets") {
 				var obj = {
+					edited: false,
+					valid: false,
 					creatorName: {
 						first: $("#uploadsInfoCommonCreatorFirst").val(),
 						middle: $("#uploadsInfoCommonCreatorMiddle").val(),
@@ -497,10 +566,17 @@ $(document).ready(function () {
 					usage: $("#uploadsInfoCommonSpecialUsage").val(),
 					filename: value.name,
 					filesize: value.size,
-					filetype: value.type
+					filetype: value.type,
+					_id: value.id
 				};
 
-				formData[key].push(obj);
+				if (_.filter(formData.assets, function (o) {
+						return o.filename == value.name && o.filesize == value.size && o.filetype == value.type;
+					}).length) {
+					console.log("asset already exists.  skipping formData population")
+				} else {
+					formData[key].push(obj);
+				}
 
 			} else {
 				formData[key] = value;

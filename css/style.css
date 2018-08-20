@@ -243,9 +243,17 @@ button:disabled {
 	min-height: 150px;
 	/*    padding: 20px;*/
 	display: none;
+	cursor: copy;
 }
 
-#tpl {
+/*
+.dropzone.dz-clickable .dz-message,
+.dropzone.dz-clickable .dz-message * {
+	cursor: copy !imporant;
+}
+*/
+
+#tpl2 {
 	display: none;
 }
 
@@ -254,10 +262,58 @@ button:disabled {
 	display: none;
 }
 
+.red-border {
+	-webkit-box-shadow: 0 0 0 5pt #a94442;
+	box-shadow: 0 0 0 5pt #a94442;
+}
+
+.green-border {
+	-webkit-box-shadow: 0 0 0 5pt forestgreen;
+	box-shadow: 0 0 0 5pt forestgreen;
+}
+
+.red-border-selected {
+	-webkit-box-shadow: 0 0 0 5pt #a94442, 0 0 8px 12px rgba(102, 175, 233, .6);
+	box-shadow: 0 0 0 5pt #a94442, 0 0 8px 12px rgba(102, 175, 233, .6);
+}
+
+.green-border-selected {
+	-webkit-box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 12px rgba(102, 175, 233, .6);
+	box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 12px rgba(102, 175, 233, .6);
+}
+
+#enterMetadataMessage {
+	display: none;
+}
+
 #uploadsInfoCommon {
 	display: none;
 }
 
+/*
+#metadataStartButton {
+	display: none;
+}
+*/
+
+a.dz-remove,
+a.dz-remove span,
+a.dz-remove b,
+a.dz-remove i {
+	font-weight: bold;
+	font-family: "Mallory MP Bold";
+	color: #a94442 !important;
+	text-decoration: none;
+	cursor: pointer !important;
+}
+
+a.dz-remove:hover,
+a.dz-remove span:hover,
+a.dz-remove b:hover,
+a.dz-remove i:hover {
+	text-decoration: none !important;
+	color: darkred !important;
+}
 
 .mimic-form-control {
 	display: block;
