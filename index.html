@@ -55,7 +55,7 @@
 		</nav>
 	</header>
 	<main>
-		<form id="mainForm" action="test.php" method="POST" data-toggle="validator" role="form">
+		<form id="mainForm" action="submit.php" method="POST" data-toggle="validator" role="form" data-focus="false">
 			<div class="container" class="toplogo">
 				<a href="javascript:void(0)">
 					<div class="logo pull-left">
@@ -212,19 +212,19 @@
 							<div class="row row-pad-top">
 								<div class="col-xs-12">
 									<h3>Metadata: <span id="metadataNumber"></span></h3>
-									<h4><em id="currentMetadataItem"></em></h4>
+									<b><em id="currentMetadataItem"></em></b>
 								</div>
 							</div>
 
 							<div class="row row-pad">
 								<div class="col-xs-6">
 									<p align="left">
-										<button type="button" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
+										<button type="submit" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
 									</p>
 								</div>
 								<div class="col-xs-6">
 									<p align="right">
-										<button type="button" class="btn btn-default metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+										<button type="submit" class="btn btn-disabled metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 									</p>
 								</div>
 							</div>
@@ -278,12 +278,12 @@
 							<div class="row row-pad">
 								<div class="col-xs-6">
 									<p align="left">
-										<button type="button" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
+										<button type="submit" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
 									</p>
 								</div>
 								<div class="col-xs-6">
 									<p align="right">
-										<button type="button" class="btn btn-default metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+										<button type="submit" class="btn btn-disabled metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 									</p>
 								</div>
 							</div>
@@ -293,7 +293,9 @@
 									<p align="center" class="align-center">
 										<button onclick="confirm('are you sure?')" class="btn btn-default start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>&nbsp;
 										<button class="btn btn-lg btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="metadataButtonDone">Done&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+
 									</p>
+									<p align="center"><button type="submit">submit</button></p>
 								</div>
 							</div>
 

@@ -133,7 +133,7 @@ $(document).ready(function () {
 		} else {
 			$("#enterMetadataMessage").fadeOut();
 		}
-		console.log("QUEUE COMPLETE");
+		//		console.log("QUEUE COMPLETE");
 	});
 
 
@@ -153,12 +153,12 @@ $(document).ready(function () {
 				for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) {
 					if (this.files[_i].name === file.name && this.files[_i].size === file.size && this.files[_i].lastModified.toString() === file.lastModified.toString()) {
 						this.removeFile(file);
-						console.log(file.upload.filename + " already exists.  skipping...");
+						//						console.log(file.upload.filename + " already exists.  skipping...");
 					} else {
-						console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
+						//						console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
 
 						setFormData("assets", package);
-						console.log(file)
+						//						console.log(file)
 
 					}
 				}
@@ -175,7 +175,7 @@ $(document).ready(function () {
 
 
 	myDropzone.on("complete", function (file) {
-		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") processed.");
+		//		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") processed.");
 		//		makeData(file);
 	});
 
@@ -213,6 +213,10 @@ $(document).ready(function () {
 
 		});
 
+		if (myDropzone.files.length > 1) {
+			$(".metadataButtonNext").prop("disabled", false).removeClass("btn-disabled").addClass("btn-default");
+		}
+
 		// initialize first upload
 		activateMetadata(myDropzone.files[0]);
 	}
@@ -223,23 +227,79 @@ $(document).ready(function () {
 			return a._id == file.upload.uuid;
 		});
 		var num = formData.assets.indexOf(asset);
-		console.log(num);
-		console.log(asset);
+		//		console.log(num);
+		//		console.log(asset);
 
 		var upload = myDropzone.files[num];
-		console.log(upload);
+		var uploadElement = $(upload.previewElement).children(".dz-image");
 
-		if (asset.edited == false) {}
+		//		console.log(upload);
+		//		console.log(uploadElement);
+
+		// add halo
+		if (asset.valid) {
+			uploadElement.removeClass("green-border").addClass("green-border-selected");
+		} else {
+			uploadElement.removeClass("red-border").addClass("red-border-selected");
+		}
+
+		$("#metadataNumber").text(num + 1 + " of " + formData.assets.length);
+		$("#currentMetadataItem").html(asset.filename);
+
+		var okToLoad = false;
+
+		if (asset.valid || (!asset.valid && num == 0)) {
+			// preload with data from formData if asset is valid or it's the first time around
+
+			$("#uploadsInfoCommonCreatorLast").val(asset.creatorName.last);
+			$("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.last);
+			$("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.last);
+			$("#uploadsInfoCommonTitle").val(asset.title);$("#uploadsInfoCommonDate").val(asset.date);
+			$("#uploadsInfoCommonKeywords").val(asset.keywords);
+			$("#uploadsInfoCommonSpecialCreditLine").val(asset.credit);
+			$("#uploadsInfoCommonSpecialUsage").val(asset.usage);
+			$("#mainForm").validator("validate");
+
+		} else {
+			// keep previous asset's data
 
 
 
-
+		}
 
 	}
 
 
 
 
+	$('#mainForm').validator().on('submit', function (e) {
+		if (e.isDefaultPrevented()) {
+			// handle the invalid form...
+			alert("this is invalid");
+		} else {
+			// everything looks good!
+			e.preventDefault();
+			console.log('good to go')
+			if (_.every(formData.assets, "valid")) {
+				console.warn('everything is valid!')
+				
+				// set current item as valid
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			} else {
+				console.warn(_.filter(formData.assets, function (a) {
+					return !a.valid
+				}).length + "/" + formData.assets.length + " items are invalid.");
+			}
+		}
+	})
 
 
 
@@ -532,14 +592,18 @@ $(document).ready(function () {
 
 
 
+	function updateAssetData(target, key, value) {
 
+	}
 
+	function updateAssetValidity(target, key, value) {
 
+	}
 
 
 
 	function setFormData(key, value) {
-		console.log(key, value)
+		//		console.log(key, value)
 		if (!key && !value) {
 			//generic form data set
 			console.warn("bad function call")
@@ -552,7 +616,6 @@ $(document).ready(function () {
 
 			if (key == "assets") {
 				var obj = {
-					edited: false,
 					valid: false,
 					creatorName: {
 						first: $("#uploadsInfoCommonCreatorFirst").val(),
@@ -573,7 +636,7 @@ $(document).ready(function () {
 				if (_.filter(formData.assets, function (o) {
 						return o.filename == value.name && o.filesize == value.size && o.filetype == value.type;
 					}).length) {
-					console.log("asset already exists.  skipping formData population")
+					//					console.log("asset already exists.  skipping formData population")
 				} else {
 					formData[key].push(obj);
 				}

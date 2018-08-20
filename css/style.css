@@ -296,6 +296,10 @@ button:disabled {
 }
 */
 
+.noScroll {
+	overflow: hidden !important;
+}
+
 a.dz-remove,
 a.dz-remove span,
 a.dz-remove b,
