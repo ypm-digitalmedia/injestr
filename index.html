@@ -83,7 +83,7 @@
 							<a href="#tab2" data-toggle="tab" role="tab"><strong>Upload</strong></a>
 						</li>
 						<li id="tabcontrol3">
-							<a href="#tab3" data-toggle="tab" role="tab"><strong>Edit</strong></a>
+							<a href="#tab3" data-toggle="tab" role="tab"><strong>Submit</strong></a>
 						</li>
 					</ul>
 				</div>
@@ -210,23 +210,16 @@
 						</div>
 						<div class="container-fluid search-pane" id="uploadsInfoCommon">
 							<div class="row row-pad-top">
-								<div class="col-xs-12">
+								<div class="col-sm-6">
 									<h3>Metadata: <span id="metadataNumber"></span></h3>
 									<b><em id="currentMetadataItem"></em></b>
 								</div>
-							</div>
-
-							<div class="row row-pad">
-								<div class="col-xs-6">
-									<p align="left">
-										<button type="submit" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
-									</p>
-								</div>
-								<div class="col-xs-6">
-									<p align="right">
-										<button type="submit" class="btn btn-disabled metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-									</p>
-								</div>
+								<div class="col-sm-6">
+                                    <p align="right" style="margin-top: 20px">
+                                        <button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
+                                    </p>
+                                </div>
+                                
 							</div>
 
 							<div class="row row-pad-top">
@@ -278,24 +271,13 @@
 							<div class="row row-pad">
 								<div class="col-xs-6">
 									<p align="left">
-										<button type="submit" class="btn btn-disabled metadataButtonPrev"><i class="fas fa-arrow-alt-circle-left"></i>&nbsp;Previous</button>
+										<button onclick="confirm('are you sure?')" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
 									</p>
 								</div>
 								<div class="col-xs-6">
 									<p align="right">
-										<button type="submit" class="btn btn-disabled metadataButtonNext">Next&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+                                        <button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
 									</p>
-								</div>
-							</div>
-
-							<div class="row row-pad">
-								<div class="col-xs-12 align-center">
-									<p align="center" class="align-center">
-										<button onclick="confirm('are you sure?')" class="btn btn-default start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>&nbsp;
-										<button class="btn btn-lg btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="metadataButtonDone">Done&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-
-									</p>
-									<p align="center"><button type="submit">submit</button></p>
 								</div>
 							</div>
 
@@ -339,22 +321,7 @@
 			<div class="container">
 				<div class="row row-pad">
 					<div class="col-xs-12 align-center">
-						<!--
-						<p align="center" class="align-center">
-							<button type="button" class="btn btn-disabled btn-lg">NEXT <i class="fas fa-arrow-alt-circle-right"></i></button>
-						</p>
--->
-
-
-
 						<pre id="output"></pre>
-
-
-
-
-
-
-
 					</div>
 				</div>
 			</div>

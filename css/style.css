@@ -273,13 +273,13 @@ button:disabled {
 }
 
 .red-border-selected {
-	-webkit-box-shadow: 0 0 0 5pt #a94442, 0 0 8px 12px rgba(102, 175, 233, .6);
-	box-shadow: 0 0 0 5pt #a94442, 0 0 8px 12px rgba(102, 175, 233, .6);
+	-webkit-box-shadow: 0 0 0 5pt #a94442, 0 0 8px 15px rgba(102, 175, 233, .6);
+	box-shadow: 0 0 0 5pt #a94442, 0 0 8px 15px rgba(102, 175, 233, .6);
 }
 
 .green-border-selected {
-	-webkit-box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 12px rgba(102, 175, 233, .6);
-	box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 12px rgba(102, 175, 233, .6);
+	-webkit-box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 15px rgba(102, 175, 233, .6);
+	box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 15px rgba(102, 175, 233, .6);
 }
 
 #enterMetadataMessage {
@@ -298,6 +298,10 @@ button:disabled {
 
 .noScroll {
 	overflow: hidden !important;
+}
+
+.dz-preview {
+    cursor: pointer!important;
 }
 
 a.dz-remove,
