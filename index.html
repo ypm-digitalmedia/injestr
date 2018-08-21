@@ -207,6 +207,14 @@
 									</p>
 								</div>
 							</div>
+                            <div class="row row-pad-top" id="goToSubmitButtonContainer">
+								<div class="col-xs-12 align-center">
+									<p align="center" class="align-center">
+                                        <button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="goToSubmitButton"><h2 style="margin: 0;"><i class="fas fa-clipboard-check"></i>&nbsp;Done</h2></button>
+									</p>
+<!--                                    <p align="center">Click to submit</p>-->
+								</div>
+							</div>
 						</div>
 						<div class="container-fluid search-pane" id="uploadsInfoCommon">
 							<div class="row row-pad-top">
@@ -298,9 +306,29 @@
 							</div>
 							<div class="row">
 								<div class="col-xs-12">
-									<h3>Edit metadata</h3>
+									<h3 id="finalNumSubmitted">Submit</h3>
 								</div>
 							</div>
+                            
+                            
+                            <div class="row row-pad-top" id="finalSummaryContainer">
+								<div class="col-xs-12">
+                                    <p id="finalSummary">Summary information</p>
+								</div>
+							</div>
+                            
+                            
+                            <div class="row row-pad-top" id="finalSubmitButtonContainer">
+								<div class="col-xs-12 align-center">
+									<p align="center" class="align-center">
+                                        <button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="finalSubmitButton"><h1 style="margin: 0;">Submit&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></h1></button>
+									<p align="center" class="align-center">
+                                        <button onclick="confirm('ready to go?')" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
+									</p>
+<!--                                    <p align="center">Click to submit</p>-->
+								</div>
+							</div>
+                            
 						</div>
 
 
@@ -349,7 +377,7 @@
 			<div class="dz-image">
 				<img data-dz-thumbnail="" src="">
 			</div>
-			<div class="dz-details">
+			<div class="dz-details no-clicky">
 				<div class="dz-size"><span data-dz-size=""></span></div>
 				<div class="dz-filename"><span data-dz-name=""></span></div>
 			</div>

@@ -8,7 +8,11 @@ var formData = {
     assets: []
 };
 
+var allGood = false;
+var doIt = false;
+
 var activeAsset = -1;
+var sessionGUID = null;
 
 var searchTextEvent = "";
 var searchTextRecord = "";
@@ -58,7 +62,7 @@ $(document).ready(function () {
         filesizeBase: 1000, //1000|1024
         forceChunking: false,
         forceFallback: false,
-        headers: null, //json object to send to server
+        headers: {"folderName":sessionGUID}, //json object to send to server
         hiddenInputContainer: "body",
         ignoreHiddenFiles: false,
         maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
@@ -197,7 +201,11 @@ $(document).ready(function () {
         myDropzone.removeEventListeners();
         //		document.getElementById("dropzoneHeading").scrollIntoView();
     });
-
+    
+    $("#goToSubmitButton").click(function() {
+         showTabThree();
+    });
+    
     function makeFilesClickable() {
         _.forEach(myDropzone.files,function(f){
             f.previewElement.classList.remove("dz-success");
@@ -247,7 +255,10 @@ $(document).ready(function () {
 
         var upload = myDropzone.files[num];
         var uploadElement = $(upload.previewElement).children(".dz-image");
-
+        var uploadElementContainer = $(upload.previewElement).children(".dz-details");
+        
+        uploadElementContainer.removeClass("no-clicky").addClass("clicky");
+        
         //		console.log(upload);
         //		console.log(uploadElement);
 
@@ -282,8 +293,8 @@ $(document).ready(function () {
                     // preload with data from formData if asset is valid or it's the first time around
 
                     $("#uploadsInfoCommonCreatorLast").val(asset.creatorName.last);
-                    $("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.last);
-                    $("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.last);
+                    $("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.first);
+                    $("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.middle);
                     $("#uploadsInfoCommonTitle").val(asset.title);
                     $("#uploadsInfoCommonDate").val(asset.date);
                     $("#uploadsInfoCommonKeywords").val(asset.keywords);
@@ -294,12 +305,10 @@ $(document).ready(function () {
                     // keep previous asset's data
                 }
             } else {
-                alert("you're already there!");
+                // alert("you're already there!");
             }
         } else {
-            // not your turn!
-
-            alert("not so fast");
+            // alert("not so fast");
 
         }
     }
@@ -313,13 +322,13 @@ $(document).ready(function () {
             } else {
                 // everything looks good!
                 e.preventDefault();
-                console.log("ready to set data.");
+//                console.log("ready to set data.");
                 
                 var upload = myDropzone.files[activeAsset];
                 var uploadElement = $(upload.previewElement).children(".dz-image");
                 
-                console.log(upload);
-                console.log(uploadElement);
+//                console.log(upload);
+//                console.log(uploadElement);
                 
                 if (uploadElement.hasClass("red-border-selected") ) {
                     uploadElement.removeClass("red-border-selected").addClass("green-border-selected");
@@ -336,7 +345,11 @@ $(document).ready(function () {
 
                 if (_.every(formData.assets, "valid")) {
                     console.warn("All assets' metadata is valid!\nReady to submit.");
-
+                    
+                    $("#finalSummaryContainer").show();
+                    $("#finalSubmitButtonContainer").show();
+                    $("#goToSubmitButtonContainer").slideDown();
+                    
                 } else {
                     console.warn("Incomplete: " + _.filter(formData.assets, function (a) {
                         return !a.valid;
@@ -344,6 +357,11 @@ $(document).ready(function () {
                 }
             }
         });
+    
+    $("#finalSubmitButton").click(function() {
+        alert("submitted!");
+        $("#mainForm").submit();
+    })
 
     $("#logoutLink").click(function () {
         var newUrl = stripQs("cas");
@@ -466,7 +484,10 @@ $(document).ready(function () {
 
         setFormData("targetType", initialSearchType);
         setFormData("user", CASuser.name);
-        setFormData("guid", makeGUID());
+        
+        sessionGUID = makeGUID();
+        setFormData("guid", sessionGUID);
+        
 
         //focus search pane initially
         if (initialSearchType == "event") {
@@ -633,7 +654,7 @@ $(document).ready(function () {
         myDropzone.files[target].previewElement.classList.add("dz-success");
         setTimeout(function() {
             myDropzone.files[target].previewElement.classList.remove("dz-success");
-            console.log("css reset | " + target )
+//            console.log("css reset | " + target )
         }, 3000);
         
         printFormData();

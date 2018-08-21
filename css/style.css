@@ -2,6 +2,14 @@ body {
 	padding-top: 50px;
 }
 
+.btn-primary {
+    background-color: #6788b2;
+}
+
+.btn-primary:hover {
+    background-color: slategray;
+}
+
 .navbar-inverse {
 	background-color: #6788b2;
 	border-color: transparent;
@@ -268,8 +276,8 @@ button:disabled {
 }
 
 .green-border {
-	-webkit-box-shadow: 0 0 0 5pt forestgreen;
-	box-shadow: 0 0 0 5pt forestgreen;
+	-webkit-box-shadow: 0 0 0 5pt #5cb85c;
+	box-shadow: 0 0 0 5pt #5cb85c;
 }
 
 .red-border-selected {
@@ -278,12 +286,28 @@ button:disabled {
 }
 
 .green-border-selected {
-	-webkit-box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 15px rgba(102, 175, 233, .6);
-	box-shadow: 0 0 0 5pt forestgreen, 0 0 8px 15px rgba(102, 175, 233, .6);
+	-webkit-box-shadow: 0 0 0 5pt #5cb85c, 0 0 8px 15px rgba(102, 175, 233, .6);
+	box-shadow: 0 0 0 5pt #5cb85c, 0 0 8px 15px rgba(102, 175, 233, .6);
 }
 
 #enterMetadataMessage {
 	display: none;
+}
+
+#goToSubmitButtonContainer {
+    display: none;
+}
+
+.no-clicky { 
+    cursor: not-allowed!important;
+}
+
+#finalSubmitButtonContainer {
+    display: none;
+}
+
+#finalSummaryContainer {
+    display: none;
 }
 
 #uploadsInfoCommon {
@@ -300,7 +324,15 @@ button:disabled {
 	overflow: hidden !important;
 }
 
+.clicky {
+    cursor: pointer!important;
+}
+
 .dz-preview {
+    cursor: pointer!important;
+}
+
+.dz-details {
     cursor: pointer!important;
 }
 

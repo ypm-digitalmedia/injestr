@@ -2,7 +2,9 @@
 $ds          = DIRECTORY_SEPARATOR;  //1
  
 $storeFolder = 'uploads';   //2
- 
+
+
+
 if (!empty($_FILES)) {
      
     $tempFile = $_FILES['file']['tmp_name'];          //3             
