@@ -113,11 +113,15 @@ $(document).ready(function () {
 					progress + "%";
 			}
 		},
-		sending: function (file, xhr, formData) {
+		complete: function (file, xhr, formData) {
 			console.log(file);
+		},
+		error: function (file, error, xhr) {
+			console.log(file);
+			console.log(error);
 			console.log(xhr);
-			console.log(formData);
 		}
+
 	});
 
 	function uploadFile(file) {
