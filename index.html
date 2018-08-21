@@ -15,6 +15,7 @@
 	<link href="css/jquery.tagsinput.min.css" rel="stylesheet" />
 	<link href="css/bootstrap-3.2.0.min.css" rel="stylesheet" />
 	<link href="css/bootstrap-toggle.min.css" rel="stylesheet" />
+	<link href="css/bootstrap-dialog.css" rel="stylesheet" />
 	<link href="css/bootstrap-select.css" rel="stylesheet" />
 	<link href="css/dropzone.css" rel="stylesheet" />
 	<link href="css/fonts.css" rel="stylesheet" />
@@ -207,12 +208,12 @@
 									</p>
 								</div>
 							</div>
-                            <div class="row row-pad-top" id="goToSubmitButtonContainer">
+							<div class="row row-pad-top" id="goToSubmitButtonContainer">
 								<div class="col-xs-12 align-center">
 									<p align="center" class="align-center">
-                                        <button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="goToSubmitButton"><h2 style="margin: 0;"><i class="fas fa-clipboard-check"></i>&nbsp;Done</h2></button>
+										<button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="goToSubmitButton"><h2 style="margin: 0;"><i class="fas fa-clipboard-check"></i>&nbsp;Done</h2></button>
 									</p>
-<!--                                    <p align="center">Click to submit</p>-->
+									<!--                                    <p align="center">Click to submit</p>-->
 								</div>
 							</div>
 						</div>
@@ -223,11 +224,11 @@
 									<b><em id="currentMetadataItem"></em></b>
 								</div>
 								<div class="col-sm-6">
-                                    <p align="right" style="margin-top: 20px">
-                                        <button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
-                                    </p>
-                                </div>
-                                
+									<p align="right" style="margin-top: 20px">
+										<button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
+									</p>
+								</div>
+
 							</div>
 
 							<div class="row row-pad-top">
@@ -279,12 +280,12 @@
 							<div class="row row-pad">
 								<div class="col-xs-6">
 									<p align="left">
-										<button onclick="confirm('are you sure?')" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
+										<button onclick="document.location.reload()" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
 									</p>
 								</div>
 								<div class="col-xs-6">
 									<p align="right">
-                                        <button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
+										<button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
 									</p>
 								</div>
 							</div>
@@ -306,29 +307,50 @@
 							</div>
 							<div class="row">
 								<div class="col-xs-12">
-									<h3 id="finalNumSubmitted">Submit</h3>
+									<h3 id="finalNumSubmitted"></h3>
 								</div>
 							</div>
-                            
-                            
-                            <div class="row row-pad-top" id="finalSummaryContainer">
+
+							<div class="row">
 								<div class="col-xs-12">
-                                    <p id="finalSummary">Summary information</p>
+
+								</div>
+
+							</div>
+
+							<div class="row row-pad-top" id="finalSummaryContainer">
+								<div class="col-xs-12">
+									<table class="table table-striped" id="finalSummary">
+										<tr class='header'>
+											<th><strong>#</strong></th>
+											<th><strong>Filename</strong></th>
+											<th><strong>Title</strong></th>
+											<th><strong>Size</strong></th>
+											<th><strong>More</strong></th>
+										</tr>
+									</table>
 								</div>
 							</div>
-                            
-                            
-                            <div class="row row-pad-top" id="finalSubmitButtonContainer">
-								<div class="col-xs-12 align-center">
-									<p align="center" class="align-center">
-                                        <button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="finalSubmitButton"><h1 style="margin: 0;">Submit&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></h1></button>
-									<p align="center" class="align-center">
-                                        <button onclick="confirm('ready to go?')" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
+
+
+							<div class="row row-pad-top" id="finalSubmitButtonContainer">
+								<div class="col-xs-6">
+									<p align="left">
+										<button onclick="document.location.reload()" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
 									</p>
-<!--                                    <p align="center">Click to submit</p>-->
+								</div>
+								<div class="col-xs-6">
+									<p align="right">
+										<button class="btn btn-lg btn-success" style="clear: both; margin:0;" type="button" id="finalSubmitButton"><h2 style="margin: 0;">Submit&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></h2></button>
+										<!--
+										<p align="center" class="align-center">
+											<button onclick="confirm('ready to go?')" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
+										</p>
+-->
+										<!--                                    <p align="center">Click to submit</p>-->
 								</div>
 							</div>
-                            
+
 						</div>
 
 
@@ -369,6 +391,15 @@
 	<footer></footer>
 
 	<!-- TEMPLATES START ----------------------------------------------------------------------------->
+
+
+
+
+
+
+
+
+
 
 	<!-- DROPZONE THUMB -->
 
@@ -447,6 +478,7 @@
 	<script src="js/validator.min.js"></script>
 	<script src="js/bootstrap-toggle.min.js"></script>
 	<script src="js/bootstrap-select.min.js"></script>
+	<script src="js/bootstrap-dialog.min.js"></script>
 	<script src="js/lodash.min.js"></script>
 	<script src="js/dropzone.js"></script>
 

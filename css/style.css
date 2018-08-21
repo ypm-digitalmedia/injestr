@@ -3,11 +3,11 @@ body {
 }
 
 .btn-primary {
-    background-color: #6788b2;
+	background-color: #6788b2;
 }
 
 .btn-primary:hover {
-    background-color: slategray;
+	background-color: slategray;
 }
 
 .navbar-inverse {
@@ -38,6 +38,15 @@ body {
 
 .row-pad-bottom {
 	padding-bottom: 1em;
+}
+
+.popup-thumbnail {
+	margin-bottom: 2em;
+	width: 100%;
+	height: 400px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
 }
 
 ul.nav-tabs li:focus,
@@ -295,19 +304,19 @@ button:disabled {
 }
 
 #goToSubmitButtonContainer {
-    display: none;
+	display: none;
 }
 
-.no-clicky { 
-    cursor: not-allowed!important;
+.no-clicky {
+	cursor: not-allowed !important;
 }
 
 #finalSubmitButtonContainer {
-    display: none;
+	display: none;
 }
 
 #finalSummaryContainer {
-    display: none;
+	display: none;
 }
 
 #uploadsInfoCommon {
@@ -325,15 +334,15 @@ button:disabled {
 }
 
 .clicky {
-    cursor: pointer!important;
+	cursor: pointer !important;
 }
 
 .dz-preview {
-    cursor: pointer!important;
+	cursor: pointer !important;
 }
 
 .dz-details {
-    cursor: pointer!important;
+	cursor: pointer !important;
 }
 
 a.dz-remove,

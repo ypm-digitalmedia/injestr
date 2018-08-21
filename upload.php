@@ -3,13 +3,18 @@ $ds          = DIRECTORY_SEPARATOR;  //1
  
 $storeFolder = 'uploads';   //2
 
+$sessionFolderName = $_REQUEST['folderName'];
+
+if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
+    mkdir($storeFolder . $ds . $sessionFolderName, 0777, true);
+}
 
 
 if (!empty($_FILES)) {
      
     $tempFile = $_FILES['file']['tmp_name'];          //3             
-      
-    $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  //4
+    
+    $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds . $sessionFolderName . $ds;  //4
      
     $targetFile =  $targetPath. $_FILES['file']['name'];  //5
  
@@ -17,7 +22,9 @@ if (!empty($_FILES)) {
      
 	
 	if ( move_uploaded_file ($tempFile,$targetFile)  )
-      {  echo 'The file ' . $_FILES['file']['name'] . ' has been successfully uploaded.';
+      {  
+		echo 'The file ' . $_FILES['file']['name'] . ' has been successfully uploaded.';
+//	     echo print_r($_REQUEST);
        }
 else
       {

@@ -9,8 +9,8 @@ var formData = {
 	assets: []
 };
 
-var allGood = false;
-var doIt = false;
+
+var showMoreInfoPopup;
 
 var activeAsset = -1;
 var sessionGUID = null;
@@ -91,7 +91,7 @@ $(document).ready(function () {
 		thumbnailMethod: "crop", //crop|contain
 		timeout: 30000, //ms
 		uploadMultiple: false,
-		url: "upload.php",
+		url: "upload.php?folderName=" + sessionGUID,
 		//		url: "javascript:uploadFile()",
 		withCredentials: false,
 
@@ -114,13 +114,21 @@ $(document).ready(function () {
 			}
 		},
 		complete: function (file, xhr, formData) {
-			console.log(file);
-		},
-		error: function (file, error, xhr) {
-			console.log(file);
-			console.log(error);
-			console.log(xhr);
+			//			console.log(file);
+			console.log(file.xhr.responseText);
+			if (file.previewElement) {
+				var progressElement = file.previewElement.querySelector(
+					".dz-progress"
+				);
+				$(progressElement).fadeOut();
+			}
+
 		}
+		//		error: function (file, error, xhr) {
+		//			console.log(file);
+		//			console.log(error);
+		//			console.log(xhr);
+		//		}
 
 	});
 
@@ -220,8 +228,74 @@ $(document).ready(function () {
 	});
 
 	$("#goToSubmitButton").click(function () {
+		setFormData('dateStamp', moment().toISOString());
+
+		makeFinalDataTable();
+
 		showTabThree();
 	});
+
+	function makeFinalDataTable() {
+		$("#finalSummary tr").not(".header").remove();
+		$("#finalNumSubmitted").html("Ready to submit " + formData.assets.length + " assets");
+		var displayData = [];
+
+
+		_.forEach(formData.assets, function (asset, index) {
+
+			var rowString = "<tr>";
+			rowString += "<td>" + parseInt(index + 1) + "</td>";
+			rowString += "<td>" + asset.filename + "</td>";
+			rowString += "<td>" + formData.assets[index].title + "</td>";
+			rowString += "<td>" + $("span[data-dz-size]").eq(index).html() + "</td>";
+			rowString += "<td><button type='button' onclick='showMoreInfoPopup(" + index + ")' class='btn btn-sm btn-default' title='Details'><i class='fas fa-ellipsis-h'></i></button></td>";
+			rowString += "</tr>";
+
+			$("#finalSummary").append(rowString);
+		});
+
+	}
+
+
+
+
+	showMoreInfoPopup = function (index) {
+		var msgHTML = "";
+
+		var thumbHTML = '<div class="popup-thumbnail" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
+
+		var tableHTML = '<table class="table table-striped">';
+		tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.last + ', ' + formData.assets[index].creatorName.first + ' ' + formData.assets[index].creatorName.middle + '</td></tr>';
+		tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
+		tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
+		tableHTML += '<tr><td><strong>Keywords</strong></td><td>' + formData.assets[index].keywords + '</td></tr>';
+		tableHTML += '<tr><td><strong>Special Credit Line</strong></td><td>' + formData.assets[index].credit + '</td></tr>';
+		tableHTML += '<tr><td><strong>Special Usage Permissions</strong></td><td>' + formData.assets[index].usage + '</td></tr>';
+		tableHTML += '</table>';
+
+		msgHTML = thumbHTML + tableHTML;
+
+
+
+
+
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_DEFAULT,
+			title: '<h4>Details: Asset #' + parseInt(index + 1) + '</h4>',
+			message: msgHTML,
+			keyboard: false,
+			backdrop: 'static',
+			buttons: [{
+				label: 'OK',
+				cssClass: 'btn-default',
+				action: function (dialogItself) {
+					dialogItself.close();
+				}
+            }]
+		});
+
+	}
+
 
 	function makeFilesClickable() {
 		_.forEach(myDropzone.files, function (f) {
@@ -361,7 +435,7 @@ $(document).ready(function () {
 
 
 				if (_.every(formData.assets, "valid")) {
-					console.warn("All assets' metadata is valid!\nReady to submit.");
+					console.warn("All assets' metadata are valid!\nReady to submit.");
 
 					$("#finalSummaryContainer").show();
 					$("#finalSubmitButtonContainer").show();
@@ -376,9 +450,68 @@ $(document).ready(function () {
 		});
 
 	$("#finalSubmitButton").click(function () {
-		alert("submitted!");
-		$("#mainForm").submit();
+		//		alert("submitted!");
+		//		$("#mainForm").submit();
+		// send JSON to the server
+		// write manifest file
+		// write lockfile
+
+		//		setFormData('datestamp', moment().toISOString());
+
+
+		$.ajax({
+			type: 'post',
+			url: 'finalize.php',
+			dataType: 'json',
+			//			data: 'data=' + JSON.stringify(formData),
+			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID,
+			success: function (result) {
+				// check result object for what you returned
+				showFinalSuccessDialog(result);
+			},
+			error: function (error) {
+				// check error object or return error
+				//				showFinalErrorDialog(error);
+				console.warn(error);
+			}
+		});
+
+		showFinalSuccessDialog();
 	})
+
+	function showFinalErrorDialog(errText) {
+		console.log(errText);
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_DANGER,
+			closable: false,
+			title: '<h4>Error!</h4>',
+			message: '<p>' + errText + '</p>',
+			buttons: [{
+				label: '<i class="fas fa-times"></i>&nbsp;Close',
+				cssClass: 'btn-danger',
+				action: function (dialogItself) {
+					dialogItself.close();
+				}
+            }]
+		});
+	}
+
+	function showFinalSuccessDialog(result) {
+		console.log(result);
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_SUCCESS,
+			closable: false,
+			title: '<h4>Success!</h4>',
+			message: '<p>Your submission was successful. Please allow time for these assets to propagate throughout the NetX / Preservica system.</p>',
+			buttons: [{
+				label: '<i class="fas fa-sync-alt"></i>&nbsp;Start over',
+				cssClass: 'btn-default',
+				action: function () {
+					document.location.reload();
+				}
+            }]
+		});
+	}
 
 	$("#logoutLink").click(function () {
 		var newUrl = stripQs("cas");
@@ -683,7 +816,6 @@ $(document).ready(function () {
 
 
 	}
-
 
 
 
