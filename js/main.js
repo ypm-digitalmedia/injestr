@@ -27,6 +27,7 @@ var jsonDataEvents = {};
 var jsonDataRecords = {};
 
 var initialSearchType = "";
+var searchType = "";
 
 var CASuser = {
 	name: "",
@@ -48,7 +49,7 @@ $(document).ready(function () {
 	});
 
 	myDropzone = new Dropzone("div#dropzoneArea", {
-		acceptedFiles: null, //ex: image/*,application/pdf,.psd
+		//		acceptedFiles: 'image/*,application/pdf,.psd,text/*,.zip,.tar,.tar.gz,.7z,.tif,.tiff,application/msword,.html,.htm', //ex: image/*,application/pdf,.psd
 		acceptedMimeTypes: null, //DEPRECATED
 		autoProcessQueue: true, //if false, files will be added to the queue but the queue will not be processed automatically.
 		//		addRemoveLinks: true, //add a link to every file preview to remove or cancel
@@ -59,18 +60,21 @@ $(document).ready(function () {
 		clickable: true,
 		createImageTHumbnails: true,
 		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES / CLICK HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
+		dictFileTooBig: "File ({{filesize}}) is too large.  Max: {{maxFilesize}}",
 		//		dictRemoveFile: "",
-		filesizeBase: 1000, //1000|1024
+		filesizeBase: 1024, //1000|1024
 		forceChunking: false,
 		forceFallback: false,
 		headers: {
-			"folderName": sessionGUID
+			"folderName": sessionGUID,
+			"type": searchType
 		}, //json object to send to server
 		hiddenInputContainer: "body",
 		ignoreHiddenFiles: false,
 		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
-		maxFilesize: 256, // MB
-		maxThumbnailFilesize: 10, //mb
+		maxFilesize: 4000, // MB
+		maxThumbnailFilesize: 240, //mb
+		maxParallelUploads: 50,
 		method: "post",
 		parallelChunkUploads: false,
 		parallelUploads: 2,
@@ -82,16 +86,16 @@ $(document).ready(function () {
 		resizeWidth: null, //images will be resized to these dimensions before being uploaded
 		resizeHeight: null, //images will be resized to these dimensions before being uploaded
 		resizeMimeType: null, //mime type of the resized image
-		resizeQuality: 1,
+		resizeQuality: 0.8,
 		resizeMethod: "contain", //crop|contain
 		retryChunks: false,
 		retryChunksLimit: 3,
 		thumbnailWidth: 120, //px
 		thumbnailHeight: 120, //px
 		thumbnailMethod: "crop", //crop|contain
-		timeout: 30000, //ms
+		timeout: 300000, //ms
 		uploadMultiple: false,
-		url: "upload.php?folderName=" + sessionGUID,
+		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType,
 		//		url: "javascript:uploadFile()",
 		withCredentials: false,
 
@@ -108,9 +112,10 @@ $(document).ready(function () {
 				var progressElement = file.previewElement.querySelector(
 					"[data-dz-uploadprogress]"
 				);
+				var progressTrunc = parseFloat(progress).toFixed(1);
 				progressElement.style.width = progress + "%";
 				progressElement.querySelector(".progress-text").textContent =
-					progress + "%";
+					progressTrunc + "%";
 			}
 		},
 		complete: function (file, xhr, formData) {
@@ -123,12 +128,12 @@ $(document).ready(function () {
 				$(progressElement).fadeOut();
 			}
 
+		},
+		error: function (file, error, xhr) {
+			console.log(file);
+			console.log(error);
+			console.log(xhr);
 		}
-		//		error: function (file, error, xhr) {
-		//			console.log(file);
-		//			console.log(error);
-		//			console.log(xhr);
-		//		}
 
 	});
 
@@ -262,9 +267,30 @@ $(document).ready(function () {
 	showMoreInfoPopup = function (index) {
 		var msgHTML = "";
 
-		var thumbHTML = '<div class="popup-thumbnail" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
+		// show canvas if TIFF file
+		var fileUrl = 'uploads/' + sessionGUID + '/' + formData.assets[index].filename;
+		var fileName = formData.assets[index].filename;
+		var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+
+		if (ext == "tiff" || ext == "tif") {
+			var theId = formData.assets[index]._id;
+			var dest = "#assetThumb_" + theId;
+			//			console.log(dest, fileUrl);
+			// currently broken
+			//			loadTiff(fileUrl, dest);
+
+			var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Currently unable to preview TIFF files.</em></p></div>';
+
+		} else {
+
+			var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
+		}
+
+		var sizeStringSimple = $("span[data-dz-size]").eq(index).html().split("<strong>").join("").split("</strong>").join("");
 
 		var tableHTML = '<table class="table table-striped">';
+		tableHTML += '<tr><td><strong>File Name</td><td>' + formData.assets[index].filename + '</td></tr>';
+		tableHTML += '<tr><td><strong>File Size</td><td>' + sizeStringSimple + '</td></tr>';
 		tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.last + ', ' + formData.assets[index].creatorName.first + ' ' + formData.assets[index].creatorName.middle + '</td></tr>';
 		tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
 		tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
@@ -274,10 +300,6 @@ $(document).ready(function () {
 		tableHTML += '</table>';
 
 		msgHTML = thumbHTML + tableHTML;
-
-
-
-
 
 		BootstrapDialog.show({
 			type: BootstrapDialog.TYPE_DEFAULT,
@@ -293,6 +315,21 @@ $(document).ready(function () {
 				}
             }]
 		});
+
+		//		// show canvas if TIFF file
+		//		var fileUrl = 'uploads/' + sessionGUID + '/' + formData.assets[index].filename;
+		//		var fileName = formData.assets[index].filename;
+		//		var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+		//
+		//		if (ext == "tiff" || ext == "tif") {
+		//			var theId = formData.assets[index]._id;
+		//			var dest = "#assetThumb_" + theId;
+		//			console.log(dest, fileUrl);
+		//			// currently broken
+		//			//			loadTiff(fileUrl, dest);
+		//
+		//			$(dest).html("<p align='center'>Unable to preview TIFF files currently.</p>");
+		//		}
 
 	}
 
@@ -464,7 +501,7 @@ $(document).ready(function () {
 			url: 'finalize.php',
 			dataType: 'json',
 			//			data: 'data=' + JSON.stringify(formData),
-			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID,
+			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID + "&type=" + searchType,
 			success: function (result) {
 				// check result object for what you returned
 				showFinalSuccessDialog(result);
@@ -553,12 +590,14 @@ $(document).ready(function () {
 				CASuser.type = "record";
 				CASuser.type = "record";
 				initialSearchType = "record";
+				searchType = "record";
 			} else {
 				//check for event-based
 				if (_.includes(eventBasedUsers, noUser)) {
 					console.warn("logged in as event-based user " + noUser);
 					CASuser.type = "event";
 					initialSearchType = "event";
+					searchType = "event";
 				} else {
 					//check for both-based
 					if (_.includes(bothBasedUsers, noUser)) {
@@ -568,11 +607,13 @@ $(document).ready(function () {
 						);
 						CASuser.type = "both";
 						initialSearchType = "event";
+						searchType = "event";
 					} else {
 						//default
 						console.warn("logged in as event-based user " + noUser);
 						CASuser.type = "event";
 						initialSearchType = "event";
+						searchType = "event";
 					}
 				}
 			}
@@ -591,6 +632,7 @@ $(document).ready(function () {
 				CASuser.type = "record";
 				CASuser.type = "record";
 				initialSearchType = "record";
+				searchType = "record";
 			} else {
 				//check for event-based
 				if (_.includes(eventBasedUsers, CASuser.name)) {
@@ -599,6 +641,7 @@ $(document).ready(function () {
 					);
 					CASuser.type = "event";
 					initialSearchType = "event";
+					searchType = "event";
 				} else {
 					//check for both-based
 					if (_.includes(bothBasedUsers, CASuser.name)) {
@@ -608,6 +651,7 @@ $(document).ready(function () {
 						);
 						CASuser.type = "both";
 						initialSearchType = "event";
+						searchType = "event";
 					} else {
 						//default
 						console.warn(
@@ -615,6 +659,7 @@ $(document).ready(function () {
 						);
 						CASuser.type = "event";
 						initialSearchType = "event";
+						searchType = "event";
 					}
 				}
 			}
@@ -632,7 +677,7 @@ $(document).ready(function () {
 			makeLookupSwitcher();
 		}
 
-		setFormData("targetType", initialSearchType);
+		setFormData("targetType", searchType);
 		setFormData("user", CASuser.name);
 
 		sessionGUID = makeGUID();
@@ -640,7 +685,7 @@ $(document).ready(function () {
 
 
 		//focus search pane initially
-		if (initialSearchType == "event") {
+		if (searchType == "event") {
 			$("#searchEventAll").focus();
 		} else {
 			$("#searchRecordAll").focus();
@@ -652,10 +697,14 @@ $(document).ready(function () {
 		var statusText = "";
 		if (status === true) {
 			statusText = "event";
+			searchText = "event";
+			setFormData("targetType", "event");
 			$("#searchPaneRecord").hide();
 			$("#searchPaneEvent").fadeIn();
 		} else {
 			statusText = "record";
+			searchText = "record";
+			setFormData("targetType", "record");
 			$("#searchPaneEvent").hide();
 			$("#searchPaneRecord").fadeIn();
 		}
@@ -957,6 +1006,31 @@ $(document).ready(function () {
 		});
 		return obj;
 	}
+
+
+
+	function loadTiff(filename, dest) {
+		// destination expressed as jquery selector
+		var xhr = new XMLHttpRequest();
+		xhr.responseType = 'arraybuffer';
+		xhr.open('GET', filename);
+		xhr.onload = function (e) {
+			var tiff = new Tiff({
+				buffer: xhr.response
+			});
+			var width = tiff.width();
+			var height = tiff.height();
+			var canvas = tiff.toCanvas();
+			if (canvas) {
+				canvas.setAttribute('style', 'width:' + (width * 0.3) +
+					'px; height: ' + (height * 0.3) + 'px');
+				$(dest).append(canvas);
+			}
+		};
+		xhr.send();
+	}
+
+
 });
 
 function editCommonMetadata(key, value) {
