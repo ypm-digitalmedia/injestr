@@ -550,10 +550,10 @@ $(document).ready(function () {
 		});
 	}
 
-	$("#logoutLink").click(function () {
-		var newUrl = stripQs("cas");
-		window.location.href = newUrl;
-	});
+	//	$("#logoutLink").click(function () {
+	//		var newUrl = stripQs("cas");
+	//		window.location.href = newUrl;
+	//	});
 
 	$("#searchEventAll").on("keyup keypress click", function (e) {
 		searchTextEvent = $(this).val();
@@ -568,7 +568,10 @@ $(document).ready(function () {
 	}
 
 	function detectUser() {
-		CASuser.name = getQs("cas");
+		//CASuser.name = getQs("cas");
+		CASuser.name = cookieCasUser;
+
+		var noUser = "default";
 
 		var userName = "";
 
@@ -581,7 +584,7 @@ $(document).ready(function () {
 
 		if (!CASuser.name || CASuser.name == "") {
 			// no user name passed in via query string
-			var noUser = prompt("Enter your CAS username:");
+			// var noUser = prompt("Enter your CAS username:");
 			CASuser.name = noUser;
 
 			if (_.includes(recordBasedUsers, noUser)) {
@@ -666,16 +669,20 @@ $(document).ready(function () {
 			userName = CASuser.name;
 		}
 
-		if (!userName || userName == "null") {
-			alert("not logged in!");
-			stripQs("cas");
-			location.reload();
-		} else {
-			//all good, let's go
+		//		if (!userName || userName == "null") {
+		//			alert("not logged in!");
+		//			stripQs("cas");
+		//			location.reload();
+		//		} else {
+		//			//all good, let's go
+		//
+		//			makeUserLink(CASuser);
+		//			makeLookupSwitcher();
+		//		}
 
-			makeUserLink(CASuser);
-			makeLookupSwitcher();
-		}
+		//		alert(CASuser);
+		makeUserLink(CASuser);
+		makeLookupSwitcher();
 
 		setFormData("targetType", searchType);
 		setFormData("user", CASuser.name);
