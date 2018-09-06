@@ -33,7 +33,7 @@
 			if( file_exists($cookie_file)) { 
 				$get = file_get_contents($cookie_file);
 				$arr = simplexml_load_string($get);
-				print_r($arr);
+				#print_r($arr);
 
 				// get username    
 				$cas_username = (string) $arr->user[0];
