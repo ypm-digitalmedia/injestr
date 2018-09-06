@@ -9,7 +9,7 @@
 
 	if( $hostname == "10.5.33.98" ) {
 		
-		$logoutUrl = "https://secure.its.yale.edu/cas/logout/";
+		$logoutUrl = "https://secure.its.yale.edu/cas/logout";
 		
 		// get entire cookie string
 		$cookie = $_SERVER['HTTP_COOKIE'];
