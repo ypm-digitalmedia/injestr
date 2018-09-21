@@ -58,6 +58,12 @@ ul.nav-tabs li a:hover {
 	border-color: transparent;
 }
 
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+	background-color: #6788b2;
+}
+
 a:link,
 a:visited {
 	color: #6788b2;
@@ -72,21 +78,31 @@ a:active {
 	font-size: 0.8em;
 }
 
-#searchPaneRecord {
+/* disable destination buttons until credentials proven */
+
+#tabcontrol12 {
 	display: none;
+}
+
+#tabcontrol13 {
+	display: none;
+}
+
+#searchPaneRecord {
+	/*	display: none;*/
 }
 
 
 #searchPaneEvent {
-	display: block;
+	/*	display: block;*/
 }
 
 #searchByLabelEvent {
-	display: none;
+	/*	display: none;*/
 }
 
 #searchByLabelRecord {
-	display: none;
+	/*	display: none;*/
 }
 
 .input-group-addon-custom .btn {

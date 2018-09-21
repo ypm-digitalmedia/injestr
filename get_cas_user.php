@@ -1,5 +1,7 @@
 <?php
 	$headers = apache_request_headers();
+	
+	$default_cas_username = "admin";
 
 	foreach ($headers as $header => $value) {
 		#echo "$header: $value <br />\n";
@@ -41,15 +43,15 @@
 
 			} else {
 				#header("Location : bad_cas.php");
-				$cas_username = "am2946";
+				$cas_username = $default_cas_username;
 			}
 		} else {
 			#header("Location : bad_cas.php");
-			$cas_username = "am2946";
+			$cas_username = $default_cas_username;
 		}
 
 	} else {
-		$cas_username = "am2946";
+		$cas_username = $default_cas_username;
 		$logoutUrl = "javascript:location.reload()";
 	}
 

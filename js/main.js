@@ -2,6 +2,7 @@ var myDropzone;
 
 var formData = {
 	targetType: null,
+	label: null,
 	target: null,
 	dateStamp: null,
 	guid: null,
@@ -9,6 +10,11 @@ var formData = {
 	assets: []
 };
 
+var creatorNames = [];
+var creatorName = {
+	creator: "",
+	irn: ""
+};
 
 var showMoreInfoPopup;
 
@@ -22,6 +28,7 @@ var selectedEvent = null;
 var selectedRecord = null;
 var selectedTarget = null;
 
+var jsonDataPeople = {};
 var jsonDataUsers = {};
 var jsonDataEvents = {};
 var jsonDataRecords = {};
@@ -37,10 +44,12 @@ var CASuser = {
 Dropzone.autoDiscover = false;
 $(document).ready(function () {
 	jsonDataUsers = loadJsonAsVar("data/users.json");
-	jsonDataEvents = loadJsonAsVar("data/netx-events.json");
+	jsonDataEvents = loadJsonAsVar("../data/ingester-metadata-netx.json");
+	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json");
 	detectUser();
 	getPageWidth();
 	resetSelects();
+	activateCreatorLookup();
 
 	clearForm();
 
@@ -240,6 +249,8 @@ $(document).ready(function () {
 		showTabThree();
 	});
 
+
+
 	function makeFinalDataTable() {
 		$("#finalSummary tr").not(".header").remove();
 		$("#finalNumSubmitted").html("Ready to submit " + formData.assets.length + " assets");
@@ -291,7 +302,7 @@ $(document).ready(function () {
 		var tableHTML = '<table class="table table-striped">';
 		tableHTML += '<tr><td><strong>File Name</td><td>' + formData.assets[index].filename + '</td></tr>';
 		tableHTML += '<tr><td><strong>File Size</td><td>' + sizeStringSimple + '</td></tr>';
-		tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.last + ', ' + formData.assets[index].creatorName.first + ' ' + formData.assets[index].creatorName.middle + '</td></tr>';
+		tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.creator + '</td></tr>';
 		tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
 		tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
 		tableHTML += '<tr><td><strong>Keywords</strong></td><td>' + formData.assets[index].keywords + '</td></tr>';
@@ -337,6 +348,10 @@ $(document).ready(function () {
 	function makeFilesClickable() {
 		_.forEach(myDropzone.files, function (f) {
 			f.previewElement.classList.remove("dz-success");
+			creatorNames.push({
+				creator: "",
+				irn: ""
+			});
 		});
 
 		$("a.dz-remove").slideUp();
@@ -420,9 +435,12 @@ $(document).ready(function () {
 				if (asset.valid || (!asset.valid && num == 0)) {
 					// preload with data from formData if asset is valid or it's the first time around
 
-					$("#uploadsInfoCommonCreatorLast").val(asset.creatorName.last);
-					$("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.first);
-					$("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.middle);
+					//					$("#uploadsInfoCommonCreatorLast").val(asset.creatorName.last);
+					//					$("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.first);
+					//					$("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.middle);
+
+					$("#uploadsInfoCommonCreator").val(asset.creatorName.creator);
+
 					$("#uploadsInfoCommonTitle").val(asset.title);
 					$("#uploadsInfoCommonDate").val(asset.date);
 					$("#uploadsInfoCommonKeywords").val(asset.keywords);
@@ -555,6 +573,9 @@ $(document).ready(function () {
 	//		window.location.href = newUrl;
 	//	});
 
+
+
+
 	$("#searchEventAll").on("keyup keypress click", function (e) {
 		searchTextEvent = $(this).val();
 		//		console.log(searchTextEvent);
@@ -592,14 +613,14 @@ $(document).ready(function () {
 				console.warn("logged in as record-based user " + noUser);
 				CASuser.type = "record";
 				CASuser.type = "record";
-				initialSearchType = "record";
+				initialSearchType = "graphics";
 				searchType = "record";
 			} else {
 				//check for event-based
 				if (_.includes(eventBasedUsers, noUser)) {
 					console.warn("logged in as event-based user " + noUser);
 					CASuser.type = "event";
-					initialSearchType = "event";
+					initialSearchType = "graphics";
 					searchType = "event";
 				} else {
 					//check for both-based
@@ -609,14 +630,14 @@ $(document).ready(function () {
 							noUser
 						);
 						CASuser.type = "both";
-						initialSearchType = "event";
+						initialSearchType = "graphics";
 						searchType = "event";
 					} else {
 						//default
-						console.warn("logged in as event-based user " + noUser);
-						CASuser.type = "event";
-						initialSearchType = "event";
-						searchType = "event";
+						console.warn("logged in as basic graphics-based user " + noUser);
+						CASuser.type = "graphics";
+						initialSearchType = "graphics";
+						searchType = "graphics";
 					}
 				}
 			}
@@ -634,7 +655,7 @@ $(document).ready(function () {
 				console.warn("logged in as record-based user " + CASuser.name);
 				CASuser.type = "record";
 				CASuser.type = "record";
-				initialSearchType = "record";
+				initialSearchType = "graphics";
 				searchType = "record";
 			} else {
 				//check for event-based
@@ -643,7 +664,7 @@ $(document).ready(function () {
 						"logged in as event-based user " + CASuser.name
 					);
 					CASuser.type = "event";
-					initialSearchType = "event";
+					initialSearchType = "graphics";
 					searchType = "event";
 				} else {
 					//check for both-based
@@ -653,16 +674,16 @@ $(document).ready(function () {
 							CASuser.name
 						);
 						CASuser.type = "both";
-						initialSearchType = "event";
+						initialSearchType = "graphics";
 						searchType = "event";
 					} else {
 						//default
 						console.warn(
-							"logged in as event-based user " + CASuser.name
+							"logged in as basic graphics-based user " + CASuser.name
 						);
-						CASuser.type = "event";
-						initialSearchType = "event";
-						searchType = "event";
+						CASuser.type = "graphics";
+						initialSearchType = "graphics";
+						searchType = "graphics";
 					}
 				}
 			}
@@ -684,7 +705,7 @@ $(document).ready(function () {
 		makeUserLink(CASuser);
 		makeLookupSwitcher();
 
-		setFormData("targetType", searchType);
+		//		setFormData("targetType", searchType);
 		setFormData("user", CASuser.name);
 
 		sessionGUID = makeGUID();
@@ -694,55 +715,153 @@ $(document).ready(function () {
 		//focus search pane initially
 		if (searchType == "event") {
 			$("#searchEventAll").focus();
-		} else {
+		} else if (searchType == "record") {
 			$("#searchRecordAll").focus();
+		} else if (searchType == "graphics") {
+			$("#labelForSally").focus();
 		}
 	}
 
-	$("#lookupToggle").change(function () {
-		var status = $(this).prop("checked");
-		var statusText = "";
-		if (status === true) {
-			statusText = "event";
-			searchText = "event";
-			setFormData("targetType", "event");
-			$("#searchPaneRecord").hide();
-			$("#searchPaneEvent").fadeIn();
-		} else {
-			statusText = "record";
-			searchText = "record";
-			setFormData("targetType", "record");
-			$("#searchPaneEvent").hide();
-			$("#searchPaneRecord").fadeIn();
+	//	$("#labelForSally").on("keyup", function () {
+	//		var label = $(this).val();
+	//		console.warn(label);
+	//		if (!label || label == "") {
+	//			$("#graphicsStepOneNextButton").prop("disabled", "disabled");
+	//			$("#graphicsStepOneNextButton")
+	//				.removeClass("btn-primary")
+	//				.addClass("btn-disabled");
+	//			$("#graphicsStepOneNextButton").click(function () {
+	//				void(0);
+	//			});
+	//			$("#dropzoneArea").hide();
+	//		} else {
+	//			$("#graphicsStepOneNextButton").prop("disabled", false);
+	//			$("#graphicsStepOneNextButton")
+	//				.removeClass("btn-disabled")
+	//				.addClass("btn-primary");
+	//
+	//			var dummyData = {
+	//				"irn": "",
+	//				"number": "",
+	//				"date": {
+	//					"start": "",
+	//					"end": ""
+	//				},
+	//				"department": "",
+	//				"description": "",
+	//				"type": "",
+	//				"concat": ""
+	//			}
+	//
+	//			$("#graphicsStepOneNextButton").click(function () {
+	//				searchType = "graphics";
+	//				printSearchResults(dummyData, "graphics");
+	//				setFormData("targetType", "graphics");
+	//				searchType = "graphics";
+	//				setFormData("target", null);
+	//				setFormData("label", label);
+	//				showTabTwo();
+	//			});
+	//			$("#dropzoneArea").show();
+	//		}
+	//
+	//	});
+
+
+
+
+	$("#graphicsStepOneNextButton").click(function () {
+		var label = $(this).val();
+		var dummyData = {
+			"irn": "",
+			"number": "",
+			"date": {
+				"start": "",
+				"end": ""
+			},
+			"department": "",
+			"description": "",
+			"type": "",
+			"concat": ""
 		}
 
-		console.log("Toggle: " + status + " | " + statusText);
+		searchType = "graphics";
+		printSearchResults(dummyData, "graphics");
+		setFormData("targetType", "graphics");
+		searchType = "graphics";
+		setFormData("target", null);
+		setFormData("label", label);
+		$("#dropzoneArea").show();
+		showTabTwo();
 	});
 
+
+
+
+
+
+
+	//	$("#lookupToggle").change(function () {
+	//		var status = $(this).prop("checked");
+	//		var statusText = "";
+	//		if (status === true) {
+	//			statusText = "event";
+	//			searchText = "event";
+	//			setFormData("targetType", "event");
+	//			$("#searchPaneRecord").hide();
+	//			$("#searchPaneEvent").fadeIn();
+	//		} else {
+	//			statusText = "record";
+	//			searchText = "record";
+	//			setFormData("targetType", "record");
+	//			$("#searchPaneEvent").hide();
+	//			$("#searchPaneRecord").fadeIn();
+	//		}
+	//
+	//		console.log("Toggle: " + status + " | " + statusText);
+	//	});
+
 	function makeLookupSwitcher() {
-		if (CASuser.type == "event" || CASuser.type == "both") {
-			$("#lookupToggle").prop("checked", true);
-		} else {
-			$("#lookupToggle").prop("checked", false);
+
+		if (CASuser.type == "event") {
+			$("#tabcontrol12").show();
 		}
 
-		// make toggle switch
-		if (CASuser.type == "event") {
-			$("#searchByLabelEvent").show();
-			$("#lookupToggle").hide();
-		} else if (CASuser.type == "record") {
-			$("#searchByLabelRecord").show();
-			$("#searchPaneEvent").hide();
-			$("#searchPaneRecord").show();
-			$("#lookupToggle").hide();
-		} else {
-			$("#lookupToggle").bootstrapToggle({
-				on: "Event",
-				off: "Record",
-				onstyle: "default",
-				offstyle: "default"
-			});
+		if (CASuser.type == "record") {
+			$("#tabcontrol13").show();
 		}
+
+		if (CASuser.type == "both") {
+			$("#tabcontrol12").show();
+			$("#tabcontrol13").show();
+		}
+
+
+
+
+		// make toggle switch (first version) 
+		//		if (CASuser.type == "event" || CASuser.type == "both") {
+		//			$("#lookupToggle").prop("checked", true);
+		//		} else {
+		//			$("#lookupToggle").prop("checked", false);
+		//		}
+
+		//		if (CASuser.type == "event") {
+		//			$("#searchByLabelEvent").show();
+		//			$("#lookupToggle").hide();
+		//		} else if (CASuser.type == "record") {
+		//			$("#searchByLabelRecord").show();
+		//			$("#searchPaneEvent").hide();
+		//			$("#searchPaneRecord").show();
+		//			$("#lookupToggle").hide();
+		//		} else {
+		//			$("#lookupToggle").bootstrapToggle({
+		//				on: "Event",
+		//				off: "Record",
+		//				onstyle: "default",
+		//				offstyle: "default"
+		//			});
+		//		}
 
 		// ========================================================================
 		// ===================== LOOKUP - EVENTS ==================================
@@ -768,8 +887,9 @@ $(document).ready(function () {
 					enabled: true
 				},
 				onChooseEvent: function () {
+					searchType = "event";
 					var obj = $("#searchEventAll").getSelectedItemData();
-
+					//					console.log(obj);
 					$("#searchEventAll").val(searchTextEvent);
 
 					if ($("#eventStepOneNextButton").hasClass("btn-disabled")) {
@@ -780,6 +900,7 @@ $(document).ready(function () {
 						showTabTwo();
 
 						$("#eventStepOneNextButton").click(function () {
+							searchType = "event";
 							showTabTwo();
 						});
 
@@ -788,6 +909,8 @@ $(document).ready(function () {
 
 					printSearchResults(obj, "event");
 					setFormData("target", obj);
+					setFormData("label", null);
+					setFormData("targetType", "event");
 				}
 			},
 			template: {
@@ -828,6 +951,8 @@ $(document).ready(function () {
 			theme: "bootstrap"
 		};
 
+		var optsRecords = {};
+
 		$("#searchEventAll").easyAutocomplete(optsEvents);
 	}
 
@@ -848,9 +973,13 @@ $(document).ready(function () {
 		var asset = formData.assets[target];
 
 		// set formData values
-		asset.creatorName.last = $("#uploadsInfoCommonCreatorLast").val();
-		asset.creatorName.first = $("#uploadsInfoCommonCreatorFirst").val();
-		asset.creatorName.middle = $("#uploadsInfoCommonCreatorMiddle").val();
+		//		asset.creatorName.last = $("#uploadsInfoCommonCreatorLast").val();
+		//		asset.creatorName.first = $("#uploadsInfoCommonCreatorFirst").val();
+		//		asset.creatorName.middle = $("#uploadsInfoCommonCreatorMiddle").val();
+
+		asset.creatorName.creator = creatorName.creator;
+		asset.creatorName.irn = creatorName.irn;
+
 		asset.title = $("#uploadsInfoCommonTitle").val();
 		asset.date = $("#uploadsInfoCommonDate").val();
 		asset.keywords = $("#uploadsInfoCommonKeywords").val();
@@ -882,7 +1011,8 @@ $(document).ready(function () {
 			console.warn("bad function call");
 		} else {
 			if (!value) {
-				value = "not set";
+				//				value = "not set";
+				value = null;
 			}
 
 			// set specific key/value
@@ -890,11 +1020,16 @@ $(document).ready(function () {
 			if (key == "assets") {
 				var obj = {
 					valid: false,
+					//					creatorName: {
+					//						first: $("#uploadsInfoCommonCreatorFirst").val(),
+					//						middle: $("#uploadsInfoCommonCreatorMiddle").val(),
+					//						last: $("#uploadsInfoCommonCreatorLast").val()
+					//					},
 					creatorName: {
-						first: $("#uploadsInfoCommonCreatorFirst").val(),
-						middle: $("#uploadsInfoCommonCreatorMiddle").val(),
-						last: $("#uploadsInfoCommonCreatorLast").val()
+						creator: creatorName.creator,
+						irn: creatorName.irn
 					},
+
 					title: $("#uploadsInfoCommonTitle").val(),
 					date: $("#uploadsInfoCommonDate").val(),
 					keywords: $("#uploadsInfoCommonKeywords").val(),
@@ -985,6 +1120,12 @@ $(document).ready(function () {
 		if ($(event.target).hasClass("edit-event-search-link")) {
 			$('.nav-tabs a[href="#tab1"]').tab("show");
 			$("#searchEventAll").focus();
+		} else if ($(event.target).hasClass("edit-record-search-link")) {
+			$('.nav-tabs a[href="#tab1"]').tab("show");
+			$("#searchRecordAll").focus();
+		} else if ($(event.target).hasClass("edit-graphics-search-link")) {
+			$('.nav-tabs a[href="#tab1"]').tab("show");
+			$("#labelForSally").focus();
 		}
 	});
 
@@ -1040,6 +1181,60 @@ $(document).ready(function () {
 
 });
 
+
+function activateCreatorLookup() {
+	var options = {
+
+		url: "../data/ingester-metadata-people.json",
+
+		getValue: function (element) {
+			//			return element.concat;
+			return element.creator;
+		},
+
+		list: {
+			maxNumberOfElements: 100,
+			match: {
+				enabled: true
+			},
+			sort: {
+				enabled: true
+			},
+			onChooseEvent: function () {
+				creatorChosen = true;
+				var obj = $("#uploadsInfoCommonCreator").getSelectedItemData();
+				console.log(obj, activeAsset);
+				editCommonMetadata("creator", obj.irn + "|" + obj.creator);
+				creatorNames[activeAsset].creator = obj.creator;
+				creatorNames[activeAsset].irn = obj.irn;
+
+				creatorName.creator = obj.creator;
+				creatorName.irn = obj.irn;
+			}
+		},
+
+		//		template: {
+		//			type: "custom",
+		//			method: function (value, item) {
+		//
+		//				var valArr = value.split("|");
+		//				var html = "";
+		//
+		//				html +=
+		//					"<span class='result-line'><em>" + valArr[1] + "</span>";
+		//				html +=
+		//					"<span class='result-line smaller'>" + valArr[0] + "</span>";
+		//
+		//				return html;
+		//			}
+		//		},
+
+		theme: "bootstrap"
+	};
+
+	$("#uploadsInfoCommonCreator").easyAutocomplete(options);
+}
+
 function editCommonMetadata(key, value) {
 	console.warn(key + " | " + value);
 }
@@ -1054,6 +1249,12 @@ function printSearchResults(obj, type) {
 	} else if (type == "record") {
 		var tpl = document.querySelector("#tplRecord").innerHTML;
 		var destFirst = $("#searchResultsRecord");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
+	} else if (type == "graphics") {
+		var tpl = $("#labelForSally").val();
+		tpl += '<button class="btn btn-default pull-right edit-graphics-search-link" style="clear: both" type="button" id="graphicsEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Label</button>';
+		var destFirst = $("#searchResultsGraphics");
 		var destSecond = $("#confirmedResultStepTwo");
 		var destThird = $("#confirmedResultStepThree");
 	}
@@ -1078,6 +1279,10 @@ function clearSearchResults(type) {
 		var destThird = $("#confirmedResultStepThree");
 	} else if (type == "record") {
 		var destFirst = $("#searchResultsRecord");
+		var destSecond = $("#confirmedResultStepTwo");
+		var destThird = $("#confirmedResultStepThree");
+	} else if (type == "graphics") {
+		var destFirst = $("#searchResultsGraphics");
 		var destSecond = $("#confirmedResultStepTwo");
 		var destThird = $("#confirmedResultStepThree");
 	}

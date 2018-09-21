@@ -94,13 +94,13 @@ include_once "get_cas_user.php";
 					<div class="wrapper">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="active" id="tabcontrol1">
-								<a href="#tab1" data-toggle="tab" role="tab"><strong>Search</strong></a>
+								<a href="#tab1" data-toggle="tab" role="tab"><strong>1. Destination</strong></a>
 							</li>
 							<li id="tabcontrol2">
-								<a href="#tab2" data-toggle="tab" role="tab"><strong>Upload</strong></a>
+								<a href="#tab2" data-toggle="tab" role="tab"><strong>2. Upload</strong></a>
 							</li>
 							<li id="tabcontrol3">
-								<a href="#tab3" data-toggle="tab" role="tab"><strong>Submit</strong></a>
+								<a href="#tab3" data-toggle="tab" role="tab"><strong>3. Submit</strong></a>
 							</li>
 						</ul>
 					</div>
@@ -108,88 +108,135 @@ include_once "get_cas_user.php";
 						<div class="tab-pane fade in active" id="tab1">
 
 
-							<!-- SEARCH TYPE SELECTOR -->
 
+							<!--
 							<div class="container-fluid search-pane" id="searchPaneSelector">
 								<div class="row row-pad">
 									<div class="col-xs-12">
-										<!--									<p align="center">-->
 										<span id="searchByLabel"><strong>Search by&nbsp;</strong><strong id="searchByLabelRecord">Record</strong><strong id="searchByLabelEvent">Event</strong></span>
 										<input type="checkbox" id="lookupToggle" checked></input>
-										<!--									</p>-->
 									</div>
 								</div>
 							</div>
+-->
+							<!-- SEARCH TYPE SELECTOR -->
 
-
-
-							<!-- SEARCH BY EVENT -->
-
-							<div class="search-pane" id="searchPaneEvent">
-
-								<div class="row">
-									<div class="form-group col-xs-12">
-										<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, number, type" />
-										<div class="help-block with-errors"></div>
-									</div>
+							<div class="container-fluid">
+								<div class="wrapper">
+									<ul class="nav nav-pills" role="tablist">
+										<li style="padding-right: 2em;">
+											<h5>Destination:</h5>
+										</li>
+										<li class="active" id="tabcontrol11">
+											<a href="#searchPaneGraphics" data-toggle="tab" role="tab"><i class="fas fa-camera"></i>&nbsp;<strong>Graphics Dept.</strong></a>
+										</li>
+										<li id="tabcontrol12">
+											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-calendar-alt"></i>&nbsp;<strong>EMu Event</strong></a>
+										</li>
+										<li id="tabcontrol13">
+											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-file"></i>&nbsp;<strong>EMu Record</strong></a>
+										</li>
+									</ul>
 								</div>
-								<div class="row row-pad">
-									<div class="col-xs-12">
-										<div id="searchResultsEvent" class="search-results-container"></div>
+
+								<!-- Tab panes -->
+
+								<div class="tab-content">
+									<!-- SEND TO SALLY -->
+
+									<div class="tab-pane fade in active" id="searchPaneGraphics">
+
+										<div class="row row-pad">
+											<div class="form-group col-xs-12">
+												<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
+												<div class="help-block with-errors"></div>
+											</div>
+										</div>
+										<div class="row row-pad">
+											<div class="col-xs-12">
+												<div id="searchResultsGraphics" class="search-results-container"></div>
+											</div>
+										</div>
+
+										<div class="row row-pad">
+											<div class="col-xs-12 align-center">
+												<p align="center" class="align-center">
+													<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+												</p>
+											</div>
+										</div>
+
 									</div>
+
+									<!-- END -->
+
+									<!-- SEARCH BY EVENT -->
+
+									<div class="search-pane tab-pane fade" id="searchPaneEvent">
+
+										<div class="row row-pad">
+											<div class="form-group col-xs-12">
+												<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, number, type" />
+												<div class="help-block with-errors"></div>
+											</div>
+										</div>
+										<div class="row row-pad">
+											<div class="col-xs-12">
+												<div id="searchResultsEvent" class="search-results-container"></div>
+											</div>
+										</div>
+
+										<div class="row row-pad">
+											<div class="col-xs-12 align-center">
+												<p align="center" class="align-center">
+													<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+												</p>
+											</div>
+										</div>
+
+									</div>
+
+									<!-- END -->
+
+
+									<!-- SEARCH BY RECORD -->
+
+									<div class="search-pane tab-pane fade" id="searchPaneRecord">
+
+										<div class="row row-pad">
+											<div class="form-group col-xs-12">
+												<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter description, catalog #, department" />
+												<div class="help-block with-errors"></div>
+											</div>
+										</div>
+										<div class="row row-pad">
+											<div class="col-xs-12">
+												<div id="searchResultsRecord" class="search-results-container"></div>
+											</div>
+										</div>
+
+										<div class="row row-pad">
+											<div class="col-xs-12 align-center">
+												<p align="center" class="align-center">
+													<button class="btn btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+												</p>
+											</div>
+										</div>
+
+
+
+
+									</div>
+
+
+									<!-- END -->
+
 								</div>
 
-								<div class="row row-pad">
-									<div class="col-xs-12 align-center">
-										<p align="center" class="align-center">
-											<button class="btn btn-lg btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-										</p>
-									</div>
-								</div>
+
+
 
 							</div>
-
-							<!-- END -->
-
-
-							<!-- SEARCH BY RECORD -->
-
-							<div class="search-pane" id="searchPaneRecord">
-
-								<div class="row">
-									<div class="form-group col-xs-12">
-										<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter description, catalog #, department" />
-										<div class="help-block with-errors"></div>
-									</div>
-								</div>
-								<div class="row row-pad">
-									<div class="col-xs-12">
-										<div id="searchResultsRecord" class="search-results-container"></div>
-									</div>
-								</div>
-
-								<div class="row row-pad">
-									<div class="col-xs-12 align-center">
-										<p align="center" class="align-center">
-											<button class="btn btn-disabled" disabled="true" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-										</p>
-									</div>
-								</div>
-
-
-
-
-							</div>
-
-
-							<!-- END -->
-
-
-
-
-
-
-
 
 
 
@@ -199,7 +246,7 @@ include_once "get_cas_user.php";
 								<div class="row row-pad">
 									<div class="col-xs-12">
 										<div id="confirmedResultStepTwo" class="search-results-container">
-											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a target</a> first.</p>
+											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-search-link">select a target</a> first.</p>
 										</div>
 									</div>
 								</div>
@@ -247,6 +294,7 @@ include_once "get_cas_user.php";
 
 								</div>
 
+								<!--
 								<div class="row row-pad-top">
 									<div class="form-group col-sm-5">
 										<label for="uploadsInfoCommonCreatorLast" class="control-label">Creator Name</label>
@@ -275,10 +323,31 @@ include_once "get_cas_user.php";
 										<div class="help-block with-errors" onchange="#"></div>
 									</div>
 								</div>
+-->
+
+
+								<div class="row row-pad-top">
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonCreator" class="control-label">Creator Name</label>
+										<input type="text" class="form-control" id="uploadsInfoCommonCreator" placeholder="Creator name" required data-error="Creator name required.">
+										<div class="help-block with-errors"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonTitle" class="control-label">Brief Descriptive Title</label>
+										<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
+										<div class="help-block with-errors"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonDate" class="control-label">Date</label>
+										<input type="text" class="form-control" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
+										<div class="help-block with-errors" onchange="#"></div>
+									</div>
+								</div>
+
 								<div class="row">
 									<div class="form-group col-xs-12">
-										<label for="uploadsInfoCommonKeywords" class="control-label">Keywords</label>
-										<input type="text" class="form-control" required id="uploadsInfoCommonKeywords" placeholder="Enter keyword" data-error="Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
+										<label for="uploadsInfoCommonKeywords" class="control-label">Notes/Keywords</label>
+										<input type="text" class="form-control" required id="uploadsInfoCommonKeywords" placeholder="Type something here..." data-error="Note/Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
