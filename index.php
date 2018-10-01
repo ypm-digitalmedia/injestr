@@ -18,6 +18,10 @@ include_once "get_cas_user.php";
 
 		</script>
 
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.ajax-cross-origin.min.js"></script>
+
 		<meta charset="utf-8" />
 		<meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -134,7 +138,7 @@ include_once "get_cas_user.php";
 											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-calendar-alt"></i>&nbsp;<strong>EMu Event</strong></a>
 										</li>
 										<li id="tabcontrol13">
-											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-file"></i>&nbsp;<strong>EMu Record</strong></a>
+											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-sticky-note"></i>&nbsp;<strong>EMu Record</strong></a>
 										</li>
 									</ul>
 								</div>
@@ -145,27 +149,27 @@ include_once "get_cas_user.php";
 									<!-- SEND TO SALLY -->
 
 									<div class="tab-pane fade in active" id="searchPaneGraphics">
+										<div class="container-fluid">
+											<div class="row row-pad">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsGraphics" class="search-results-container"></div>
+												</div>
+											</div>
 
-										<div class="row row-pad">
-											<div class="form-group col-xs-12">
-												<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
-												<div class="help-block with-errors"></div>
+											<div class="row row-pad">
+												<div class="col-xs-12 align-center">
+													<p align="center" class="align-center">
+														<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+													</p>
+												</div>
 											</div>
 										</div>
-										<div class="row row-pad">
-											<div class="col-xs-12">
-												<div id="searchResultsGraphics" class="search-results-container"></div>
-											</div>
-										</div>
-
-										<div class="row row-pad">
-											<div class="col-xs-12 align-center">
-												<p align="center" class="align-center">
-													<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-												</p>
-											</div>
-										</div>
-
 									</div>
 
 									<!-- END -->
@@ -173,27 +177,27 @@ include_once "get_cas_user.php";
 									<!-- SEARCH BY EVENT -->
 
 									<div class="search-pane tab-pane fade" id="searchPaneEvent">
+										<div class="container-fluid">
+											<div class="row row-pad">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, EMu number, or type" />
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsEvent" class="search-results-container"></div>
+												</div>
+											</div>
 
-										<div class="row row-pad">
-											<div class="form-group col-xs-12">
-												<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, number, type" />
-												<div class="help-block with-errors"></div>
+											<div class="row row-pad">
+												<div class="col-xs-12 align-center">
+													<p align="center" class="align-center">
+														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+													</p>
+												</div>
 											</div>
 										</div>
-										<div class="row row-pad">
-											<div class="col-xs-12">
-												<div id="searchResultsEvent" class="search-results-container"></div>
-											</div>
-										</div>
-
-										<div class="row row-pad">
-											<div class="col-xs-12 align-center">
-												<p align="center" class="align-center">
-													<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-												</p>
-											</div>
-										</div>
-
 									</div>
 
 									<!-- END -->
@@ -202,28 +206,42 @@ include_once "get_cas_user.php";
 									<!-- SEARCH BY RECORD -->
 
 									<div class="search-pane tab-pane fade" id="searchPaneRecord">
-
-										<div class="row row-pad">
-											<div class="form-group col-xs-12">
-												<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter description, catalog #, department" />
-												<div class="help-block with-errors"></div>
+										<div class="container-fluid">
+											<div class="row row-pad">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter EMu catalog number" />
+													<div class="help-block with-errors"></div>
+												</div>
 											</div>
-										</div>
-										<div class="row row-pad">
-											<div class="col-xs-12">
-												<div id="searchResultsRecord" class="search-results-container"></div>
+											<div class="row row-pad">
+												<div class="col-sm-4 col-xs-8">
+													<span>MorphoSource Record? </span>
+												</div>
+												<div class="col-sm-2 col-xs-4">
+													<input type="checkbox" id="searchByRecordMorphoSource" checked value="true" />
+												</div>
+												<div class="col-sm-4 col-xs-8">
+													<span>Private/Embargoed Data? </span>
+												</div>
+												<div class="col-sm-2 col-xs-4">
+													<input type="checkbox" id="searchByRecordEmbargoed" value="false" />
+												</div>
 											</div>
-										</div>
-
-										<div class="row row-pad">
-											<div class="col-xs-12 align-center">
-												<p align="center" class="align-center">
-													<button class="btn btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-												</p>
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsRecord" class="search-results-container"></div>
+												</div>
 											</div>
+
+											<div class="row row-pad">
+												<div class="col-xs-12 align-center">
+													<p align="center" class="align-center">
+														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+													</p>
+												</div>
+											</div>
+
 										</div>
-
-
 
 
 									</div>
@@ -258,6 +276,7 @@ include_once "get_cas_user.php";
 								<div class="row">
 									<div class="col-xs-12">
 										<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
+										<div class="mimic-form-control search-results-container" id="morphoSourceApiResults">morpho</div>
 									</div>
 								</div>
 
@@ -544,13 +563,32 @@ include_once "get_cas_user.php";
 		<!-- SEARCH RESULTS - RECORD -->
 
 		<div id="tplRecord">
+			<div class="alert alert-success">
+				<div class="row">
+					<div class="col col-xs-12 col-sm-8">
+						<span class="result-line"><i class="fas fa-check-circle"></i>&nbsp;<strong>SELECTED</strong></span>
+						<span class="result-line"><em>{{{number}}}</em></span>
+						<span class="result-line"><em>{{{name}}}</em></span>
+						<span class="result-line smaller space-top">{{{collector}}}&nbsp;&bull;&nbsp;{{{date}}}</span>
+						<span class="result-line smaller">{{{geography}}}</span>
+						<span class="result-line smaller">IRN&nbsp;{{{irn}}}</span>
+					</div>
+					<div class="col col-xs-12 col-sm-4">
+						<!--					<button class="btn btn-primary pull-right" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>-->
+						<button class="btn btn-default pull-right edit-record-search-link" style="clear: both" type="button" id="recordEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Search</button>
+					</div>
+				</div>
+			</div>
 
 		</div>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
 
+		<!--
 
 		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.ajax-cross-origin.min.js"></script>
+-->
 		<script src="js/jquery-ui.min.js"></script>
 		<script src="js/jquery.easy-autocomplete.min.js"></script>
 		<script src="js/jquery.tagsinput.min.js"></script>

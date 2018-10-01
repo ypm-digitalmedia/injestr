@@ -430,6 +430,12 @@ textarea.mimic-form-control {
 	height: auto
 }
 
+/*
+#morphoSourceApiResults {
+	min-height: 400px;
+}
+*/
+
 .container {
 	margin-top: 10px;
 }

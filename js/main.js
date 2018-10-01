@@ -7,6 +7,8 @@ var formData = {
 	dateStamp: null,
 	guid: null,
 	user: null,
+	morphosource: null,
+	private: null,
 	assets: []
 };
 
@@ -33,6 +35,11 @@ var jsonDataUsers = {};
 var jsonDataEvents = {};
 var jsonDataRecords = {};
 
+var jsonMorphoSourceResults = {};
+
+var isMorphoSource = true;
+var isEmbargoed = false;
+
 var initialSearchType = "";
 var searchType = "";
 
@@ -41,11 +48,14 @@ var CASuser = {
 	type: ""
 };
 
+
 Dropzone.autoDiscover = false;
 $(document).ready(function () {
 	jsonDataUsers = loadJsonAsVar("data/users.json");
 	jsonDataEvents = loadJsonAsVar("../data/ingester-metadata-netx.json");
 	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json");
+	jsonDataRecords = loadJsonAsVar("../data/ingester-metadata-specimens.json");
+
 	detectUser();
 	getPageWidth();
 	resetSelects();
@@ -581,6 +591,11 @@ $(document).ready(function () {
 		//		console.log(searchTextEvent);
 	});
 
+	$("#searchRecordAll").on("keyup keypress click", function (e) {
+		searchTextRecord = $(this).val();
+		//		console.log(searchTextEvent);
+	});
+
 	function makeUserLink(user) {
 		console.log(user);
 		$("#userName").text(user.name);
@@ -800,7 +815,6 @@ $(document).ready(function () {
 
 
 
-
 	//	$("#lookupToggle").change(function () {
 	//		var status = $(this).prop("checked");
 	//		var statusText = "";
@@ -836,6 +850,38 @@ $(document).ready(function () {
 			$("#tabcontrol13").show();
 		}
 
+
+
+		// make toggle switch for 'record' path options (step 1)
+		$("#searchByRecordMorphoSource").bootstrapToggle({
+			on: "Yes",
+			off: "No"
+		});
+
+		$("#searchByRecordEmbargoed").bootstrapToggle({
+			on: "Yes",
+			off: "No",
+			onstyle: "danger",
+			offstyle: "success"
+		});
+
+		$("#searchByRecordMorphoSource").change(function () {
+			isMorphoSource = $(this).prop("checked");
+
+			setFormData("morphosource", isMorphoSource);
+			console.log("MorphoSource record: " + isMorphoSource);
+
+			printFormData();
+		});
+
+		$("#searchByRecordEmbargoed").change(function () {
+			isEmbargoed = $(this).prop("checked");
+			setFormData("private", isEmbargoed);
+
+			console.log("Embargoed/private data: " + isEmbargoed);
+
+			printFormData();
+		});
 
 
 
@@ -897,10 +943,14 @@ $(document).ready(function () {
 						$("#eventStepOneNextButton")
 							.removeClass("btn-disabled")
 							.addClass("btn-primary");
+						//						$("#eventStepOneNextButton").trigger("click");
 						showTabTwo();
 
 						$("#eventStepOneNextButton").click(function () {
 							searchType = "event";
+							setFormData("morphosource", null);
+							setFormData("private", null);
+							printFormData();
 							showTabTwo();
 						});
 
@@ -951,9 +1001,110 @@ $(document).ready(function () {
 			theme: "bootstrap"
 		};
 
-		var optsRecords = {};
+		var optsRecords = {
+			//			url: "data/ingester-metadata-netx.json",
+			url: "../data/ingester-metadata-specimens.json",
+
+			//			getValue: "description",
+			listLocation: function (el) {
+				return el;
+			},
+			getValue: function (element) {
+				return element.concat;
+			},
+			list: {
+				maxNumberOfElements: 500,
+				match: {
+					enabled: true
+				},
+				sort: {
+					enabled: true
+				},
+				onChooseEvent: function () {
+					searchType = "record";
+					var obj = $("#searchRecordAll").getSelectedItemData();
+					//					console.log(obj);
+					$("#searchRecordAll").val(searchTextRecord);
+
+					if ($("#recordStepOneNextButton").hasClass("btn-disabled")) {
+						$("#recordStepOneNextButton").prop("disabled", false);
+						$("#recordStepOneNextButton")
+							.removeClass("btn-disabled")
+							.addClass("btn-primary");
+						//						showTabTwo();
+						// don't automatically go to step 2 for 'record'
+
+						$("#recordStepOneNextButton").click(function () {
+							searchType = "record";
+							showTabTwo();
+						});
+
+						//						alert("don't show dropzone if it's a morphosource record!  use the API lookup instead.\n\nPut new fields into manifest json (collector, geography, etc.)")
+						if (isMorphoSource) {
+							$("#morphoSourceApiResults").show();
+						} else {
+							$("#dropzoneArea").show();
+						}
+					}
+
+					obj.private = isEmbargoed;
+					obj.morphosource = isMorphoSource;
+
+					printSearchResults(obj, "record");
+					setFormData("target", obj);
+					setFormData("label", null);
+					setFormData("targetType", "record");
+				}
+			},
+			template: {
+				type: "custom",
+				method: function (value, item) {
+					//					return value + "<br /><span class='smaller'>IRN " + item.irn + " &bull; " + item.number + "</span>";
+
+					var valArr = value.split("|");
+					var html = "";
+					var finderDateSeparator;
+
+					if (valArr[4] == "" || valArr[5] == "") {
+						finderDateSeparator = "";
+					} else {
+						finderDateSeparator = "&nbsp;&bull;&nbsp;";
+					}
+
+					html +=
+						"<span class='result-line'>" +
+						valArr[1] +
+						"</span>";
+
+					html +=
+						"<span class='result-line'>" +
+						"<em>" +
+						valArr[2] +
+						"</em>";
+					html +=
+						"<span class='result-line smaller space-top'>" +
+						valArr[4] +
+						finderDateSeparator +
+						valArr[5] +
+						"</span>";
+					html +=
+						"<span class='result-line smaller'>" +
+						valArr[3] +
+						"</span>";
+					html +=
+						"<span class='result-line smaller'>IRN&nbsp;" +
+						valArr[0] +
+						"</span>";
+
+					return html;
+				}
+			},
+			//			theme: "blue-light"
+			theme: "bootstrap"
+		};
 
 		$("#searchEventAll").easyAutocomplete(optsEvents);
+		$("#searchRecordAll").easyAutocomplete(optsRecords);
 	}
 
 	function showTabOne() {
@@ -1010,7 +1161,7 @@ $(document).ready(function () {
 			//generic form data set
 			console.warn("bad function call");
 		} else {
-			if (!value) {
+			if (!value && value !== false) {
 				//				value = "not set";
 				value = null;
 			}
@@ -1141,6 +1292,56 @@ $(document).ready(function () {
 		}
 	});
 
+	$('.nav-tabs a[href="#tab2"]').on("shown.bs.tab", function (e) {
+
+		if (isMorphoSource) {
+			getMorphoSourceResults(formData.target.number);
+		}
+	});
+
+	function fnError() {
+		alert('error');
+	}
+
+	function fnSuccess() {
+
+	}
+
+	function getMorphoSourceResults(catalogNum) {
+		//		alert(catalogNum);
+
+		var cn = catalogNum.split(".");
+
+		if (cn.length == 2) {
+
+			var dept = cn[0].toLowerCase();
+			var num = cn[1];
+			var endpointBase = "https://www.morphosource.org/api/v1/find/media?q=catalog_number:";
+			var endpoint = endpointBase + "ypm " + dept + " " + num;
+			console.log(endpoint);
+			//			alert(searchString);
+
+			$.ajax({
+				crossOrigin: true,
+				type: 'GET',
+				url: endpoint,
+				dataType: "json",
+				success: function (data) {
+					// success_fn(data);
+					console.log(data);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					// error_fn(jqXHR, textStatus, errorThrown);
+				}
+			});
+
+
+		} else {
+			alert("bad request.");
+		}
+	}
+
+
 	function loadJsonAsVar(url) {
 		var obj;
 		$.ajax({
@@ -1263,7 +1464,11 @@ function printSearchResults(obj, type) {
 	tplEdit = tplEdit.replace("{{{type}}}", obj.type);
 	tplEdit = tplEdit.replace("{{{startDate}}}", obj.date.start);
 	tplEdit = tplEdit.replace("{{{endDate}}}", obj.date.end);
+	tplEdit = tplEdit.replace("{{{name}}}", obj.name);
+	tplEdit = tplEdit.replace("{{{date}}}", obj.date);
+	tplEdit = tplEdit.replace("{{{geography}}}", obj.geography);
 	tplEdit = tplEdit.replace("{{{department}}}", obj.department);
+	tplEdit = tplEdit.replace("{{{collector}}}", obj.collector);
 	tplEdit = tplEdit.replace("{{{irn}}}", obj.irn);
 	tplEdit = tplEdit.replace("{{{number}}}", obj.number);
 
