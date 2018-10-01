@@ -2,6 +2,7 @@
 $url = (isset($_GET['url'])) ? $_GET['url'] : false;
 if(!$url) exit;
 
+
 $referer = (isset($_SERVER['HTTP_REFERER'])) ? strtolower($_SERVER['HTTP_REFERER']) : false;
 $is_allowed = $referer && strpos($referer, strtolower($_SERVER['SERVER_NAME'])) !== false; //deny abuse of your proxy from outside your site
 

@@ -800,13 +800,19 @@ $(document).ready(function () {
 			"concat": ""
 		}
 
+
+		$("#morphoSourceApiResults").hide();
+		$("#morphoSourceHeading").hide();
+		$("#dropzoneArea").show();
+		$("#dropzoneHeading").show();
+
 		searchType = "graphics";
 		printSearchResults(dummyData, "graphics");
 		setFormData("targetType", "graphics");
 		searchType = "graphics";
 		setFormData("target", null);
 		setFormData("label", label);
-		$("#dropzoneArea").show();
+		//		$("#dropzoneArea").show();
 		showTabTwo();
 	});
 
@@ -870,6 +876,12 @@ $(document).ready(function () {
 
 			setFormData("morphosource", isMorphoSource);
 			console.log("MorphoSource record: " + isMorphoSource);
+
+			if (isMorphoSource) {
+				$("#recordStepOneNextButton").html('Select Media&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
+			} else {
+				$("#recordStepOneNextButton").html('Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
+			}
 
 			printFormData();
 		});
@@ -944,6 +956,11 @@ $(document).ready(function () {
 							.removeClass("btn-disabled")
 							.addClass("btn-primary");
 						//						$("#eventStepOneNextButton").trigger("click");
+
+						$("#morphoSourceApiResults").hide();
+						$("#morphoSourceHeading").hide();
+						$("#dropzoneArea").show();
+						$("#dropzoneHeading").show();
 						showTabTwo();
 
 						$("#eventStepOneNextButton").click(function () {
@@ -951,10 +968,15 @@ $(document).ready(function () {
 							setFormData("morphosource", null);
 							setFormData("private", null);
 							printFormData();
+
+							$("#morphoSourceApiResults").hide();
+							$("#morphoSourceHeading").hide();
+							$("#dropzoneArea").show();
+							$("#dropzoneHeading").show();
+
+
 							showTabTwo();
 						});
-
-						$("#dropzoneArea").show();
 					}
 
 					printSearchResults(obj, "event");
@@ -1042,13 +1064,23 @@ $(document).ready(function () {
 						//						alert("don't show dropzone if it's a morphosource record!  use the API lookup instead.\n\nPut new fields into manifest json (collector, geography, etc.)")
 						if (isMorphoSource) {
 							$("#morphoSourceApiResults").show();
+							$("#morphoSourceHeading").show();
+							$("#dropzoneArea").hide();
+							$("#dropzoneHeading").hide();
 						} else {
+							$("#dropzoneHeading").show();
 							$("#dropzoneArea").show();
+							$("#morphoSourceHeading").hide();
+							$("#morphoSourceApiResults").hide();
 						}
 					}
 
-					obj.private = isEmbargoed;
-					obj.morphosource = isMorphoSource;
+					//					obj.private = isEmbargoed;
+					//					obj.morphosource = isMorphoSource;
+
+					setFormData("morphosource", isMorphoSource);
+					setFormData("private", isEmbargoed);
+
 
 					printSearchResults(obj, "record");
 					setFormData("target", obj);
@@ -1113,6 +1145,8 @@ $(document).ready(function () {
 
 	function showTabTwo() {
 		$('.nav-tabs a[href="#tab2"]').tab("show");
+
+
 	}
 
 	function showTabThree() {
@@ -1294,8 +1328,17 @@ $(document).ready(function () {
 
 	$('.nav-tabs a[href="#tab2"]').on("shown.bs.tab", function (e) {
 
-		if (isMorphoSource) {
+		if (isMorphoSource && searchType == "record") {
+			$("#morphoSourceApiResults").show();
+			$("#morphoSourceHeading").show();
+			$("#dropzoneArea").hide();
+			$("#dropzoneHeading").hide();
 			getMorphoSourceResults(formData.target.number);
+		} else {
+			$("#morphoSourceApiResults").hide();
+			$("#morphoSourceHeading").hide();
+			$("#dropzoneArea").show();
+			$("#dropzoneHeading").show();
 		}
 	});
 
@@ -1303,12 +1346,15 @@ $(document).ready(function () {
 		alert('error');
 	}
 
-	function fnSuccess() {
-
+	function success_fn(data) {
+		console.log(data);
 	}
 
 	function getMorphoSourceResults(catalogNum) {
 		//		alert(catalogNum);
+
+		$("#morphoSourceApiResults").empty();
+		$("#morphoSourceHeadingNum").empty();
 
 		var cn = catalogNum.split(".");
 
@@ -1317,22 +1363,60 @@ $(document).ready(function () {
 			var dept = cn[0].toLowerCase();
 			var num = cn[1];
 			var endpointBase = "https://www.morphosource.org/api/v1/find/media?q=catalog_number:";
-			var endpoint = endpointBase + "ypm " + dept + " " + num;
+			//			var endpoint = endpointBase + "ypm " + dept + " " + num;
+			var endpoint = endpointBase + "ypm%20" + dept + "%20" + num;
+			var q = "ypm+" + dept + "+" + num;
 			console.log(endpoint);
 			//			alert(searchString);
 
-			$.ajax({
+
+			$.ajaxSetup({
 				crossOrigin: true,
-				type: 'GET',
-				url: endpoint,
-				dataType: "json",
-				success: function (data) {
-					// success_fn(data);
-					console.log(data);
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					// error_fn(jqXHR, textStatus, errorThrown);
+				proxy: "proxy.php"
+			});
+			$.getJSON(endpoint, null, function (data) {
+
+				var dataStart = data.indexOf("{");
+
+				if (dataStart == 0 || typeof data === 'object') {
+					jsonMorphoSourceResults = data;
+				} else {
+					jsonMorphoSourceResults = data.substr(dataStart);
 				}
+
+				jsonMorphoSourceResults = JSON.parse(jsonMorphoSourceResults);
+
+				console.log(jsonMorphoSourceResults);
+
+				//				$("#morphoSourceApiResults").html(JSON.stringify(jsonMorphoSourceResults, null, 2));
+
+				if (jsonMorphoSourceResults.totalResults == 0) {
+					$("#morphoSourceApiResults").html("No results found.  To edit your search, <a href='javascript:void(0)' class='edit-record-search-link'>click here</a>.");
+				} else {
+					$("#morphoSourceHeadingNum").html(" (" + jsonMorphoSourceResults.totalResults + ")");
+					$("#morphoSourceApiResults").append("<div class='container-fluid' id='morphoSourceApiResultsRows'></div>");
+
+					_.forEach(jsonMorphoSourceResults.results, function (result) {
+
+						var numMediaFiles = result['medium.media'].length;
+						var numMediaFilesSuffix = (numMediaFiles >= 2) ? "s" : "";
+
+						$("#morphoSourceApiResultsRows").append("<div class='row'><h4>Media: <a href='https://www.morphosource.org/Detail/MediaDetail/Show/media_id/" + result['medium.media_id'] + "' target='_blank'>M" + result['medium.media_id'] + "</a></h4></div> ");
+
+						$("#morphoSourceApiResultsRows").append("<div class='row'><strong>" + numMediaFiles + " file" + numMediaFilesSuffix + ":" + "</strong></div>");
+
+						//						$("#morphoSourceApiResultsRows").append("<div class='row' id='morphosourceMediaRows_" + result['medium.media_id'] + "'></p>");
+
+						_.forEach(result['medium.media'], function (media) {
+							console.log(media)
+							$("#morphoSourceApiResultsRows").append("<div class='mimic-dz-thumb'><strong>" + media['media_file_id'] + "</strong><br />" + media['filesize'] + "</div>");
+
+
+						});
+
+					});
+				}
+
 			});
 
 

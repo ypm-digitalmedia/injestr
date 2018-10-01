@@ -18,10 +18,6 @@ include_once "get_cas_user.php";
 
 		</script>
 
-
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery.ajax-cross-origin.min.js"></script>
-
 		<meta charset="utf-8" />
 		<meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -208,12 +204,6 @@ include_once "get_cas_user.php";
 									<div class="search-pane tab-pane fade" id="searchPaneRecord">
 										<div class="container-fluid">
 											<div class="row row-pad">
-												<div class="form-group col-xs-12">
-													<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter EMu catalog number" />
-													<div class="help-block with-errors"></div>
-												</div>
-											</div>
-											<div class="row row-pad">
 												<div class="col-sm-4 col-xs-8">
 													<span>MorphoSource Record? </span>
 												</div>
@@ -228,6 +218,12 @@ include_once "get_cas_user.php";
 												</div>
 											</div>
 											<div class="row row-pad">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="searchRecordAll" placeholder="Enter EMu catalog number" />
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row row-pad">
 												<div class="col-xs-12">
 													<div id="searchResultsRecord" class="search-results-container"></div>
 												</div>
@@ -236,7 +232,7 @@ include_once "get_cas_user.php";
 											<div class="row row-pad">
 												<div class="col-xs-12 align-center">
 													<p align="center" class="align-center">
-														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Select Media&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 													</p>
 												</div>
 											</div>
@@ -271,12 +267,13 @@ include_once "get_cas_user.php";
 								<div class="row">
 									<div class="col-xs-12">
 										<h3 id="dropzoneHeading">Assets</h3>
+										<h3 id="morphoSourceHeading">MorphoSource Records<span id="morphoSourceHeadingNum"></span></h3>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-xs-12">
 										<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
-										<div class="mimic-form-control search-results-container" id="morphoSourceApiResults">morpho</div>
+										<div class="mimic-form-control search-results-container" id="morphoSourceApiResults"></div>
 									</div>
 								</div>
 
@@ -584,11 +581,9 @@ include_once "get_cas_user.php";
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
 
-		<!--
-
 		<script src="js/jquery.min.js"></script>
+		<!--		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>-->
 		<script src="js/jquery.ajax-cross-origin.min.js"></script>
--->
 		<script src="js/jquery-ui.min.js"></script>
 		<script src="js/jquery.easy-autocomplete.min.js"></script>
 		<script src="js/jquery.tagsinput.min.js"></script>

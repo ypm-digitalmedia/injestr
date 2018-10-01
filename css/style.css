@@ -380,6 +380,30 @@ a.dz-remove i:hover {
 	color: darkred !important;
 }
 
+
+.mimic-dz-thumb {
+	border-radius: 20px;
+	overflow: hidden;
+	width: 120px;
+	height: 120px;
+	position: relative;
+	display: block;
+	z-index: 10;
+	margin: 16px;
+	border: 1px gray solid;
+	text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
 .mimic-form-control {
 	display: block;
 	width: 100%;
