@@ -80,7 +80,7 @@ include_once "get_cas_user.php";
 						</div>
 						<div class="title pull-left">
 							<h1 class="main-title">Injestr</h1>
-							<h3 class="main-subtitle">NetX-Preservica Asset Uploader</h3>
+							<h3 class="main-subtitle">Peabody Asset Uploader</h3>
 						</div>
 
 					</a>
@@ -94,10 +94,10 @@ include_once "get_cas_user.php";
 					<div class="wrapper">
 						<ul class="nav nav-tabs" role="tablist">
 							<li class="active" id="tabcontrol1">
-								<a href="#tab1" data-toggle="tab" role="tab"><strong>1. Destination</strong></a>
+								<a href="#tab1" data-toggle="tab" role="tab"><strong>1. Set Destination</strong></a>
 							</li>
 							<li id="tabcontrol2">
-								<a href="#tab2" data-toggle="tab" role="tab"><strong>2. Upload</strong></a>
+								<a href="#tab2" data-toggle="tab" role="tab"><strong>2. Select/Upload</strong></a>
 							</li>
 							<li id="tabcontrol3">
 								<a href="#tab3" data-toggle="tab" role="tab"><strong>3. Submit</strong></a>
@@ -124,17 +124,19 @@ include_once "get_cas_user.php";
 							<div class="container-fluid">
 								<div class="wrapper">
 									<ul class="nav nav-pills" role="tablist">
+
 										<li style="padding-right: 2em;">
-											<h5>Destination:</h5>
+											<h5>Select:</h5>
 										</li>
+
 										<li class="active" id="tabcontrol11">
-											<a href="#searchPaneGraphics" data-toggle="tab" role="tab"><i class="fas fa-camera"></i>&nbsp;<strong>Graphics Dept.</strong></a>
+											<a href="#searchPaneGraphics" data-toggle="tab" role="tab"><i class="fas fa-camera"></i>&nbsp;<strong>Graphics</strong></a>
 										</li>
 										<li id="tabcontrol12">
-											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-calendar-alt"></i>&nbsp;<strong>EMu Event</strong></a>
+											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-images"></i>&nbsp;<strong>NetX</strong></a>
 										</li>
 										<li id="tabcontrol13">
-											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-sticky-note"></i>&nbsp;<strong>EMu Record</strong></a>
+											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-cloud-upload-alt"></i>&nbsp;<strong>Wasabi</strong></a>
 										</li>
 									</ul>
 								</div>
@@ -267,7 +269,7 @@ include_once "get_cas_user.php";
 								<div class="row">
 									<div class="col-xs-12">
 										<h3 id="dropzoneHeading">Assets</h3>
-										<h3 id="morphoSourceHeading">MorphoSource Records<span id="morphoSourceHeadingNum"></span></h3>
+										<h3 id="morphoSourceHeading">MorphoSource Media Records <span id="morphoSourceHeadingNum"></span></h3>
 									</div>
 								</div>
 								<div class="row">
@@ -281,6 +283,9 @@ include_once "get_cas_user.php";
 									<div class="col-xs-12 align-center">
 										<p align="center" class="align-center" id="enterMetadataMessage">
 											Done uploading files?
+										</p>
+										<p align="center" class="align-center" id="enterMetadataMessageMs">
+											Done selecting media?
 										</p>
 										<p align="center" class="align-center">
 											<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="metadataStartButton">Enter Metadata&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
@@ -423,11 +428,7 @@ include_once "get_cas_user.php";
 									<div class="col-xs-12">
 										<table class="table table-striped" id="finalSummary">
 											<tr class='header'>
-												<th><strong>#</strong></th>
-												<th><strong>Filename</strong></th>
-												<th><strong>Title</strong></th>
-												<th><strong>Size</strong></th>
-												<th><strong>More</strong></th>
+												
 											</tr>
 										</table>
 									</div>
@@ -501,7 +502,6 @@ include_once "get_cas_user.php";
 
 
 
-
 		<!-- DROPZONE THUMB -->
 
 		<div id="tpl2">
@@ -517,13 +517,15 @@ include_once "get_cas_user.php";
 				</div>
 				<div class="dz-error-message"><span data-dz-errormessage=""></span></div>
 				<div class="dz-success-mark">
-					<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">      <title>Check</title>      
-				<defs></defs>
-				<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">        <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF" sketch:type="MSShapeGroup">
-					</path>
-				</g>
-			</svg>
+					<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+						<title>Check</title>      
+						<defs></defs>
+						<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">        <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" id="Oval-2" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF" sketch:type="MSShapeGroup">
+						</path>
+						</g>
+					</svg>
 				</div>
+
 				<div class="dz-error-mark">
 					<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">     <title>Error</title>      
 			<defs></defs>      

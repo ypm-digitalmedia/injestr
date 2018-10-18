@@ -1,4 +1,5 @@
 var myDropzone;
+var defaultMsClick = true;
 
 var formData = {
 	targetType: null,
@@ -36,8 +37,12 @@ var jsonDataEvents = {};
 var jsonDataRecords = {};
 
 var jsonMorphoSourceResults = {};
+var msImageThumbs = [];
+var msPageResponses = [];
+var msData = [];
+var msFinalData = [];
 
-var isMorphoSource = true;
+var isMorphoSource = false;
 var isEmbargoed = false;
 
 var initialSearchType = "";
@@ -51,10 +56,10 @@ var CASuser = {
 
 Dropzone.autoDiscover = false;
 $(document).ready(function () {
-	jsonDataUsers = loadJsonAsVar("data/users.json");
-	jsonDataEvents = loadJsonAsVar("../data/ingester-metadata-netx.json");
-	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json");
-	jsonDataRecords = loadJsonAsVar("../data/ingester-metadata-specimens.json");
+	jsonDataUsers = loadJsonAsVar("data/users.json?v=" + randomNumber());
+	jsonDataEvents = loadJsonAsVar("../data/ingester-metadata-netx.json?v=" + randomNumber());
+	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json?v=" + randomNumber());
+	jsonDataRecords = loadJsonAsVar("../data/ingester-metadata-specimens.json?v=" + randomNumber());
 
 	detectUser();
 	getPageWidth();
@@ -245,9 +250,24 @@ $(document).ready(function () {
 	});
 
 	$("#metadataStartButton").click(function () {
+
+		if (isMorphoSource) {
+			$(".ms-files-extra").hide();
+			$(".extra-ms-info").fadeIn();
+			$(".mimic-dz-item").not(".ms-file-selected").fadeOut();
+			$("#morphoSourceHeadingNum").text("(" + formData.assets.length + ")");
+
+			$(".ms-file-selected").appendTo('#morphoSourceApiResultsRows');
+
+			buildMorphosourceFinal();
+
+			defaultMsClick = false;
+		} else {
+			myDropzone.removeEventListeners();
+		}
+
 		makeFilesClickable();
 		$("#uploadsInfoCommon").fadeIn();
-		myDropzone.removeEventListeners();
 		//		document.getElementById("dropzoneHeading").scrollIntoView();
 	});
 
@@ -263,20 +283,56 @@ $(document).ready(function () {
 
 	function makeFinalDataTable() {
 		$("#finalSummary tr").not(".header").remove();
-		$("#finalNumSubmitted").html("Ready to submit " + formData.assets.length + " assets");
+
+		var assetSuffix = (formData.assets.length > 1) ? "s" : "";
+
+		$("#finalNumSubmitted").html("Ready to submit " + formData.assets.length + " asset" + assetSuffix);
 		var displayData = [];
 
+		if (isMorphoSource) {
+			var headerHTML = "<th><strong>#</strong></th>";
+			headerHTML += "<th><strong>Media ID</strong></th>";
+			headerHTML += "<th><strong>Media File ID</strong></th>";
+			headerHTML += "<th><strong>Title</strong></th>";
+			headerHTML += "<th><strong>Size</strong></th>";
+			headerHTML += "<th><strong>More</strong></th>";
+		} else {
+			var headerHTML = "<th><strong>#</strong></th>";
+			headerHTML += "<th><strong>Filename</strong></th>";
+			headerHTML += "<th><strong>Title</strong></th>";
+			headerHTML += "<th><strong>Size</strong></th>";
+			headerHTML += "<th><strong>More</strong></th>";
+		}
+
+		$("#finalSummary tr.header").html(headerHTML)
 
 		_.forEach(formData.assets, function (asset, index) {
 
-			var rowString = "<tr>";
-			rowString += "<td>" + parseInt(index + 1) + "</td>";
-			rowString += "<td>" + asset.filename + "</td>";
-			rowString += "<td>" + formData.assets[index].title + "</td>";
-			rowString += "<td>" + $("span[data-dz-size]").eq(index).html() + "</td>";
-			rowString += "<td><button type='button' onclick='showMoreInfoPopup(" + index + ")' class='btn btn-sm btn-default' title='Details'><i class='fas fa-ellipsis-h'></i></button></td>";
-			rowString += "</tr>";
+			if (isMorphoSource) {
 
+				var filesizeString = formData.assets[index]['media_file']['filesize'].replace('i', '');
+				var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));
+				//				var filesizeStringFinal = "<strong>" + filesizeString.substr(0, unitsPos) + "</strong> " + filesizeString.substr(unitsPos);
+				var filesizeStringFinal = filesizeString.substr(0, unitsPos) + " " + filesizeString.substr(unitsPos);
+
+
+				var rowString = "<tr>";
+				rowString += "<td>" + parseInt(index + 1) + "</td>";
+				rowString += "<td><a target='_blank' href='https://www.morphosource.org/Detail/MediaDetail/Show/media_id/" + asset.media_id + "'>" + asset.media_id + "</a></td>";
+				rowString += "<td>" + asset.media_file.media_file_id + "</td>";
+				rowString += "<td>" + formData.assets[index].title + "</td>";
+				rowString += "<td>" + filesizeStringFinal + "</td>";
+				rowString += "<td><button type='button' onclick='showMoreInfoPopup(" + index + ")' class='btn btn-sm btn-default' title='Details'><i class='fas fa-ellipsis-h'></i></button></td>";
+				rowString += "</tr>";
+			} else {
+				var rowString = "<tr>";
+				rowString += "<td>" + parseInt(index + 1) + "</td>";
+				rowString += "<td>" + asset.filename + "</td>";
+				rowString += "<td>" + formData.assets[index].title + "</td>";
+				rowString += "<td>" + $("span[data-dz-size]").eq(index).html() + "</td>";
+				rowString += "<td><button type='button' onclick='showMoreInfoPopup(" + index + ")' class='btn btn-sm btn-default' title='Details'><i class='fas fa-ellipsis-h'></i></button></td>";
+				rowString += "</tr>";
+			}
 			$("#finalSummary").append(rowString);
 		});
 
@@ -287,44 +343,73 @@ $(document).ready(function () {
 
 	showMoreInfoPopup = function (index) {
 		var msgHTML = "";
+		if (isMorphoSource) {
 
-		// show canvas if TIFF file
-		var fileUrl = 'uploads/' + sessionGUID + '/' + formData.assets[index].filename;
-		var fileName = formData.assets[index].filename;
-		var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+			alert("customize metadata fields and display them here");
 
-		if (ext == "tiff" || ext == "tif") {
-			var theId = formData.assets[index]._id;
-			var dest = "#assetThumb_" + theId;
-			//			console.log(dest, fileUrl);
-			// currently broken
-			//			loadTiff(fileUrl, dest);
+			var filesizeString = msFinalData[index].media['filesize'].replace('i', '');
+			var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));
+			//				var filesizeStringFinal = "<strong>" + filesizeString.substr(0, unitsPos) + "</strong> " + filesizeString.substr(unitsPos);
+			var filesizeStringFinal = filesizeString.substr(0, unitsPos) + " " + filesizeString.substr(unitsPos);
 
-			var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Currently unable to preview TIFF files.</em></p></div>';
+			var itemType = "MorphoSource Record";
+			var idString = formData.assets[index]._id.split("|").join("_");
+			var thumbHTML = '<div class="popup-thumbnail-ms" id="assetThumb_' + idString + '"><img src="' + msFinalData[index].thumb + '" /></div>';
+
+			var tableHTML = '<table class="table table-striped">';
+			tableHTML += '<tr><td><strong>Media ID</td><td>' + msFinalData[index].media_id + ' <a href="https://www.morphosource.org/Detail/MediaDetail/Show/media_id/' + msFinalData[index].media_id + '" target="_blank">MorphoSource Website <i class="fas fa-external-link-alt"></i></a></td></tr>';
+			tableHTML += '<tr><td><strong>Media File ID</td><td>' + msFinalData[index].media.media_file_id + '</td></tr>';
+			tableHTML += '<tr><td><strong>Title</td><td>' + msFinalData[index].media.title + '</td></tr>';
+			tableHTML += '<tr><td><strong>Element</td><td>' + msFinalData[index].media.element + '</td></tr>';
+			tableHTML += '<tr><td><strong>Side</td><td>' + msFinalData[index].media.side + '</td></tr>';
+			tableHTML += '<tr><td><strong>Notes</td><td>' + msFinalData[index].media.notes + '</td></tr>';
+			tableHTML += '<tr><td><strong>File Size</td><td>' + filesizeStringFinal + '</td></tr>';
+			tableHTML += '<tr><td><strong>File Type</td><td>' + msFinalData[index].media.file_type + '</td></tr>';
+			tableHTML += '<tr><td><strong>MIME Type</td><td>' + msFinalData[index].media.mimetype + '</td></tr>';
+			tableHTML += '</table>';
+
 
 		} else {
 
-			var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
+			var itemType = "Asset";
+			// show canvas if TIFF file
+			var fileUrl = 'uploads/' + sessionGUID + '/' + formData.assets[index].filename;
+			var fileName = formData.assets[index].filename;
+			var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
+
+			if (ext == "tiff" || ext == "tif") {
+				var theId = formData.assets[index]._id;
+				var dest = "#assetThumb_" + theId;
+				//			console.log(dest, fileUrl);
+				// currently broken
+				//			loadTiff(fileUrl, dest);
+
+				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Currently unable to preview TIFF files.</em></p></div>';
+
+			} else {
+
+				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
+			}
+
+			var sizeStringSimple = $("span[data-dz-size]").eq(index).html().split("<strong>").join("").split("</strong>").join("");
+
+			var tableHTML = '<table class="table table-striped">';
+			tableHTML += '<tr><td><strong>File Name</td><td>' + formData.assets[index].filename + '</td></tr>';
+			tableHTML += '<tr><td><strong>File Size</td><td>' + sizeStringSimple + '</td></tr>';
+			tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.creator + '</td></tr>';
+			tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
+			tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
+			tableHTML += '<tr><td><strong>Keywords</strong></td><td>' + formData.assets[index].keywords + '</td></tr>';
+			tableHTML += '<tr><td><strong>Special Credit Line</strong></td><td>' + formData.assets[index].credit + '</td></tr>';
+			tableHTML += '<tr><td><strong>Special Usage Permissions</strong></td><td>' + formData.assets[index].usage + '</td></tr>';
+			tableHTML += '</table>';
 		}
-
-		var sizeStringSimple = $("span[data-dz-size]").eq(index).html().split("<strong>").join("").split("</strong>").join("");
-
-		var tableHTML = '<table class="table table-striped">';
-		tableHTML += '<tr><td><strong>File Name</td><td>' + formData.assets[index].filename + '</td></tr>';
-		tableHTML += '<tr><td><strong>File Size</td><td>' + sizeStringSimple + '</td></tr>';
-		tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.creator + '</td></tr>';
-		tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
-		tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
-		tableHTML += '<tr><td><strong>Keywords</strong></td><td>' + formData.assets[index].keywords + '</td></tr>';
-		tableHTML += '<tr><td><strong>Special Credit Line</strong></td><td>' + formData.assets[index].credit + '</td></tr>';
-		tableHTML += '<tr><td><strong>Special Usage Permissions</strong></td><td>' + formData.assets[index].usage + '</td></tr>';
-		tableHTML += '</table>';
 
 		msgHTML = thumbHTML + tableHTML;
 
 		BootstrapDialog.show({
 			type: BootstrapDialog.TYPE_DEFAULT,
-			title: '<h4>Details: Asset #' + parseInt(index + 1) + '</h4>',
+			title: '<h4>Details: ' + itemType + ' #' + parseInt(index + 1) + '</h4>',
 			message: msgHTML,
 			keyboard: false,
 			backdrop: 'static',
@@ -356,64 +441,128 @@ $(document).ready(function () {
 
 
 	function makeFilesClickable() {
-		_.forEach(myDropzone.files, function (f) {
-			f.previewElement.classList.remove("dz-success");
-			creatorNames.push({
-				creator: "",
-				irn: ""
+
+		if (isMorphoSource) {
+
+			$(".mimic-dz-thumb.green-border").removeClass("green-border").addClass("red-border");
+			$(".mimic-dz-thumb.green-border-selected").removeClass("green-border-selected").addClass("red-border");
+
+			$("#enterMetadataMessageContainer").fadeOut();
+
+			if ($(".ms-file-selected").length) {
+				$(".mimic-dz-thumb").click(function () {
+					console.log($(this));
+					activateMetadata($(this));
+				});
+
+				$(".ms-file-selected-target").each(function () {
+					//build final data
+					var mediaFileId = $(this).attr("data-media-file");
+					var mediaId = $(this).attr("data-media-id");
+
+
+
+					var mediaObj = _.findLast(msData, function (d) {
+						return d['media_id'] == mediaId;
+					});
+
+
+					var mediaFileObj = _.findLast(mediaObj['media_files'], function (dd) {
+						return dd['media_file_id'] == mediaFileId;
+					});
+
+					var obj = {
+						"media": mediaFileObj,
+						"thumb": $(this).attr("data-thumbnail"),
+						"media_file_id": mediaFileId,
+						"media_id": mediaId
+					}
+
+					msFinalData.push(obj);
+
+					$(this).find(".mimic-dz-thumb").removeClass("dz-success");
+					creatorNames.push({
+						creator: "",
+						irn: ""
+					});
+
+				})
+
+				//initialize first morphosource selection
+				setTimeout(function () {
+					activateMetadata($(".ms-file-selected-target").eq(0));
+				}, 1000);
+			}
+
+		} else {
+			_.forEach(myDropzone.files, function (f) {
+				f.previewElement.classList.remove("dz-success");
+				creatorNames.push({
+					creator: "",
+					irn: ""
+				});
 			});
-		});
 
-		$("a.dz-remove").slideUp();
-		$("#dropzoneArea").css("cursor", "auto");
-		$("#enterMetadataMessageContainer").fadeOut();
-		_.forEach(myDropzone.files, function (file) {
-			$(file.previewElement)
-				.children(".dz-image")
-				.addClass("red-border");
+			$("a.dz-remove").slideUp();
+			$("#dropzoneArea").css("cursor", "auto");
+			$("#enterMetadataMessageContainer").fadeOut();
+			_.forEach(myDropzone.files, function (file) {
+				$(file.previewElement)
+					.children(".dz-image")
+					.addClass("red-border");
 
-			file.previewElement.addEventListener("click", function () {
-				//				console.log(file);
-				//				if ($(file.previewElement).children(".dz-image").hasClass("red-border")) {
-				//					$(file.previewElement).children(".dz-image").removeClass("red-border").addClass("red-border-selected");
-				//				} else {
-				//					$(file.previewElement).children(".dz-image").removeClass("green-border").addClass("green-border-selected");
-				//				}
-				activateMetadata(file);
+				file.previewElement.addEventListener("click", function () {
+					activateMetadata(file);
+				});
 			});
-		});
 
-		if (myDropzone.files.length > 1) {
-			$(".metadataButtonNext")
-				.prop("disabled", false)
-				.removeClass("btn-disabled")
-				.addClass("btn-default");
+			if (myDropzone.files.length > 1) {
+				$(".metadataButtonNext")
+					.prop("disabled", false)
+					.removeClass("btn-disabled")
+					.addClass("btn-default");
+			}
+
+			// initialize first upload
+			activateMetadata(myDropzone.files[0]);
 		}
-
-		// initialize first upload
-		activateMetadata(myDropzone.files[0]);
 	}
 
 	function activateMetadata(file) {
-		var asset = _.find(formData.assets, function (a) {
-			return a._id == file.upload.uuid;
-		});
+
+		if (isMorphoSource) {
+			var asset = _.findLast(formData.assets, function (a) {
+				return a._id == file.attr('data-media-id') + "|" + file.attr('data-media-file');
+			});
+			console.log("morphosource asset", asset);
+
+
+		} else {
+
+			var asset = _.find(formData.assets, function (a) {
+				return a._id == file.upload.uuid;
+			});
+			console.log("dropzone asset: ", asset);
+		}
+
 		var num = formData.assets.indexOf(asset);
-		//		console.log(num);
-		//		console.log(asset);
 
-		//        if( activeAsset == -1 ) { activeAsset = 0; } else { 
-		//            
-		//        }
 
-		var upload = myDropzone.files[num];
-		var uploadElement = $(upload.previewElement).children(".dz-image");
-		var uploadElementContainer = $(upload.previewElement).children(".dz-details");
+		if (isMorphoSource) {
+			var upload = $(".ms-file-selected-target").eq(num);
+			console.log(upload)
+			var uploadElement = $(".ms-file-selected-target").eq(num);
+			var uploadElementContainer = $(".ms-file-selected-target").eq(num);
+		} else {
+
+			var upload = myDropzone.files[num];
+			console.log(upload)
+			var uploadElement = $(upload.previewElement).children(".dz-image");
+			var uploadElementContainer = $(upload.previewElement).children(".dz-details");
+
+		}
 
 		uploadElementContainer.removeClass("no-clicky").addClass("clicky");
-
-		//		console.log(upload);
-		//		console.log(uploadElement);
 
 		// check if its place in line is valid
 		if (num == 0 || formData.assets[num - 1].valid) {
@@ -444,10 +593,6 @@ $(document).ready(function () {
 
 				if (asset.valid || (!asset.valid && num == 0)) {
 					// preload with data from formData if asset is valid or it's the first time around
-
-					//					$("#uploadsInfoCommonCreatorLast").val(asset.creatorName.last);
-					//					$("#uploadsInfoCommonCreatorFirst").val(asset.creatorName.first);
-					//					$("#uploadsInfoCommonCreatorMiddle").val(asset.creatorName.middle);
 
 					$("#uploadsInfoCommonCreator").val(asset.creatorName.creator);
 
@@ -480,8 +625,14 @@ $(document).ready(function () {
 				e.preventDefault();
 				//                console.log("ready to set data.");
 
-				var upload = myDropzone.files[activeAsset];
-				var uploadElement = $(upload.previewElement).children(".dz-image");
+				if (isMorphoSource) {
+					var upload = $(".ms-file-selected-target").eq(activeAsset);
+					var uploadElement = $(".ms-file-selected-target").eq(activeAsset);
+				} else {
+					var upload = myDropzone.files[activeAsset];
+					var uploadElement = $(upload.previewElement).children(".dz-image");
+				}
+
 
 				//                console.log(upload);
 				//                console.log(uploadElement);
@@ -819,8 +970,6 @@ $(document).ready(function () {
 
 
 
-
-
 	//	$("#lookupToggle").change(function () {
 	//		var status = $(this).prop("checked");
 	//		var statusText = "";
@@ -895,8 +1044,6 @@ $(document).ready(function () {
 			printFormData();
 		});
 
-
-
 		// make toggle switch (first version) 
 		//		if (CASuser.type == "event" || CASuser.type == "both") {
 		//			$("#lookupToggle").prop("checked", true);
@@ -926,8 +1073,8 @@ $(document).ready(function () {
 		// ========================================================================
 
 		var optsEvents = {
-			//			url: "data/ingester-metadata-netx.json",
-			url: "../data/ingester-metadata-netx.json",
+			//			url: "data/ingester-metadata-netx.json?v=" + randomNumber(),
+			url: "../data/ingester-metadata-netx.json?v=" + randomNumber(),
 
 			//			getValue: "description",
 			listLocation: function (el) {
@@ -1024,8 +1171,8 @@ $(document).ready(function () {
 		};
 
 		var optsRecords = {
-			//			url: "data/ingester-metadata-netx.json",
-			url: "../data/ingester-metadata-specimens.json",
+			//			url: "data/ingester-metadata-netx.json?v=" + randomNumber(),
+			url: "../data/ingester-metadata-specimens.json?v=" + randomNumber(),
 
 			//			getValue: "description",
 			listLocation: function (el) {
@@ -1058,6 +1205,9 @@ $(document).ready(function () {
 
 						$("#recordStepOneNextButton").click(function () {
 							searchType = "record";
+							isMorphoSource = $("#searchByRecordMorphoSource").prop("checked");
+							setFormData("morphosource", isMorphoSource);
+							printFormData();
 							showTabTwo();
 						});
 
@@ -1171,22 +1321,97 @@ $(document).ready(function () {
 		asset.credit = $("#uploadsInfoCommonSpecialCreditLine").val();
 		asset.usage = $("#uploadsInfoCommonSpecialUsage").val();
 
-		myDropzone.files[target].previewElement.classList.add("dz-success");
-		setTimeout(function () {
-			myDropzone.files[target].previewElement.classList.remove("dz-success");
-			//            console.log("css reset | " + target )
-		}, 3000);
+		if (isMorphoSource) {
+			$(".ms-file-selected-target").eq(target).addClass("dz-success");
+			setTimeout(function () {
+				$(".ms-file-selected-target").eq(target).removeClass("dz-success");
+				//            console.log("css reset | " + target )
+			}, 3000);
+		} else {
+			myDropzone.files[target].previewElement.classList.add("dz-success");
+			setTimeout(function () {
+				myDropzone.files[target].previewElement.classList.remove("dz-success");
+				//            console.log("css reset | " + target )
+			}, 3000);
+		}
 
 		printFormData();
 
 		if (target != formData.assets.length - 1) {
 			//advance
-			activateMetadata(myDropzone.files[parseInt(target + 1)]);
+			if (isMorphoSource) {
+				//				alert(parseInt(target + 1))
+				activateMetadata($(".ms-file-selected-target").eq(parseInt(target + 1)));
+			} else {
+				activateMetadata(myDropzone.files[parseInt(target + 1)]);
+			}
 		}
 
 
 	}
 
+	function buildMorphosourceFinal() {
+		$(".ms-file-selected-target").each(function () {
+
+			var item_media_id = $(this).attr("data-media-id");
+			var item_media_file = $(this).attr("data-media-file");
+
+			var targetMedia = _.findLast(msData, function (o) {
+				return o['media_id'] == item_media_id;
+			});
+
+			var obj = _.findLast(targetMedia['media_files'], function (n) {
+				return n['media_file_id'] == item_media_file;
+			});
+
+			var package = {
+				media_id: item_media_id,
+				media_file: obj,
+				id: item_media_id + "|" + item_media_file
+			};
+			setFormData("assets", package);
+			printFormData();
+		});
+	}
+
+
+
+	function addMorphosourceAsset(item_media_id, item_media_file) {
+		console.log('adding asset: ' + item_media_id + " | " + item_media_file);
+
+		var targetMedia = _.findLast(msData, function (o) {
+			return o['media_id'] == item_media_id;
+		});
+		//		console.warn("targetMedia:", targetMedia)
+
+		var obj = _.findLast(targetMedia['media_files'], function (n) {
+			return n['media_file_id'] == item_media_file;
+		});
+		//		console.warn("obj:", obj)
+
+		var package = {
+			media_id: item_media_id,
+			media_file: obj,
+			id: item_media_id + "|" + item_media_file
+		};
+		//		setFormData("assets", package);
+		//		printFormData();
+
+		//		alert(formData.assets.length);
+	}
+
+
+	function removeMorphosourceAsset(item_media_id, item_media_file) {
+		console.log('removing asset: ' + item_media_id + " | " + item_media_file);
+
+		_.remove(formData.assets, function (o) {
+			return o.media_id == item_media_id && o.media_file['media_file_id'] == item_media_file;
+		});
+		printFormData();
+
+		//		alert(formData.assets.length);
+
+	}
 
 
 	function setFormData(key, value) {
@@ -1223,21 +1448,26 @@ $(document).ready(function () {
 					filename: value.name,
 					filesize: value.size,
 					filetype: value.type,
+					media_id: value.media_id,
+					media_file: value.media_file,
 					_id: value.id
 				};
-
-				if (
-					_.filter(formData.assets, function (o) {
-						return (
-							o.filename == value.name &&
-							o.filesize == value.size &&
-							o.filetype == value.type
-						);
-					}).length
-				) {
-					//					console.log("asset already exists.  skipping formData population")
-				} else {
+				if (formData.morphosource) {
 					formData[key].push(obj);
+				} else {
+					if (
+						_.filter(formData.assets, function (o) {
+							return (
+								o.filename == value.name &&
+								o.filesize == value.size &&
+								o.filetype == value.type
+							);
+						}).length
+					) {
+						//					console.log("asset already exists.  skipping formData population")
+					} else {
+						formData[key].push(obj);
+					}
 				}
 			} else {
 				formData[key] = value;
@@ -1311,6 +1541,38 @@ $(document).ready(function () {
 		} else if ($(event.target).hasClass("edit-graphics-search-link")) {
 			$('.nav-tabs a[href="#tab1"]').tab("show");
 			$("#labelForSally").focus();
+		} else if ($(event.target).hasClass("mimic-dz-thumb")) {
+			if (defaultMsClick) {
+				var item = $(event.target);
+				//			$(item).toggleClass('green-border-selected');
+				//			$(".green-border-selected").removeClass("green-border-selected").addClass("green-border");
+
+				var item_media_id = $(item).attr('data-media-id');
+				var item_media_file = $(item).attr('data-media-file');
+
+				//			console.warn(item_media_id, item_media_file);
+
+				//				var isAdded = _.find(formData.assets, function (o) {
+				//					return o.media_id == item_media_id && o.media_file.media_file_id == item_media_file;
+				//				});
+
+				var isAdded = $(".ms-file-selected-target[data-media-file='" + item_media_file + "'][data-media-id='" + item_media_id + "']");
+				//				console.log(isAdded)
+
+				if (isAdded.length) {
+					//					removeMorphosourceAsset(item_media_id, item_media_file);
+					$(item).removeClass('green-border-selected').removeClass('green-border').addClass('red-border');
+					$(item).parent().removeClass("ms-file-selected");
+					$(item).removeClass("ms-file-selected-target");
+				} else {
+					//					addMorphosourceAsset(item_media_id, item_media_file);
+					$('.green-border-selected').not(item).removeClass('green-border-selected').addClass('green-border');
+					$(item).removeClass('red-border-selected').removeClass('red-border').addClass('green-border-selected');
+					$(item).parent().addClass("ms-file-selected");
+					$(item).addClass("ms-file-selected-target");
+				}
+				checkMorphoSourceSelected();
+			}
 		}
 	});
 
@@ -1350,6 +1612,27 @@ $(document).ready(function () {
 		console.log(data);
 	}
 
+	function checkMorphoSourceSelected() {
+		if ($(".ms-file-selected").length) {
+			$("#enterMetadataMessageMs").fadeIn();
+			$("#metadataStartButton")
+				.prop("disabled", false)
+				.removeClass("disabled")
+				.removeClass("btn-disabled")
+				.addClass("btn-primary");
+		} else {
+			$("#enterMetadataMessageMs").fadeOut();
+			$("#metadataStartButton")
+				.prop("disabled", "disabled")
+				.addClass("disabled")
+				.removeClass("btn-primary")
+				.addClass("btn-disabled");
+		}
+
+
+
+	}
+
 	function getMorphoSourceResults(catalogNum) {
 		//		alert(catalogNum);
 
@@ -1367,7 +1650,7 @@ $(document).ready(function () {
 			var endpoint = endpointBase + "ypm%20" + dept + "%20" + num;
 			var q = "ypm+" + dept + "+" + num;
 			console.log(endpoint);
-			//			alert(searchString);
+			// alert(searchString);
 
 
 			$.ajaxSetup({
@@ -1375,6 +1658,8 @@ $(document).ready(function () {
 				proxy: "proxy.php"
 			});
 			$.getJSON(endpoint, null, function (data) {
+
+				msData = [];
 
 				var dataStart = data.indexOf("{");
 
@@ -1388,7 +1673,7 @@ $(document).ready(function () {
 
 				console.log(jsonMorphoSourceResults);
 
-				//				$("#morphoSourceApiResults").html(JSON.stringify(jsonMorphoSourceResults, null, 2));
+				// $("#morphoSourceApiResults").html(JSON.stringify(jsonMorphoSourceResults, null, 2));
 
 				if (jsonMorphoSourceResults.totalResults == 0) {
 					$("#morphoSourceApiResults").html("No results found.  To edit your search, <a href='javascript:void(0)' class='edit-record-search-link'>click here</a>.");
@@ -1396,23 +1681,92 @@ $(document).ready(function () {
 					$("#morphoSourceHeadingNum").html(" (" + jsonMorphoSourceResults.totalResults + ")");
 					$("#morphoSourceApiResults").append("<div class='container-fluid' id='morphoSourceApiResultsRows'></div>");
 
-					_.forEach(jsonMorphoSourceResults.results, function (result) {
+
+					// get images from MorphoSource website
+
+					_.forEach(jsonMorphoSourceResults.results, function (result, i) {
+
+						msData.push({
+							"media_id": result['medium.media_id'],
+							"media_files": []
+						});
 
 						var numMediaFiles = result['medium.media'].length;
 						var numMediaFilesSuffix = (numMediaFiles >= 2) ? "s" : "";
 
-						$("#morphoSourceApiResultsRows").append("<div class='row'><h4>Media: <a href='https://www.morphosource.org/Detail/MediaDetail/Show/media_id/" + result['medium.media_id'] + "' target='_blank'>M" + result['medium.media_id'] + "</a></h4></div> ");
+						var msUrl = "https://www.morphosource.org/Detail/MediaDetail/Show/media_id/" + result['medium.media_id'];
 
-						$("#morphoSourceApiResultsRows").append("<div class='row'><strong>" + numMediaFiles + " file" + numMediaFilesSuffix + ":" + "</strong></div>");
+						$.get(msUrl, function (data) {
+							var data = $(data);
+							//do something
 
-						//						$("#morphoSourceApiResultsRows").append("<div class='row' id='morphosourceMediaRows_" + result['medium.media_id'] + "'></p>");
+							var imgList = $(data).find("div.mediaDetailImage a img");
+							msImageThumbs[i] = [];
+							$(imgList).each(function (img) {
+								msImageThumbs[i].push($(this).attr("src"));
+							})
 
-						_.forEach(result['medium.media'], function (media) {
-							console.log(media)
-							$("#morphoSourceApiResultsRows").append("<div class='mimic-dz-thumb'><strong>" + media['media_file_id'] + "</strong><br />" + media['filesize'] + "</div>");
+						}).done(function () {
+							// alert("done")
+							$(".msMediaRow").each(function (iiii, row) {
+								// console.log(iiii)
+								$(row).find(".msThumb").each(function (iii, item) {
+									if (typeof msImageThumbs[iiii] != 'undefined') {
+										$(item).attr("data-thumbnail", msImageThumbs[iiii][iii]);
+										$(item).css("background-image", "url(" + msImageThumbs[iiii][iii] + ")");
+									}
+								})
 
-
+							});
 						});
+
+						$("#morphoSourceApiResultsRows").append("<div class='row ms-files-extra'><h4><a href='" + msUrl + "' target='_blank'><i class='far fa-file-image'></i> M" + result['medium.media_id'] + "</a></h4></div> ");
+
+						$("#morphoSourceApiResultsRows").append("<div class='row ms-files-extra'><strong>" + numMediaFiles + " Media file" + numMediaFilesSuffix + ":" + "</strong></div>");
+
+						// $("#morphoSourceApiResultsRows").append("<div class='row' id='morphosourceMediaRows_" + result['medium.media_id'] + "'></p>");
+
+						var resultRow = document.createElement("div");
+						resultRow.className = "row msMediaRow msMediaRow-" + i;
+
+						_.forEach(result['medium.media'], function (media, ii) {
+							//							console.log(media);
+							var msRecord = result['medium.media_id'];
+							var msRecordObj = _.findLast(msData, function (o) {
+								return o['media_id'] == msRecord
+							});
+							msRecordObj.media_files.push(media);
+
+							var filesizeString = media['filesize'].replace('i', '');
+							var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));
+							var filesizeStringFinal = "<strong>" + filesizeString.substr(0, unitsPos) + "</strong> " + filesizeString.substr(unitsPos);
+
+							var filetype = media['file_type'];
+							var title = media['title'];
+							var element = media['element'];
+
+							if (!filetype || filetype == "" || typeof filetype == 'undefined') {
+								var filetypestring = "";
+							} else {
+								var filetypestring = "<span class='thumb-caption'>" + media['file_type'] + "</span><br />";
+							}
+
+							if (!title || title == "" || typeof title == 'undefined') {
+								var titlestring = "";
+							} else {
+								var titlestring = "<span class='thumb-caption'>" + media['title'] + "</span><br />";
+							}
+
+							if (!element || element == "" || typeof element == 'undefined') {
+								var elementstring = "";
+							} else {
+								var elementstring = "<span class='thumb-caption'>" + media['element'] + "</span><br />";
+							}
+
+							$(resultRow).append("<div class='mimic-dz-item'><div class='mimic-dz-thumb red-border msThumb msThumb-" + result['medium.media_id'] + "' data-media-id='" + msRecord + "' data-media-file='" + media['media_file_id'] + "' style='background-image:url()'>" + $("#tpl2 .dz-preview .dz-success-mark")[0].outerHTML + "<br /><span class='mimic-thumb-span'>" + filesizeStringFinal + "</span><br /><span><b class='extra-ms-info mimic-thumb-span'>M" + result['medium.media_id'] + "</b></span><br /><span class='mimic-thumb-span'><i class='fas fa-image'></i> " + media['media_file_id'] + "</span><br /><span class='smaller mimic-thumb-span'>" + media['mimetype'] + "</span></div><div class='thumb-captions'>" + titlestring + filetypestring + elementstring + "</div></div>");
+						});
+
+						$("#morphoSourceApiResultsRows").append(resultRow);
 
 					});
 				}
@@ -1470,7 +1824,7 @@ $(document).ready(function () {
 function activateCreatorLookup() {
 	var options = {
 
-		url: "../data/ingester-metadata-people.json",
+		url: "../data/ingester-metadata-people.json?v=" + randomNumber(),
 
 		getValue: function (element) {
 			//			return element.concat;
@@ -1523,6 +1877,9 @@ function activateCreatorLookup() {
 function editCommonMetadata(key, value) {
 	console.warn(key + " | " + value);
 }
+
+
+
 
 function printSearchResults(obj, type) {
 	clearSearchResults(type);
@@ -1787,4 +2144,8 @@ function resetSelects() {
 	});
 	// mark the first option as selected
 	$("select option:first").attr("selected", "selected");
+}
+
+function randomNumber() {
+	return Math.floor(Math.random() * 1000000000);
 }

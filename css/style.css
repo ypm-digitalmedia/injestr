@@ -49,6 +49,16 @@ body {
 	background-size: cover;
 }
 
+.popup-thumbnail-ms {
+	margin: 0 auto 2em auto;
+	width: 380px;
+}
+
+.popup-thumbnail-ms img {
+	width: 100%;
+	height: auto;
+}
+
 ul.nav-tabs li:focus,
 ul.nav-tabs li:hover,
 ul.nav-tabs li a:focus,
@@ -319,6 +329,15 @@ button:disabled {
 	display: none;
 }
 
+#enterMetadataMessageMs {
+	display: none;
+}
+
+.extra-ms-info {
+	display: none;
+}
+
+
 #goToSubmitButtonContainer {
 	display: none;
 }
@@ -380,28 +399,72 @@ a.dz-remove i:hover {
 	color: darkred !important;
 }
 
+.mimic-dz-item {
+	width: 120px;
+	padding: 0;
+	text-align: center;
+	margin: 16px;
+	z-index: 10;
+	display: inline-block;
+	position: relative;
+}
 
 .mimic-dz-thumb {
 	border-radius: 20px;
 	overflow: hidden;
 	width: 120px;
 	height: 120px;
-	position: relative;
-	display: block;
-	z-index: 10;
-	margin: 16px;
-	border: 1px gray solid;
+	font-size: 16px;
+	/*	position: relative;*/
+	/*	display: block;*/
+	display: inline-block;
+	/*	z-index: 10;*/
+	/*	margin: 16px;*/
+	/*	border: 1px gray solid;*/
 	text-align: center;
+	background-position: center;
+	background-size: auto;
+	-webkit-transition: 0.3s all;
+	transition: 0.3s all;
 }
 
+.mimic-dz-thumb:hover {
+	background-size: cover;
+	-webkit-transition: 0.3s all;
+	transition: 0.3s all;
+	cursor: pointer;
+}
 
+.mimic-dz-thumb span {
+	background-color: rgba(255, 255, 255, 0.5);
+	color: #333;
+	text-shadow: 0px 0px 2px white;
+	opacity: 1;
+	display: inline-block;
+	transition: 0.3s all ease-in-out;
+}
 
+.mimic-dz-thumb:hover span {
+	font-size: 4px;
+	opacity: 0.2;
+	-webkit-transition: 0.3s all;
+	transition: 0.3s all;
+}
 
+.smaller {
+	font-size: 0.8em;
+}
 
+.thumb-captions {
+	width: 120px;
+	overflow-y: hidden;
+	height: 80px;
+}
 
-
-
-
+.thumb-caption {
+	width: 120px;
+	font-size: 12px;
+}
 
 
 .mimic-form-control {
@@ -634,6 +697,70 @@ pre {
 		box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
 	}
 }
+
+
+
+/* ================================================
+   MIMIC DROPZONE 
+=================================================*/
+
+.mimic-dz-thumb.dz-success .dz-success-mark {
+	-webkit-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+	-moz-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+	-ms-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+	-o-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+	animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.mimic-dz-thumb .dz-success-mark {
+	pointer-events: none;
+	opacity: 0;
+	z-index: 500;
+	position: absolute;
+	display: block;
+	top: 50%;
+	left: 50%;
+	margin-left: -27px;
+	/*	margin-top: -27px;*/
+}
+
+.mimic-dz-thumb .dz-success-mark svg {
+	display: block;
+	width: 54px;
+	height: 54px;
+}
+
+.mimic-dz-thumb.dz-success .dz-success-mark {
+	display: block;
+}
+
+.mimic-dz-thumb .dz-success-mark {
+	position: absolute;
+	display: none;
+	left: 30px;
+	top: 30px;
+	width: 54px;
+	height: 58px;
+	left: 50%;
+	margin-left: -27px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ================================================
    MEDIA QUERIES 
