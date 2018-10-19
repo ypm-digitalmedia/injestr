@@ -10,9 +10,8 @@ if(!isset($_SESSION['random'])){
 }  
 $randomone = $_SESSION['randomone'];  
 $randomtwo = $_SESSION['randomtwo'];  
-?>
 
-	?>
+?>
 
 	<!DOCTYPE html>
 	<html lang="en">
