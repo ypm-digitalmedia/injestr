@@ -474,7 +474,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail('0.2.14')">Report an Issue</a> | <strong>v0.2.13</strong> | Oct 19 2018</p>
+			<p align="center"><a href="javascript:feedbackEmail('0.2.14')">Report an Issue</a> | <strong>v0.2.14</strong> | Oct 19 2018</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
