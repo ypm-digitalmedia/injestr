@@ -304,7 +304,7 @@ $(document).ready(function () {
 			var headerHTML = "<th><strong>#</strong></th>";
 			headerHTML += "<th><strong>Media ID</strong></th>";
 			headerHTML += "<th><strong>Media File ID</strong></th>";
-			headerHTML += "<th><strong>Title</strong></th>";
+			headerHTML += "<th><strong>Notes</strong></th>";
 			headerHTML += "<th><strong>Size</strong></th>";
 			headerHTML += "<th><strong>More</strong></th>";
 		} else {
@@ -331,7 +331,7 @@ $(document).ready(function () {
 				rowString += "<td>" + parseInt(index + 1) + "</td>";
 				rowString += "<td><a target='_blank' href='https://www.morphosource.org/Detail/MediaDetail/Show/media_id/" + asset.media_id + "'>" + asset.media_id + "</a></td>";
 				rowString += "<td>" + asset.media_file.media_file_id + "</td>";
-				rowString += "<td>" + formData.assets[index].title + "</td>";
+				rowString += "<td>" + formData.assets[index].keywords + "</td>";
 				rowString += "<td>" + filesizeStringFinal + "</td>";
 				rowString += "<td><button type='button' onclick='showMoreInfoPopup(" + index + ")' class='btn btn-sm btn-default' title='Details'><i class='fas fa-ellipsis-h'></i></button></td>";
 				rowString += "</tr>";
@@ -355,8 +355,6 @@ $(document).ready(function () {
 	showMoreInfoPopup = function (index) {
 		var msgHTML = "";
 		if (isMorphoSource) {
-
-			alert("customize metadata fields and display them here");
 
 			var filesizeString = msFinalData[index].media['filesize'].replace('i', '');
 			var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));

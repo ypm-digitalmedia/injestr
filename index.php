@@ -3,7 +3,16 @@
 
 include_once "get_cas_user.php";
 
+session_start(); 
+if(!isset($_SESSION['random'])){  
+     $_SESSION['randomone'] = mt_rand(100000, 999999);  
+     $_SESSION['randomtwo'] = mt_rand(100000, 999999);  
+}  
+$randomone = $_SESSION['randomone'];  
+$randomtwo = $_SESSION['randomtwo'];  
 ?>
+
+	?>
 
 	<!DOCTYPE html>
 	<html lang="en">
@@ -41,7 +50,8 @@ include_once "get_cas_user.php";
 
 		<link href="css/jquery.tagsinput.min-custom.css" rel="stylesheet" />
 		<link href="css/easy-autocomplete-custom.css" rel="stylesheet" />
-		<link href="css/style.css" rel="stylesheet" />
+		<!--		<link href="css/style.css?v=" rel="stylesheet" />-->
+		<?php echo '<link rel="stylesheet" href="css/style.css?v=' . $randomone . '" />'; ?>
 	</head>
 
 	<body>
@@ -465,7 +475,7 @@ include_once "get_cas_user.php";
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail('0.2.13')">Report an Issue</a> | <strong>v0.2.13</strong> | Oct 19 2018</p>
+			<p align="center"><a href="javascript:feedbackEmail('0.2.14')">Report an Issue</a> | <strong>v0.2.13</strong> | Oct 19 2018</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
@@ -579,7 +589,8 @@ include_once "get_cas_user.php";
 		<script src="js/dropzone.js"></script>
 		<script src="js/tiff.min.js"></script>
 
-		<script src="js/main.js"></script>
+		<!--		<script src="js/main.js"></script>-->
+		<?php echo '<script src="js/main.js?v=' . $randomtwo . '"></script>'; ?>
 	</body>
 
 	</html>
