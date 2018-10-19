@@ -8,7 +8,7 @@ var formData = {
 	dateStamp: null,
 	guid: null,
 	user: null,
-	morphosource: null,
+	morphosource: false,
 	private: null,
 	assets: []
 };
@@ -255,11 +255,22 @@ $(document).ready(function () {
 			$(".ms-files-extra").hide();
 			$(".extra-ms-info").fadeIn();
 			$(".mimic-dz-item").not(".ms-file-selected").fadeOut();
-			$("#morphoSourceHeadingNum").text("(" + formData.assets.length + ")");
+			$("#morphoSourceHeadingNum").text("");
+			//			$("#morphoSourceHeadingNum").text("(" + formData.assets.length + ")");
 
 			$(".ms-file-selected").appendTo('#morphoSourceApiResultsRows');
 
 			buildMorphosourceFinal();
+
+			//remove irrelevant metadata fields
+			$(".enter-metadata").removeProp("required");
+			$(".enter-metadata").removeAttr("required");
+			$(".ms-irrelevant").slideUp();
+			$("#mainForm").validator("validate");
+			$("#metadataLabelKeywords").text("Optional Notes");
+			setTimeout(function () {
+				$("#uploadsInfoCommonKeywords").trigger("click").focus();
+			}, 1000);
 
 			defaultMsClick = false;
 		} else {
@@ -798,6 +809,9 @@ $(document).ready(function () {
 						CASuser.type = "both";
 						initialSearchType = "graphics";
 						searchType = "event";
+						setTimeout(function () {
+							showDebugPanel();
+						}, 1000);
 					} else {
 						//default
 						console.warn("logged in as basic graphics-based user " + noUser);
@@ -842,6 +856,9 @@ $(document).ready(function () {
 						CASuser.type = "both";
 						initialSearchType = "graphics";
 						searchType = "event";
+						setTimeout(function () {
+							showDebugPanel();
+						}, 1000);
 					} else {
 						//default
 						console.warn(
@@ -965,6 +982,60 @@ $(document).ready(function () {
 		setFormData("label", label);
 		//		$("#dropzoneArea").show();
 		showTabTwo();
+	});
+
+
+	$('.nav-pills a[href="#searchPaneGraphics"]').on("shown.bs.tab", function (e) {
+		isMorphoSource = false;
+		setFormData("morphosource", false);
+		printFormData();
+	});
+
+	$('.nav-pills a[href="#searchPaneEvent"]').on("shown.bs.tab", function (e) {
+		isMorphoSource = false;
+		setFormData("morphosource", false);
+		printFormData();
+	});
+
+	$('.nav-pills a[href="#searchPaneRecord"]').on("shown.bs.tab", function (e) {
+		isMorphoSource = $("#searchByRecordMorphoSource").prop("checked");
+		setFormData("morphosource", $("#searchByRecordMorphoSource").prop("checked"));
+		printFormData();
+	});
+
+
+
+	function showDebugPanel() {
+		$("#outputToggle").html('<i class="fas fa-caret-up"></i>');
+		$("#output").css('opacity', 0)
+			.slideDown('slow')
+			.animate({
+				opacity: 1
+			}, {
+				queue: false,
+				duration: 'slow'
+			});
+		$("#outputToggle").fadeIn('slow');
+	}
+
+	function hideDebugPanel() {
+		$("#outputToggle").html('<i class="fas fa-caret-down"></i>');
+		$("#output").css('opacity', 1)
+			.slideUp('slow')
+			.animate({
+				opacity: 0
+			}, {
+				queue: false,
+				duration: 'slow'
+			});
+	}
+
+	$("#outputToggle").click(function () {
+		if ($("#output").is(":hidden")) {
+			showDebugPanel();
+		} else {
+			hideDebugPanel();
+		}
 	});
 
 
@@ -2148,4 +2219,8 @@ function resetSelects() {
 
 function randomNumber() {
 	return Math.floor(Math.random() * 1000000000);
+}
+
+function feedbackEmail(v) {
+	window.open('mailto:peabody.webmaster@yale.edu?subject=Injestr issue: v' + v);
 }

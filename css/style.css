@@ -40,6 +40,15 @@ body {
 	padding-bottom: 1em;
 }
 
+footer {
+	width: 100%;
+	padding: 1em;
+}
+
+#outputToggle {
+	padding: 0 2em;
+}
+
 .popup-thumbnail {
 	margin-bottom: 2em;
 	width: 100%;
@@ -86,6 +95,14 @@ a:active {
 
 .smaller {
 	font-size: 0.8em;
+}
+
+#output {
+	display: none;
+}
+
+#outputToggle {
+	display: none;
 }
 
 /* disable destination buttons until credentials proven */

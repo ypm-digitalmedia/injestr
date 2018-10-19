@@ -315,71 +315,41 @@ include_once "get_cas_user.php";
 
 								</div>
 
-								<!--
-								<div class="row row-pad-top">
-									<div class="form-group col-sm-5">
-										<label for="uploadsInfoCommonCreatorLast" class="control-label">Creator Name</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonCreatorLast" placeholder="Last name" required data-error="Last name required." onchange="editCommonMetadata('creatorName.last',this.value)">
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="form-group col-sm-5">
-										<label for="uploadsInfoCommonCreatorFirst" class="control-label">&nbsp;</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonCreatorFirst" placeholder="First name" required data-error="First name required." onchange="editCommonMetadata('creatorName.first',this.value)">
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="form-group col-sm-2">
-										<label for="uploadsInfoCommonCreatorMiddle" class="control-label">&nbsp;</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonCreatorMiddle" placeholder="Middle" onchange="editCommonMetadata('creatorName.middle',this.value)">
-									</div>
-								</div>
-								<div class="row">
-									<div class="form-group col-sm-6">
-										<label for="uploadsInfoCommonTitle" class="control-label">Brief Descriptive Title</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="form-group col-sm-6">
-										<label for="uploadsInfoCommonDate" class="control-label">Date</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
-										<div class="help-block with-errors" onchange="#"></div>
-									</div>
-								</div>
--->
 
 
 								<div class="row row-pad-top">
 									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonCreator" class="control-label">Creator Name</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonCreator" placeholder="Creator name" required data-error="Creator name required.">
-										<div class="help-block with-errors"></div>
+										<label for="uploadsInfoCommonCreator" class="control-label ms-irrelevant">Creator Name</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonCreator" placeholder="Creator name" required data-error="Creator name required.">
+										<div class="help-block with-errors ms-irrelevant"></div>
 									</div>
 									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonTitle" class="control-label">Brief Descriptive Title</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
-										<div class="help-block with-errors"></div>
+										<label for="uploadsInfoCommonTitle" class="control-label ms-irrelevant">Brief Descriptive Title</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
+										<div class="help-block with-errors ms-irrelevant"></div>
 									</div>
 									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonDate" class="control-label">Date</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
-										<div class="help-block with-errors" onchange="#"></div>
+										<label for="uploadsInfoCommonDate" class="control-label ms-irrelevant">Date</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
+										<div class="help-block with-errors ms-irrelevant" onchange="#"></div>
 									</div>
 								</div>
 
 								<div class="row">
 									<div class="form-group col-xs-12">
-										<label for="uploadsInfoCommonKeywords" class="control-label">Notes/Keywords</label>
-										<input type="text" class="form-control" required id="uploadsInfoCommonKeywords" placeholder="Type something here..." data-error="Note/Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
+										<label id="metadataLabelKeywords" for="uploadsInfoCommonKeywords" class="control-label">Notes/Keywords</label>
+										<input type="text" class="form-control enter-metadata" required id="uploadsInfoCommonKeywords" placeholder="Type something here..." data-error="Note/Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
 										<div class="help-block with-errors"></div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="form-group col-sm-6">
-										<label for="uploadsInfoCommonSpecialCreditLine" class="control-label">Special Credit Line</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonSpecialCreditLine" placeholder="Enter special credit line" onchange="editCommonMetadata('credit',this.value)"><span class="smaller"><em>(If applicable)</em></span>
+										<label for="uploadsInfoCommonSpecialCreditLine" class="control-label ms-irrelevant">Special Credit Line</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonSpecialCreditLine" placeholder="Enter special credit line" onchange="editCommonMetadata('credit',this.value)"><span class="smaller ms-irrelevant"><em>(If applicable)</em></span>
 									</div>
 									<div class="form-group col-sm-6">
-										<label for="uploadsInfoCommonSpecialUsage" class="control-label">Special Usage Permissions</label>
-										<input type="text" class="form-control" id="uploadsInfoCommonSpecialUsage" placeholder="Enter special usage permissions" onchange="editCommonMetadata('usage',this.value)"><span class="smaller"><em>(If applicable)</em></span>
+										<label for="uploadsInfoCommonSpecialUsage" class="control-label ms-irrelevant">Special Usage Permissions</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonSpecialUsage" placeholder="Enter special usage permissions" onchange="editCommonMetadata('usage',this.value)"><span class="smaller ms-irrelevant"><em>(If applicable)</em></span>
 									</div>
 								</div>
 
@@ -428,7 +398,7 @@ include_once "get_cas_user.php";
 									<div class="col-xs-12">
 										<table class="table table-striped" id="finalSummary">
 											<tr class='header'>
-												
+
 											</tr>
 										</table>
 									</div>
@@ -473,6 +443,9 @@ include_once "get_cas_user.php";
 				<div class="container">
 					<div class="row row-pad">
 						<div class="col-xs-12 align-center">
+							<p align="center">
+								<button title="Show/hide output console" class="btn btn-default" id="outputToggle"><i class="fas fa-caret-up"></i></button>
+							</p>
 							<pre id="output"></pre>
 						</div>
 					</div>
@@ -490,7 +463,10 @@ include_once "get_cas_user.php";
 
 
 
-		<footer></footer>
+		<footer>
+			<hr />
+			<p align="center"><a href="javascript:feedbackEmail('0.2.13')">Report an Issue</a> | <strong>v0.2.13</strong> | Oct 19 2018</p>
+		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
 
