@@ -11,7 +11,8 @@ if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
 }
 
 //Write manifest file
-$stuff = $_POST['data'];
+//$stuff = $_POST['data'];
+$stuff = urldecode($_POST['data']);
 
 $file = 'manifest.json';
 $file_all = $storeFolder . $ds . $sessionFolderName . $ds . $file;

@@ -683,13 +683,16 @@ $(document).ready(function () {
 
 		//		setFormData('datestamp', moment().toISOString());
 
+		var dataSanitized = JSON.stringify(formData);
+		dataSanitized = encodeURIComponent(dataSanitized);
 
 		$.ajax({
 			type: 'post',
 			url: 'finalize.php',
 			dataType: 'json',
 			//			data: 'data=' + JSON.stringify(formData),
-			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID + "&type=" + searchType,
+			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
+			//			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID + "&type=" + searchType,
 			success: function (result) {
 				// check result object for what you returned
 				showFinalSuccessDialog(result);
