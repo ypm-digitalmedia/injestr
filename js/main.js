@@ -2221,6 +2221,7 @@ function randomNumber() {
 	return Math.floor(Math.random() * 1000000000);
 }
 
-function feedbackEmail(v) {
+function feedbackEmail() {
+	var v = $("#appVersion").text();
 	window.open('mailto:peabody.webmaster@yale.edu?subject=Injestr issue: v' + v);
 }
