@@ -397,6 +397,23 @@ button:disabled {
 	cursor: pointer !important;
 }
 
+.dropzone .dz-preview .dz-progress {
+	top: 70% !important;
+	background: linear-gradient(to bottom, #444, #666);
+}
+
+.dropzone .dz-preview .dz-progress .dz-upload {
+	background: linear-gradient(to bottom, #6788b2, #3071a9);
+}
+
+.progress-text {
+	color: white;
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+	margin-left: 22px;
+	font-size: 12px;
+	height: 20px;
+}
+
 a.dz-remove,
 a.dz-remove span,
 a.dz-remove b,

@@ -142,7 +142,7 @@ $randomtwo = $_SESSION['randomtwo'];
 											<a href="#searchPaneGraphics" data-toggle="tab" role="tab"><i class="fas fa-camera"></i>&nbsp;<strong>Graphics</strong></a>
 										</li>
 										<li id="tabcontrol12">
-											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-images"></i>&nbsp;<strong>NetX</strong></a>
+											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-images"></i>&nbsp;<strong>EMu/NetX</strong></a>
 										</li>
 										<li id="tabcontrol13">
 											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-cloud-upload-alt"></i>&nbsp;<strong>Wasabi</strong></a>
@@ -474,7 +474,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail('0.2.14')">Report an Issue</a> | <strong>v0.2.14</strong> | Oct 19 2018</p>
+			<p align="center"><a href="javascript:feedbackEmail('0.2.14')">Report an issue</a> | <strong>v0.2.15</strong> | Nov 2 2018</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
@@ -531,7 +531,7 @@ $randomtwo = $_SESSION['randomtwo'];
 					<div class="col col-xs-12 col-sm-8">
 						<span class="result-line"><i class="fas fa-check-circle"></i>&nbsp;<strong>SELECTED</strong></span>
 						<span class="result-line"><em>{{{description}}}</em></span>
-						<span class="result-line smaller space-top">{{{type}}}&nbsp;&bull;&nbsp;{{{startDate}}}&nbsp;&ndash;&nbsp;{{{endDate}}}</span>
+						<span class="result-line smaller space-top">{{{type}}}&nbsp;&bull;&nbsp;{{{date}}}</span>
 						<span class="result-line smaller">{{{department}}}</span>
 						<span class="result-line smaller">IRN&nbsp;{{{irn}}}&nbsp;&bull;&nbsp;{{{number}}}</span>
 					</div>

@@ -79,10 +79,11 @@ $(document).ready(function () {
 		//		addRemoveLinks: true, //add a link to every file preview to remove or cancel
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
-		chunking: false,
-		chunkSize: 2000000, //bytes
+		chunking: true,
+		chunkSize: 700000000, //bytes
 		clickable: true,
 		createImageTHumbnails: true,
+		createImageThumbnails: true,
 		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES / CLICK HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
 		dictFileTooBig: "File ({{filesize}}) is too large.  Max: {{maxFilesize}}",
 		//		dictRemoveFile: "",
@@ -96,7 +97,7 @@ $(document).ready(function () {
 		hiddenInputContainer: "body",
 		ignoreHiddenFiles: false,
 		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
-		maxFilesize: 4000, // MB
+		maxFilesize: 16000, // MB
 		maxThumbnailFilesize: 240, //mb
 		maxParallelUploads: 50,
 		method: "post",
@@ -112,7 +113,7 @@ $(document).ready(function () {
 		resizeMimeType: null, //mime type of the resized image
 		resizeQuality: 0.8,
 		resizeMethod: "contain", //crop|contain
-		retryChunks: false,
+		retryChunks: true,
 		retryChunksLimit: 3,
 		thumbnailWidth: 120, //px
 		thumbnailHeight: 120, //px
@@ -730,7 +731,7 @@ $(document).ready(function () {
 			type: BootstrapDialog.TYPE_SUCCESS,
 			closable: false,
 			title: '<h4>Success!</h4>',
-			message: '<p>Your submission was successful. Please allow time for these assets to propagate throughout the NetX / Preservica system.</p>',
+			message: '<p>Your submission was successful. Please allow time for these assets to propagate throughout the necessary systems.</p>',
 			buttons: [{
 				label: '<i class="fas fa-sync-alt"></i>&nbsp;Start over',
 				cssClass: 'btn-default',
@@ -955,7 +956,7 @@ $(document).ready(function () {
 
 
 	$("#graphicsStepOneNextButton").click(function () {
-		var label = $(this).val();
+		var label = $("#labelForSally").val();
 		var dummyData = {
 			"irn": "",
 			"number": "",
@@ -1218,10 +1219,8 @@ $(document).ready(function () {
 						"</em></span>";
 					html +=
 						"<span class='result-line smaller space-top'>" +
-						valArr[6] +
-						"&nbsp;&bull;&nbsp;" +
 						valArr[2] +
-						"&mdash;" +
+						"&nbsp;&bull;&nbsp;" +
 						valArr[3] +
 						"</span>";
 					html +=
@@ -1967,7 +1966,7 @@ function printSearchResults(obj, type) {
 		var destThird = $("#confirmedResultStepThree");
 	} else if (type == "graphics") {
 		var tpl = $("#labelForSally").val();
-		tpl += '<button class="btn btn-default pull-right edit-graphics-search-link" style="clear: both" type="button" id="graphicsEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Label</button>';
+		tpl += '<button class="btn btn-default pull-right edit-graphics-search-link" style="clear: both" type="button" id="graphicsEditSearchLink"><i class="fas fa-pencil-alt"></i>&nbsp;Edit Purpose/Project</button>';
 		var destFirst = $("#searchResultsGraphics");
 		var destSecond = $("#confirmedResultStepTwo");
 		var destThird = $("#confirmedResultStepThree");
@@ -1975,8 +1974,8 @@ function printSearchResults(obj, type) {
 
 	var tplEdit = tpl.replace("{{{description}}}", obj.description);
 	tplEdit = tplEdit.replace("{{{type}}}", obj.type);
-	tplEdit = tplEdit.replace("{{{startDate}}}", obj.date.start);
-	tplEdit = tplEdit.replace("{{{endDate}}}", obj.date.end);
+	//	tplEdit = tplEdit.replace("{{{startDate}}}", obj.date.start);
+	//	tplEdit = tplEdit.replace("{{{endDate}}}", obj.date.end);
 	tplEdit = tplEdit.replace("{{{name}}}", obj.name);
 	tplEdit = tplEdit.replace("{{{date}}}", obj.date);
 	tplEdit = tplEdit.replace("{{{geography}}}", obj.geography);
