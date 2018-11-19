@@ -29,7 +29,7 @@ $randomtwo = $_SESSION['randomtwo'];
 		<meta charset="utf-8" />
 		<meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Injestr | NetX-Preservica Asset Upload</title>
+		<title>Injestr | Peabody Asset Uploader</title>
 		<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
 
 		<!--    <link href="css/bootstrap-4.1.3.min.css" rel="stylesheet" />-->
@@ -474,7 +474,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | v<strong id="appVersion">0.2.15</strong> | Nov 2 2018</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.2.16</strong> | <i class="fas fa-calendar-alt"></i> Nov 19 2018</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

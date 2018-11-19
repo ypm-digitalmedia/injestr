@@ -19,6 +19,8 @@ var creatorName = {
 	irn: ""
 };
 
+var creatorNameListOpen = false;
+
 var showMoreInfoPopup;
 
 var activeAsset = -1;
@@ -1203,7 +1205,15 @@ $(document).ready(function () {
 					setFormData("target", obj);
 					setFormData("label", null);
 					setFormData("targetType", "event");
+				},
+				onShowListEvent: function () {
+					creatorNameListOpen = true;
+				},
+				onHideListEvent: function () {
+					creatorNameListOpen = false;
 				}
+
+
 			},
 			template: {
 				type: "custom",
@@ -1383,6 +1393,13 @@ $(document).ready(function () {
 		//		asset.creatorName.first = $("#uploadsInfoCommonCreatorFirst").val();
 		//		asset.creatorName.middle = $("#uploadsInfoCommonCreatorMiddle").val();
 
+		// if user hasn't selected a valid autocomplete entry, set creatorName object as <inputVal>|"new"
+		if (creatorName.creator == "" && creatorName.irn == "") {
+			//			alert("This is a custom person!")
+			creatorName.creator = $("#uploadsInfoCommonCreator").val();
+			creatorName.irn = "new";
+		}
+
 		asset.creatorName.creator = creatorName.creator;
 		asset.creatorName.irn = creatorName.irn;
 
@@ -1418,6 +1435,11 @@ $(document).ready(function () {
 			}
 		}
 
+		// reset creator object after selection.
+		// if user selects from autoComplete, it sets this object with selection
+		// if user types and doesn't select, creatorName will be defined with logic above
+		creatorName.creator = "";
+		creatorName.irn = "";
 
 	}
 
@@ -1645,6 +1667,11 @@ $(document).ready(function () {
 				checkMorphoSourceSelected();
 			}
 		}
+
+		//		if ($(event.target).not(".eac-item") && creatorNameListOpen) {
+		//			alert("you didn't pick anything");
+		//		}
+
 	});
 
 	$('.nav-tabs a[href="#tab1"]').on("shown.bs.tab", function (e) {
