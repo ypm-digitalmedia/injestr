@@ -1,9 +1,13 @@
 <?php
-// get CAS login from headers/cookie
-
-include_once "get_cas_user.php";
-
 session_start(); 
+
+if( isset($_SESSION['folderName']) ) {	session_unset();
+}
+
+// get CAS login from headers/cookie
+include_once "get_cas_user.php";
+//session_destroy();
+
 if(!isset($_SESSION['random'])){  
      $_SESSION['randomone'] = mt_rand(100000, 999999);  
      $_SESSION['randomtwo'] = mt_rand(100000, 999999);  

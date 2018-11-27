@@ -26,4 +26,7 @@ file_put_contents($lockfile_all, $targetType) or die ("unable to write lockfile.
 //print $stuff;
 print $sessionFolderName;
 
+session_unset('folderName');
+session_destroy();
+
 ?>

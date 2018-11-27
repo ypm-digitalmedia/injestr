@@ -1,28 +1,22 @@
 <?php
-session_start();
-
 $ds          = DIRECTORY_SEPARATOR;  //1
 
-function getGUID(){
-    mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-	$charid = strtolower(md5(uniqid(rand(), true)));
-	$hyphen = chr(45);// "-"
-	$uuid = substr($charid, 0, 8).$hyphen
-		.substr($charid, 8, 4).$hyphen
-		.substr($charid,12, 4).$hyphen
-		.substr($charid,16, 4).$hyphen
-		.substr($charid,20,12);
-	return $uuid;
+function GUID()
+{
+    if (function_exists('com_create_guid') === true)
+    {
+        return trim(com_create_guid(), '{}');
+    }
+
+    return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 }
 
 
 $storeFolder = 'uploads';   //2
 
-if( !isset($_SESSION['folderName']) ) {
-	$_SESSION['folderName'] = getGUID();
-}
-
-$sessionFolderName = $_SESSION['folderName'];
+//$sessionFolderName = $_REQUEST['folderName'];
+//$sessionFolderName = GUID();
+$sessionFolderName = $_REQUEST['dzuuid'];
 
 if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
     mkdir($storeFolder . $ds . $sessionFolderName, 0777, true);
@@ -47,8 +41,6 @@ if (!empty($_FILES)) {
 		echo("\n\nFolder name: " . $sessionFolderName);
 		echo("\n\nRequest: ");
 		print_r($_REQUEST);
-		echo("\n\nSession: ");
-		print_r($_SESSION);
 		
 		
 //	     echo print_r($_REQUEST);
