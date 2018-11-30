@@ -83,7 +83,7 @@ $(document).ready(function () {
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: true,
-		chunkSize: 15000000, //bytes
+		chunkSize: 500000000, //bytes
 		//		chunkSize: 1500000000, //bytes
 		clickable: true,
 		createImageTHumbnails: true,
@@ -156,7 +156,6 @@ $(document).ready(function () {
 				);
 				$(progressElement).fadeOut();
 			}
-
 
 		},
 		error: function (file, error, xhr) {
@@ -259,8 +258,10 @@ $(document).ready(function () {
 			name: file.name,
 			size: file.size,
 			type: file.type,
-			id: file.upload.uuid
+			id: file.upload.uuid,
+			chunked: file.upload.chunked
 		};
+
 		if (this.files.length) {
 			if (this.files.length == 1) {
 				setFormData("assets", package);
@@ -1603,7 +1604,8 @@ $(document).ready(function () {
 					filetype: value.type,
 					media_id: value.media_id,
 					media_file: value.media_file,
-					_id: value.id
+					_id: value.id,
+					chunked: value.chunked
 				};
 				if (formData.morphosource) {
 					formData[key].push(obj);
