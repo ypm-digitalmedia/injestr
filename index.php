@@ -1,12 +1,14 @@
 <?php
-session_start(); 
+//session_start(); 
+//session_unset();
+require("utilities.php");
 
-if( isset($_SESSION['folderName']) ) {	session_unset();
-}
+//if( isset($_SESSION['folderName']) ) {	session_unset(); }
+//$_SESSION['folderName']= getGUID();
+//require("getGUID.php");
 
 // get CAS login from headers/cookie
 include_once "get_cas_user.php";
-//session_destroy();
 
 if(!isset($_SESSION['random'])){  
      $_SESSION['randomone'] = mt_rand(100000, 999999);  
@@ -14,6 +16,13 @@ if(!isset($_SESSION['random'])){
 }  
 $randomone = $_SESSION['randomone'];  
 $randomtwo = $_SESSION['randomtwo'];  
+
+
+
+//if( !isset($_SESSION['folderName']) ) {
+//	$_SESSION['folderName'] = getGUID();
+//}
+
 
 ?>
 
@@ -27,6 +36,8 @@ $randomtwo = $_SESSION['randomtwo'];
 			var cookieCasUser = "<?php echo $cas_username;?>";
 			var logoutUrl = "<?php echo $logoutUrl;?>";
 			//alert("hello, " + cookieCasUser);
+			//var sessionGUID = "<?php //echo $_SESSION['folderName']; ?>";
+			//console.warn(sessionGUID);
 
 		</script>
 

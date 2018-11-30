@@ -11,22 +11,29 @@ if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
 }
 
 //Write manifest file
-//$stuff = $_POST['data'];
 $stuff = urldecode($_POST['data']);
 
 $file = 'manifest.json';
 $file_all = $storeFolder . $ds . $sessionFolderName . $ds . $file;
 file_put_contents($file_all, $stuff) or die ("unable to write manifest file.");
 
-//Write lockfile
-$lockfile = 'ready';
-$lockfile_all = $storeFolder . $ds . $sessionFolderName . $ds . $lockfile;
-file_put_contents($lockfile_all, $targetType) or die ("unable to write lockfile.");
+//Write readyfile
+$readyfile = 'ready';
+$readyfile_all = $storeFolder . $ds . $sessionFolderName . $ds . $readyfile;
+file_put_contents($readyfile_all, $targetType) or die ("unable to write readyfile.");
+
+//Delete lockfile
+$lockfile = $storeFolder . $ds . $sessionFolderName . $ds . "lockfile";
+if (file_exists($lockfile)) {
+        unlink($lockfile);
+    } else {
+        // File not found.
+    }
 
 //print $stuff;
 print $sessionFolderName;
 
-session_unset('folderName');
-session_destroy();
+//session_unset('folderName');
+//session_destroy();
 
 ?>

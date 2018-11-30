@@ -1,5 +1,6 @@
-var myDropzone;
+var myDropzone = null;
 var defaultMsClick = true;
+var currentFile = null;
 
 var formData = {
 	targetType: null,
@@ -94,7 +95,6 @@ $(document).ready(function () {
 		forceChunking: false,
 		forceFallback: false,
 		headers: {
-			"folderName": sessionGUID,
 			"type": searchType
 		}, //json object to send to server
 		hiddenInputContainer: "body",
@@ -123,6 +123,7 @@ $(document).ready(function () {
 		thumbnailMethod: "crop", //crop|contain
 		timeout: 300000, //ms
 		uploadMultiple: false,
+		//		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType,
 		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType,
 		//		url: "javascript:uploadFile()",
 		withCredentials: false,
@@ -156,12 +157,63 @@ $(document).ready(function () {
 				$(progressElement).fadeOut();
 			}
 
+
 		},
 		error: function (file, error, xhr) {
 			console.log(file);
 			console.log(error);
 			console.log(xhr);
 		}
+		//		params: function (files, xhr, chunk) {
+		//			if (chunk) {
+		//				return {
+		//					dzUuid: chunk.file.upload.uuid,
+		//					dzChunkIndex: chunk.index,
+		//					dzTotalFileSize: chunk.file.size,
+		//					dzCurrentChunkSize: chunk.dataBlock.data.size,
+		//					dzTotalChunkCount: chunk.file.upload.totalChunkCount,
+		//					dzChunkByteOffset: chunk.index * this.options.chunkSize,
+		//					dzChunkSize: this.options.chunkSize,
+		//					dzFilename: chunk.file.name
+		//				};
+		//			}
+		//		},
+		//		chunksUploaded: function (file, done) {
+		//			// All chunks have been uploaded. Perform any other actions
+		//			currentFile = file;
+		//
+		//			// This calls server-side code to merge all chunks for the currentFile
+		//			$.ajax({
+		//				type: "PUT",
+		//				url: "assemble.php?dzIdentifier=" + currentFile.upload.uuid + "&fileName=" + encodeURIComponent(currentFile.name) + "&expectedBytes=" + currentFile.size + "&totalChunks=" + currentFile.upload.totalChunkCount,
+		//				success: function (data) {
+		//					// Must call done() if successful
+		//					done();
+		//				},
+		//				error: function (msg) {
+		//					currentFile.accepted = false;
+		//					myDropzone._errorProcessing([currentFile], msg.responseText);
+		//				},
+		//				done: function (data) {
+		//					//					console.warn("chunked file " + currentFile + " assembled.");
+		//					console.warn(data);
+		//				}
+		//			});
+		//		},
+		//		init: function () {
+		//
+		//			// This calls server-side code to delete temporary files created if the file failed to upload
+		//			// This also gets called if the upload is canceled
+		//			this.on('error', function (file, errorMessage) {
+		//				$.ajax({
+		//					type: "DELETE",
+		//					url: "assemble.php?dzIdentifier=" + file.upload.uuid + "&fileName=" + encodeURIComponent(file.name) + "&expectedBytes=" + file.size + "&totalChunks=" + file.upload.totalChunkCount,
+		//					success: function (data) {
+		//						// nothing
+		//					}
+		//				});
+		//			});
+		//		}
 
 	});
 
@@ -896,8 +948,15 @@ $(document).ready(function () {
 		//		setFormData("targetType", searchType);
 		setFormData("user", CASuser.name);
 
+
 		sessionGUID = makeGUID();
 		setFormData("guid", sessionGUID);
+
+		printFormData();
+
+
+
+
 
 
 		//focus search pane initially
@@ -2076,6 +2135,25 @@ function createHexId(length) {
 
 	return hexString;
 }
+
+function getGUID() {
+
+	$.ajax({
+		url: 'getGUID.php',
+		async: false,
+		type: 'POST',
+		dataType: 'json',
+		success: function (result) {
+			sessionGUID = result;
+			console.warn("GUID returned: " + sessionGUID);
+		},
+		error: function () {
+			console.error("error in fetching GUID.");
+		}
+	})
+
+}
+
 
 function makeGUID() {
 	var choices = [

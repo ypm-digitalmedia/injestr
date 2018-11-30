@@ -1,9 +1,8 @@
 <?php
-if( !isset($_SESSION['folderName']) ) {
-	session_destroy();
-}
 session_start();
-
+if( isset($_SESSION['folderName']) ) {
+	session_unset();
+}
 
 for( $i=0; $i<10; $i++ ) {
 	upload($i);
