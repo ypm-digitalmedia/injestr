@@ -95,7 +95,8 @@ $(document).ready(function () {
 		forceChunking: false,
 		forceFallback: false,
 		headers: {
-			"type": searchType
+			"type": searchType,
+			"folderName": sessionGUID
 		}, //json object to send to server
 		hiddenInputContainer: "body",
 		ignoreHiddenFiles: false,
@@ -156,12 +157,13 @@ $(document).ready(function () {
 				);
 				$(progressElement).fadeOut();
 			}
-
+			console.log(file);
 		},
 		error: function (file, error, xhr) {
 			console.log(file);
 			console.log(error);
 			console.log(xhr);
+			$(file.previewElement).remove();
 		}
 		//		params: function (files, xhr, chunk) {
 		//			if (chunk) {
@@ -952,7 +954,6 @@ $(document).ready(function () {
 
 		sessionGUID = makeGUID();
 		setFormData("guid", sessionGUID);
-
 		printFormData();
 
 

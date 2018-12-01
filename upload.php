@@ -12,31 +12,31 @@ $storeFolder = 'uploads';   //2
 $sessionFolderName = $_REQUEST['folderName'];
 //$sessionFolderName = $_SESSION['folderName'];
 
+
 // create GUID upload folder
-//if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
-//    mkdir($storeFolder . $ds . $sessionFolderName, 0777, true);
-//}
+if (!file_exists($storeFolder . $ds . $sessionFolderName )) { 
+	mkdir($storeFolder . $ds . $sessionFolderName, 0777, true); 
+}
+
+//var_dump($_REQUEST);
 
 if (!empty($_FILES)) {
      
-    $tempFile = $_FILES['file']['tmp_name'];          //3             
+    $tempFile = $_FILES['file']['tmp_name'];          //3
+	$fileName = $_FILES['file']['name'];
     
     $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds . $sessionFolderName . $ds;  //4
      
-    $targetFile =  $targetPath. $_FILES['file']['name'];  //5
+    $targetFile =  $targetPath . $fileName;  //5
  
-//    move_uploaded_file($tempFile,$targetFile); //6
-     
-//	echo( print_r($_FILES) );
-	
 	
 	
 	if( isset($_REQUEST['dzchunkindex']) && isset($_REQUEST['dztotalchunkcount'])) {
 	// CHUNKING (make subfolders or add index to filenames for large files)
 		
 		// check for & make chunk folder
-		if (!file_exists($storeFolder . $ds . $sessionFolderName . $ds . $_FILES['file']['name'] )) {
-			mkdir($storeFolder . $ds . $sessionFolderName . $ds . $_FILES['file']['name'], 0777, true);
+		if (!file_exists($storeFolder . $ds . $sessionFolderName . $ds . $fileName )) {
+			mkdir($storeFolder . $ds . $sessionFolderName . $ds . $fileName, 0777, true);
 		}
 		
 		// write chunk file
@@ -46,31 +46,43 @@ if (!empty($_FILES)) {
 		$index = intval($_REQUEST['dzchunkindex']);
 		$indexActual = $index+1;
 		
-		$targetChunkFile = $targetPath . $_FILES['file']['name'] . $ds . "chunk[" . $indexActual . "-" . $_REQUEST['dztotalchunkcount'] . "]";
+		$targetChunkFile = $targetPath . $fileName . $ds . "chunk[" . $indexActual . "-" . $_REQUEST['dztotalchunkcount'] . "]";
 		
 		if ( move_uploaded_file ($tempFile,$targetChunkFile)  ) {
-			echo "The chunked file " . $_FILES['file']['name'] . " has been successfully uploaded.  Total chunks: " . $_REQUEST['dztotalchunkcount'];
+			echo "The chunked file " . $fileName . " has been successfully uploaded.  Total chunks: " . $_REQUEST['dztotalchunkcount'];
 			$statusText = "success";
 		} else {
 			switch ($_FILES['file']['error']) {  
 				case 1:
-					echo 'ERROR: The file is bigger than this PHP installation allows.';
+					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
 					$statusText = "error|phpsizelimit";
 					break;
 				case 2:
-					print 'ERROR: The file is bigger than this form allows';
+					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
 					$statusText = "error|javascriptsizelimit";
 					break;
 				case 3:
-					print 'ERROR: Only part of the file was uploaded';
+					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
 					$statusText = "error|partial";
 					break;
 				case 4:
-					print 'ERROR: No file was uploaded';
+					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
 					$statusText = "error|empty";
 					break;
+				case 6:
+					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+					$statusText = "error|notempfolder";
+					break;
+				case 7:
+					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+					$statusText = "error|cantwrite";
+					break;
+				case 8:
+					echo 'ERROR: Extension: ' . $fileName . ' ';
+					$statusText = "error|extension";
+					break;
 				default: 
-					print 'ERROR: FILE UNACCEPTABLE';
+					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
 					$statusText = "error|notallowed";
 					break;
 			}
@@ -79,11 +91,11 @@ if (!empty($_FILES)) {
 		// write chunklog
 		$logfilepath = $storeFolder . $ds . $sessionFolderName . $ds . "chunklog";
 		if (!file_exists( $logfilepath )) {
-			$header = "DATE" . "\t" . "FILE" . "\t" . "TOTAL SIZE" . "\t" . "CHUNK #" . "\t" . "CHUNK SIZE" . "\t" . "STATUS" . "\n";
-			file_put_contents($logfilepath, $header) or die ("unable to initialize chunklog file.");
+			$headertxt = "DATE" . "\t" . "FILE" . "\t" . "TOTAL SIZE" . "\t" . "CHUNK #" . "\t" . "CHUNK SIZE" . "\t" . "STATUS" . "\n";
+			file_put_contents($logfilepath, $headertxt) or die ("unable to initialize chunklog file.");
 		}
 		
-		$txt = date("Y-m-d H:i:s") . "\t" . $_FILES['file']['name'] . "\t" . $_REQUEST['dztotalfilesize'] . "\t" . $indexActual . " of " . $_REQUEST['dztotalchunkcount'] ."\t" . $_REQUEST['dzchunksize'] . "\t" . $statusText;
+		$txt = date("Y-m-d H:i:s") . "\t" . $fileName . "\t" . $_REQUEST['dztotalfilesize'] . "\t" . $indexActual . " of " . $_REQUEST['dztotalchunkcount'] ."\t" . $_REQUEST['dzchunksize'] . "\t" . $statusText;
 		
 //		file_put_contents($logfilepath, $txt) or die ("unable to write to chunklog file.");
 		
@@ -101,37 +113,46 @@ if (!empty($_FILES)) {
 	// SINGLE FILE (filesize smaller than chunksize)
 
 		if ( move_uploaded_file ($tempFile,$targetFile)  ) {
-			echo 'The file ' . $_FILES['file']['name'] . ' has been successfully uploaded.';
+			echo 'The file ' . $fileName . ' has been successfully uploaded.';
 		} else {
 			switch ($_FILES['file']['error']) {  
 				case 1:
-					echo 'ERROR: The file is bigger than this PHP installation allows.';
+					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
 					break;
 				case 2:
-					print 'ERROR: The file is bigger than this form allows';
+					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
 					break;
 				case 3:
-					print 'ERROR: Only part of the file was uploaded';
+					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
 					break;
 				case 4:
-					print 'ERROR: No file was uploaded';
+					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
+					break;
+				case 6:
+					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+					break;
+				case 7:
+					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+					break;
+				case 8:
+					echo 'ERROR: Extension: ' . $fileName . ' ';
 					break;
 				default: 
-					print 'ERROR: FILE UNACCEPTABLE';
+					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
 					break;
 			}
 		}
 		
 	}
 	
-	
+	//var_dump($_FILES);
 			
 		
 	// write lockfile (First time around)
-
+	$locktext = "lock";
 	$lockfile = $storeFolder . $ds . $sessionFolderName . $ds . "lockfile";
 	if (!file_exists( $lockfile )) {
-		file_put_contents($lockfile, "") or die ("unable to create lockfile.");
+		file_put_contents($lockfile, $locktext) or die ("unable to create lockfile.");
 	}
 	
 	
