@@ -83,7 +83,7 @@ $(document).ready(function () {
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: true,
-		chunkSize: 500000000, //bytes
+		chunkSize: 50000000, //bytes
 		//		chunkSize: 1500000000, //bytes
 		clickable: true,
 		createImageTHumbnails: true,
