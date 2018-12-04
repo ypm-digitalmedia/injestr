@@ -83,7 +83,7 @@ $(document).ready(function () {
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: true,
-		chunkSize: 50000000, //bytes
+		chunkSize: 100000000, //bytes
 		//		chunkSize: 1500000000, //bytes
 		clickable: true,
 		createImageTHumbnails: true,
@@ -118,7 +118,7 @@ $(document).ready(function () {
 		resizeQuality: 0.8,
 		resizeMethod: "contain", //crop|contain
 		retryChunks: true,
-		retryChunksLimit: 3,
+		retryChunksLimit: 10,
 		thumbnailWidth: 120, //px
 		thumbnailHeight: 120, //px
 		thumbnailMethod: "crop", //crop|contain
