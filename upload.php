@@ -54,35 +54,43 @@ if (!empty($_FILES)) {
 		} else {
 			switch ($_FILES['file']['error']) {  
 				case 1:
-					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
+//					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is larger than this server allows.';
 					$statusText = "error|phpsizelimit";
 					break;
 				case 2:
-					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
+//					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is larger than this application allows.';
 					$statusText = "error|javascriptsizelimit";
 					break;
 				case 3:
-					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
+//					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> was only partially uploaded.';
 					$statusText = "error|partial";
 					break;
 				case 4:
-					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
+//					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> was not sent to the server, or there was a connectivity issue.';
 					$statusText = "error|empty";
 					break;
 				case 6:
-					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+//					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> cannot be upload, because a temporary folder is missing on the server.';
 					$statusText = "error|notempfolder";
 					break;
 				case 7:
-					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+//					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> cannot be written to disk, or the server is full.';
 					$statusText = "error|cantwrite";
 					break;
 				case 8:
-					echo 'ERROR: Extension: ' . $fileName . ' ';
+//					echo 'ERROR: Extension: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> has a bad extension or is an incorrect file type.';
 					$statusText = "error|extension";
 					break;
 				default: 
-					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
+//					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is unacceptable.';
 					$statusText = "error|notallowed";
 					break;
 			}
@@ -117,28 +125,36 @@ if (!empty($_FILES)) {
 		} else {
 			switch ($_FILES['file']['error']) {  
 				case 1:
-					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
+//					echo 'ERROR: The file is bigger than this PHP installation allows: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is larger than this server allows.';
 					break;
 				case 2:
-					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
+//					echo 'ERROR: The file is bigger than this form allows: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is larger than this application allows.';
 					break;
 				case 3:
-					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
+//					echo 'ERROR: Only part of the file was uploaded: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> was only partially uploaded.';
 					break;
 				case 4:
-					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
+//					echo 'ERROR: No file was uploaded: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> was not sent to the server, or there was a connectivity issue.';
 					break;
 				case 6:
-					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+//					echo 'ERROR: Missing temporary folder: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> cannot be upload, because a temporary folder is missing on the server.';
 					break;
 				case 7:
-					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+//					echo 'ERROR: Cannot write to disk: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> cannot be written to disk, or the server is full.';
 					break;
 				case 8:
-					echo 'ERROR: Extension: ' . $fileName . ' ';
+//					echo 'ERROR: Extension: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> has a bad extension or is an incorrect file type.';
 					break;
 				default: 
-					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
+//					echo 'ERROR: FILE UNACCEPTABLE: ' . $fileName . ' ';
+					echo 'error|The file <em>' . $fileName . '</em> is unacceptable.';
 					break;
 			}
 		}

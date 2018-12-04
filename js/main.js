@@ -77,20 +77,22 @@ $(document).ready(function () {
 
 	myDropzone = new Dropzone("div#dropzoneArea", {
 		//		acceptedFiles: 'image/*,application/pdf,.psd,text/*,.zip,.tar,.tar.gz,.7z,.tif,.tiff,application/msword,.html,.htm', //ex: image/*,application/pdf,.psd
+		//		acceptedFiles: 'image/*',
 		acceptedMimeTypes: null, //DEPRECATED
-		autoProcessQueue: true, //if false, files will be added to the queue but the queue will not be processed automatically.
+		autoProcessQueue: true, //if false, queue will not be processed automatically.
 		//		addRemoveLinks: true, //add a link to every file preview to remove or cancel
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: true,
 		chunkSize: 500000000, //bytes
-		//		chunkSize: 1500000000, //bytes
 		clickable: true,
 		createImageTHumbnails: true,
 		createImageThumbnails: true,
 		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES / CLICK HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
-		dictFileTooBig: "File ({{filesize}}) is too large.  Max: {{maxFilesize}}",
-		//		dictRemoveFile: "",
+		dictFileTooBig: "Sorry, this file is too large.<br /><br />Your file size: <strong>{{filesize}} MB</strong><br />Maximum size: <strong>{{maxFilesize}} MB</strong>",
+		dictInvalidFileType: "Invalid file type.",
+		dictResponseError: "Server error code: {{statusCode}}",
+		dictMaxFilesExceeded: "Too many files uploaded.  Maximum: {{maxFiles}}",
 		filesizeBase: 1024, //1000|1024
 		forceChunking: false,
 		forceFallback: false,
@@ -102,6 +104,7 @@ $(document).ready(function () {
 		ignoreHiddenFiles: false,
 		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
 		maxFilesize: 16000, // MB
+//		maxFilesize: 1,
 		maxThumbnailFilesize: 240, //mb
 		maxParallelUploads: 50,
 		method: "post",
@@ -150,71 +153,32 @@ $(document).ready(function () {
 		},
 		complete: function (file, xhr, formData) {
 			//			console.log(file);
-			console.log(file.xhr.responseText);
+			if (file.xhr) {
+//				console.log(file.xhr.responseText);
+				var responseText = file.xhr.responseText;
+				
+				if( responseText.indexOf("error|") > -1 ) {
+					var errorMessageText = responseText.split("|")[1];
+					myDropzone.removeFile(file);
+					showFinalErrorDialog(errorMessageText);
+				}
+			} else {
+				console.error("error.  no upload initiated.");
+			}
 			if (file.previewElement) {
-				var progressElement = file.previewElement.querySelector(
-					".dz-progress"
-				);
+				var progressElement = file.previewElement.querySelector(".dz-progress");
 				$(progressElement).fadeOut();
 			}
 			console.log(file);
 		},
 		error: function (file, error, xhr) {
 			console.log(file);
-			console.log(error);
+//			console.log(error);
+			showFinalErrorDialog(error);
 			console.log(xhr);
-			$(file.previewElement).remove();
+//			$(file.previewElement).remove();
+			myDropzone.removeFile(file);
 		}
-		//		params: function (files, xhr, chunk) {
-		//			if (chunk) {
-		//				return {
-		//					dzUuid: chunk.file.upload.uuid,
-		//					dzChunkIndex: chunk.index,
-		//					dzTotalFileSize: chunk.file.size,
-		//					dzCurrentChunkSize: chunk.dataBlock.data.size,
-		//					dzTotalChunkCount: chunk.file.upload.totalChunkCount,
-		//					dzChunkByteOffset: chunk.index * this.options.chunkSize,
-		//					dzChunkSize: this.options.chunkSize,
-		//					dzFilename: chunk.file.name
-		//				};
-		//			}
-		//		},
-		//		chunksUploaded: function (file, done) {
-		//			// All chunks have been uploaded. Perform any other actions
-		//			currentFile = file;
-		//
-		//			// This calls server-side code to merge all chunks for the currentFile
-		//			$.ajax({
-		//				type: "PUT",
-		//				url: "assemble.php?dzIdentifier=" + currentFile.upload.uuid + "&fileName=" + encodeURIComponent(currentFile.name) + "&expectedBytes=" + currentFile.size + "&totalChunks=" + currentFile.upload.totalChunkCount,
-		//				success: function (data) {
-		//					// Must call done() if successful
-		//					done();
-		//				},
-		//				error: function (msg) {
-		//					currentFile.accepted = false;
-		//					myDropzone._errorProcessing([currentFile], msg.responseText);
-		//				},
-		//				done: function (data) {
-		//					//					console.warn("chunked file " + currentFile + " assembled.");
-		//					console.warn(data);
-		//				}
-		//			});
-		//		},
-		//		init: function () {
-		//
-		//			// This calls server-side code to delete temporary files created if the file failed to upload
-		//			// This also gets called if the upload is canceled
-		//			this.on('error', function (file, errorMessage) {
-		//				$.ajax({
-		//					type: "DELETE",
-		//					url: "assemble.php?dzIdentifier=" + file.upload.uuid + "&fileName=" + encodeURIComponent(file.name) + "&expectedBytes=" + file.size + "&totalChunks=" + file.upload.totalChunkCount,
-		//					success: function (data) {
-		//						// nothing
-		//					}
-		//				});
-		//			});
-		//		}
 
 	});
 
