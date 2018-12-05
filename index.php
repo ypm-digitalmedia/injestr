@@ -286,7 +286,7 @@ $randomtwo = $_SESSION['randomtwo'];
 								<div class="row row-pad">
 									<div class="col-xs-12">
 										<div id="confirmedResultStepTwo" class="search-results-container">
-											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-search-link">select a target</a> first.</p>
+											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-search-link">select a destination</a> first.</p>
 										</div>
 									</div>
 								</div>
@@ -401,7 +401,7 @@ $randomtwo = $_SESSION['randomtwo'];
 								<div class="row row-pad">
 									<div class="col-xs-12">
 										<div id="confirmedResultStepThree" class="search-results-container">
-											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a target</a> first.</p>
+											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a desination</a> first.</p>
 										</div>
 									</div>
 								</div>

@@ -46,7 +46,12 @@ if (!empty($_FILES)) {
 		$index = intval($_REQUEST['dzchunkindex']);
 		$indexActual = $index+1;
 		
-		$targetChunkFile = $targetPath . $fileName . $ds . "chunk[" . $indexActual . "-" . $_REQUEST['dztotalchunkcount'] . "]";
+		
+		$indexPadActual = str_pad($indexActual, 2, '0', STR_PAD_LEFT);
+		$totalPad = str_pad($_REQUEST['dztotalchunkcount'], 2, '0', STR_PAD_LEFT);
+		
+		
+		$targetChunkFile = $targetPath . $fileName . $ds . "chunk[" . $indexPadActual . "-" . $totalPad . "]";
 		
 		if ( move_uploaded_file ($tempFile,$targetChunkFile)  ) {
 			echo "The chunked file " . $fileName . " has been successfully uploaded.  Total chunks: " . $_REQUEST['dztotalchunkcount'];

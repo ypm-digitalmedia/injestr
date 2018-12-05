@@ -10,9 +10,22 @@ if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
     mkdir($storeFolder . $ds . $sessionFolderName, 0777, true);
 }
 
-//Write manifest file
 $stuff = urldecode($_POST['data']);
 
+//1. Parse manifest data & write assets to array
+
+//2. Iterate through assets
+//Check if chunked or not, cat files with unix shell exec and move to guid folder
+
+
+//3. Iterate through assets again
+//Run MD5 checksum on whole files
+
+
+//4. Add new data into data object
+
+
+//5. Write manifest file with new data object
 $file = 'manifest.json';
 $file_all = $storeFolder . $ds . $sessionFolderName . $ds . $file;
 file_put_contents($file_all, $stuff) or die ("unable to write manifest file.");

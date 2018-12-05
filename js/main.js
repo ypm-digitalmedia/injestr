@@ -273,14 +273,14 @@ $(document).ready(function () {
 	});
 
 	$("#metadataStartButton").click(function () {
-
+//----- BEGIN ACTUAL CODE -----
+/*
 		if (isMorphoSource) {
 			$(".ms-files-extra").hide();
 			$(".extra-ms-info").fadeIn();
 			$(".mimic-dz-item").not(".ms-file-selected").fadeOut();
 			$("#morphoSourceHeadingNum").text("");
-			//			$("#morphoSourceHeadingNum").text("(" + formData.assets.length + ")");
-
+			
 			$(".ms-file-selected").appendTo('#morphoSourceApiResultsRows');
 
 			buildMorphosourceFinal();
@@ -302,7 +302,26 @@ $(document).ready(function () {
 
 		makeFilesClickable();
 		$("#uploadsInfoCommon").fadeIn();
-		//		document.getElementById("dropzoneHeading").scrollIntoView();
+*/
+//----- END ACTUAL CODE -----
+		
+//----- BEGIN TEST CODE -----
+		var dataSanitized = JSON.stringify(formData);
+		dataSanitized = encodeURIComponent(dataSanitized);
+		$.ajax({
+			type: 'post',
+			url: 'test.php',
+			dataType: 'json',
+			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
+			success: function (result) {
+				console.warn(result.responseText);
+			},
+			error: function (error) {
+				console.warn(error.responseText);
+			}
+		});
+//----- END TEST CODE -----
+		
 	});
 
 	$("#goToSubmitButton").click(function () {
@@ -1655,6 +1674,8 @@ $(document).ready(function () {
 		if ($(event.target).hasClass("edit-event-search-link")) {
 			$('.nav-tabs a[href="#tab1"]').tab("show");
 			$("#searchEventAll").focus();
+		} else if ($(event.target).hasClass("edit-search-link")) {
+			$('.nav-tabs a[href="#tab1"]').tab("show");
 		} else if ($(event.target).hasClass("edit-record-search-link")) {
 			$('.nav-tabs a[href="#tab1"]').tab("show");
 			$("#searchRecordAll").focus();
