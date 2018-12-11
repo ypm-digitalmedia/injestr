@@ -86,7 +86,6 @@ $(document).ready(function () {
 		chunking: true,
 		chunkSize: 500000000, //bytes
 		clickable: true,
-		createImageTHumbnails: true,
 		createImageThumbnails: true,
 		dictDefaultMessage: "<h2 class='pulsate align-center'>DROP FILES / CLICK HERE<br /><i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i> <i class='fas fa-arrow-down'></i></h2>",
 		dictFileTooBig: "Sorry, this file is too large.<br /><br />Your file size: <strong>{{filesize}} MB</strong><br />Maximum size: <strong>{{maxFilesize}} MB</strong>",
@@ -151,6 +150,37 @@ $(document).ready(function () {
 					progressTrunc + "%";
 			}
 		},
+//		thumbnail: function(file, dataUrl){
+////			console.log(file);
+////			console.log(dataUrl);
+//			
+//			if( file.type.match(/image.jpeg/) || file.type.match(/image.gif/) || file.type.match(/image.png/) ) {
+////				myDropzone.createThumbnailFromUrl(file, dataUrl, undefined, false);
+//				myDropzone.createThumbnailFromUrl(
+//					file,
+//					dataUrl,
+//					function(thumbnail) {
+//						myDropzone.emit('thumbnail', file, thumbnail);
+//						myDropzone.emit("complete", file);
+//					},
+//					true
+//				);
+//				
+//			} else {
+////				myDropzone.createThumbnailFromUrl(file, "img/file_icon.png",undefined, false);
+//				myDropzone.createThumbnailFromUrl(
+//					file,
+//					"img/file_icon.png",
+//					function(thumbnail) {
+//						myDropzone.emit('thumbnail', file, thumbnail);
+//						myDropzone.emit("complete", file);
+//					},
+//					true
+//				);
+//				
+//			}
+//			
+//		},
 		complete: function (file, xhr, formData) {
 			//			console.log(file);
 			if (file.xhr) {
@@ -274,7 +304,7 @@ $(document).ready(function () {
 
 	$("#metadataStartButton").click(function () {
 //----- BEGIN ACTUAL CODE -----
-/*
+
 		if (isMorphoSource) {
 			$(".ms-files-extra").hide();
 			$(".extra-ms-info").fadeIn();
@@ -302,34 +332,24 @@ $(document).ready(function () {
 
 		makeFilesClickable();
 		$("#uploadsInfoCommon").fadeIn();
-*/
+
 //----- END ACTUAL CODE -----
 		
-//----- BEGIN TEST CODE -----
-		var dataSanitized = JSON.stringify(formData);
-		dataSanitized = encodeURIComponent(dataSanitized);
-		$.ajax({
-			type: 'post',
-			url: 'test.php',
-			dataType: 'json',
-			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
-			success: function (result) {
-				console.warn(result.responseText);
-			},
-			error: function (error) {
-				console.warn(error.responseText);
-			}
-		});
-//----- END TEST CODE -----
+
 		
 	});
 
 	$("#goToSubmitButton").click(function () {
-		setFormData('dateStamp', moment().toISOString());
-
-		makeFinalDataTable();
-
-		showTabThree();
+		
+		var inProgress = _.find(myDropzone.files,function(o){ return o.status == "uploading" });
+		if( typeof(inProgress) == "undefined" || inProgress == "undefined" ) {
+			setFormData('dateStamp', moment().toISOString());
+			makeFinalDataTable();
+			showTabThree();
+		} else {
+			showFinalErrorDialog("Please wait!  Your assets are still uploading.");
+		}
+		
 	});
 
 
@@ -437,10 +457,11 @@ $(document).ready(function () {
 
 				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Currently unable to preview TIFF files.</em></p></div>';
 
-			} else {
-
+			} else if (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png" ) {
 				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
-			}
+			} else { 
+				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Sorry, no preview available for this file type.</em></p></div>';		   
+		    }
 
 			var sizeStringSimple = $("span[data-dz-size]").eq(index).html().split("<strong>").join("").split("</strong>").join("");
 
@@ -724,14 +745,16 @@ $(document).ready(function () {
 		// write lockfile
 
 		//		setFormData('datestamp', moment().toISOString());
-
+		
 		var dataSanitized = JSON.stringify(formData);
 		dataSanitized = encodeURIComponent(dataSanitized);
 
+		showFinalProcessingDialog();
+		
 		$.ajax({
-			type: 'post',
+			type: 'POST',
 			url: 'finalize.php',
-			dataType: 'json',
+			dataType: 'text',
 			//			data: 'data=' + JSON.stringify(formData),
 			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
 			//			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID + "&type=" + searchType,
@@ -739,16 +762,25 @@ $(document).ready(function () {
 				// check result object for what you returned
 				showFinalSuccessDialog(result);
 			},
-			error: function (error) {
+			error: function (jqXHR, textStatus, errorThrown) {
 				// check error object or return error
-				//				showFinalErrorDialog(error);
-				console.warn(error);
+				showFinalErrorDialog("<p>" + textStatus + "</p><p>" + errorThrown + "</p>");
+				console.warn(jqXHR, textStatus, errorThrown);
 			}
 		});
 
-		showFinalSuccessDialog();
+//		showFinalSuccessDialog();
 	})
 
+	function showFinalProcessingDialog() {
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_DEFAULT,
+			closable: false,
+			title: '<h4>SUBMITTING ASSETS</h4>',
+			message: '<p>Please wait while your assets are being processed.  For very large files, this process may take several minutes.</p><p style="text-align: center" align="center"><img src="img/loader3.gif" /></p>',
+		});
+	}
+	
 	function showFinalErrorDialog(errText) {
 		console.log(errText);
 		BootstrapDialog.show({

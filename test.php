@@ -1,5 +1,38 @@
 <?php
 
+/* 
+//----- BEGIN TEST CODE -----
+// This should be placed on $("#metadataStartButton) click event
+
+	var dataSanitized = JSON.stringify(formData);
+		dataSanitized = encodeURIComponent(dataSanitized);
+		$.ajax({
+			type: 'post',
+			url: 'test.php',
+			dataType: 'json',
+			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
+			success: function (result) {
+				console.warn(result.responseText);
+			},
+			error: function (error) {
+				console.warn(error.responseText);
+			}
+		});
+//----- END TEST CODE -----
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 $ds          = DIRECTORY_SEPARATOR;
 $storeFolder = 'uploads';
 $sessionFolderName = $_POST['folderName'];
