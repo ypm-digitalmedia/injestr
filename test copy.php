@@ -12,7 +12,6 @@ $stuff_obj = json_decode($stuff);
 
 //1. Parse manifest data & write assets to array
 $assets = $stuff_obj->assets;
-$numAssets = count($assets);
 $assets_arr = array();
 
 foreach( $assets as $a ) {
@@ -64,35 +63,18 @@ for( $i=0; $i<count($assets_arr); $i++ ) {
 	$asset_chunked = $assets_arr[$i]['chunked'];
 	
 	if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false || strpos($_SERVER['SERVER_NAME'], '172.16.85.92') !== false) {
-		$asset_checksum_output = shell_exec("md5 -r " . escapeshellarg($asset_path));
-//		$asset_checksum = explode(" = ",$asset_checksum_output)[1];
+		$asset_checksum_output = shell_exec("md5 " . escapeshellarg($asset_path));
+		$asset_checksum = explode(" = ",$asset_checksum_output)[1];
 	} else {
 		$asset_checksum_output = shell_exec("md5sum " . escapeshellarg($asset_path));
+		$asset_checksum = explode(" ",$asset_checksum_output)[0];
 	}
-	$asset_checksum = explode(" ",$asset_checksum_output)[0];
 	$assets_arr[$i]["checksum"] = $asset_checksum;
 }
 print_r("phase 3 complete. checksums added:\n");
 print_r($assets_arr);
 print_r("\n");
 
-
-
-//4. Add new data into data object
-
-$stuff_obj = json_decode(json_encode($stuff_obj),true);
-for( $i=0; $i<count($stuff_obj['assets']); $i++ ) {
-
-	for( $j=0; $j<count($assets_arr); $j++) {
-		if( $assets_arr[$j]['filename'] == $stuff_obj['assets'][$i]['filename'] ) {
-			$stuff_obj['assets'][$i]['md5_checksum'] = $assets_arr[$j]['checksum'];
-		}
-			
-	}
-
-}
-
-//5. Write manifest file with new data object
 
 $newstuff = json_encode($stuff_obj);
 
