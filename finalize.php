@@ -66,9 +66,11 @@ for( $i=0; $i<count($assets_arr); $i++ ) {
 	$asset_chunked = $assets_arr[$i]['chunked'];
 	
 	if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false || strpos($_SERVER['SERVER_NAME'], '172.16.85.92') !== false) {
+		// test environment
 		$asset_checksum_output = shell_exec("md5 -r " . escapeshellarg($asset_path));
 //		$asset_checksum = explode(" = ",$asset_checksum_output)[1];
 	} else {
+		// production environment
 		$asset_checksum_output = shell_exec("md5sum " . escapeshellarg($asset_path));
 	}
 	$asset_checksum = explode(" ",$asset_checksum_output)[0];

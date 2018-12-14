@@ -75,6 +75,41 @@ $(document).ready(function () {
 		getPageWidth();
 	});
 
+	
+	
+	// check free space on server
+	$.ajax({
+			type: 'POST',
+			url: 'diskspace.php',
+			dataType: 'text',
+//			data: 'filesize=' + 0,
+			data: null,
+			success: function (result) {
+				// check result object for what you returned
+				
+				var response = result.split("|");
+				// status | available | total | percent | cutoff
+				
+				if( response[0] == "ok") {
+//					showNormalDialog("Good to go!",response);
+					console.log("disk space check:\nstatus | available | total | % available | % needed");
+					console.log(response.join("|"));
+				} else {
+					showPleaseWaitDialog(response);
+				}
+				
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				// check error object or return error
+				showFinalErrorDialog("<p>" + textStatus + "</p><p>" + errorThrown + "</p>");
+				console.warn(jqXHR, textStatus, errorThrown);
+			}
+		});
+	
+	
+	
+	
+	
 	myDropzone = new Dropzone("div#dropzoneArea", {
 		//		acceptedFiles: 'image/*,application/pdf,.psd,text/*,.zip,.tar,.tar.gz,.7z,.tif,.tiff,application/msword,.html,.htm', //ex: image/*,application/pdf,.psd
 		//		acceptedFiles: 'image/*',
@@ -772,12 +807,32 @@ $(document).ready(function () {
 //		showFinalSuccessDialog();
 	})
 
+	
+	
+	function showNormalDialog(title,message) {
+		if( !message || typeof(message) == "undefined") { var theText = "Hello!"; } else { var theText = message; }
+		if( !title || typeof(title) == "undefined") { var theTitle = "Alert"; } else { var theTitle = title; }
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_DEFAULT,
+			closable: true,
+			title: '<h4>'+theTitle+'</h4>',
+			message: '<p>'+theText+'</p>',
+			buttons: [{
+				label: '<i class="fas fa-times"></i>&nbsp;Close',
+				cssClass: 'btn-default',
+				action: function (dialogItself) {
+					dialogItself.close();
+				}
+            }]
+		});
+	}
+	
 	function showFinalProcessingDialog() {
 		BootstrapDialog.show({
 			type: BootstrapDialog.TYPE_DEFAULT,
 			closable: false,
 			title: '<h4>SUBMITTING ASSETS</h4>',
-			message: '<p>Please wait while your assets are being processed.  For very large files, this process may take several minutes.</p><p style="text-align: center" align="center"><img src="img/loader3.gif" /></p>',
+			message: '<p>Please wait while your assets are being processed.  For very large files, this process may take several minutes.</p><p style="text-align: center" align="center"><img src="img/loader3.gif" /></p>'
 		});
 	}
 	
@@ -815,12 +870,24 @@ $(document).ready(function () {
 		});
 	}
 
-	//	$("#logoutLink").click(function () {
-	//		var newUrl = stripQs("cas");
-	//		window.location.href = newUrl;
-	//	});
-
-
+	function showPleaseWaitDialog(result) {
+		console.log(result);
+		BootstrapDialog.show({
+			type: BootstrapDialog.TYPE_WARNING,
+			closable: false,
+			title: '<h4>Please Wait</h4>',
+			message: '<p>Sorry, the server is currently over capacity and processing a large volume of assets.  Please wait a few minutes before trying to use this application again.</p>',
+			buttons: [{
+				label: '<i class="fas fa-sync-alt"></i>&nbsp;Reload',
+				cssClass: 'btn-warning',
+				action: function () {
+					document.location.reload();
+				}
+            }]
+		});
+	}
+	
+	
 
 
 	$("#searchEventAll").on("keyup keypress click", function (e) {
