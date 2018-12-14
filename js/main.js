@@ -78,34 +78,7 @@ $(document).ready(function () {
 	
 	
 	// check free space on server
-	$.ajax({
-			type: 'POST',
-			url: 'diskspace.php',
-			dataType: 'text',
-//			data: 'filesize=' + 0,
-			data: null,
-			success: function (result) {
-				// check result object for what you returned
-				
-				var response = result.split("|");
-				// status | available | total | percent | cutoff
-				
-				if( response[0] == "ok") {
-//					showNormalDialog("Good to go!",response);
-					console.log("disk space check:\nstatus | available | total | % available | % needed");
-					console.log(response.join("|"));
-				} else {
-					showPleaseWaitDialog(response);
-				}
-				
-			},
-			error: function (jqXHR, textStatus, errorThrown) {
-				// check error object or return error
-				showFinalErrorDialog("<p>" + textStatus + "</p><p>" + errorThrown + "</p>");
-				console.warn(jqXHR, textStatus, errorThrown);
-			}
-		});
-	
+	checkFreeSpace();
 	
 	
 	
@@ -546,7 +519,36 @@ $(document).ready(function () {
 
 	}
 
-
+	function checkFreeSpace(filesize) {
+		$.ajax({
+			type: 'POST',
+			url: 'diskspace.php',
+			dataType: 'text',
+//			data: 'filesize=' + 0,
+			data: null,
+			success: function (result) {
+				// check result object for what you returned
+				
+				var response = result.split("|");
+				// status | available | total | percent | cutoff
+				
+				if( response[0] == "ok") {
+//					showNormalDialog("Good to go!",response);
+					console.log("disk space check:\nstatus | available | total | % available | % needed");
+					console.log(response.join(" | "));
+				} else {
+					showPleaseWaitDialog(response);
+				}
+				
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				// check error object or return error
+				showFinalErrorDialog("<p>" + textStatus + "</p><p>" + errorThrown + "</p>");
+				console.warn(jqXHR, textStatus, errorThrown);
+			}
+		});
+	}
+	
 	function makeFilesClickable() {
 
 		if (isMorphoSource) {

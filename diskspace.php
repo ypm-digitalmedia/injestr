@@ -12,7 +12,7 @@ if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false || strpos($_SERVER['S
 		$cutoff = 5; //percentage free space needed to continue
 	} else {
 		// production environment	
-		$cutoff = 75; //percentage free space needed to continue
+		$cutoff = 25; //percentage free space needed to continue
 	}
 
 //echo $available . " of " . $total . " bytes free (" . $percent_available . "%)";
@@ -23,7 +23,7 @@ if( isset($filesize_query) ) {
 //	echo "file in question: " . $filesize_query . " bytes";
 }
 
-if( $percent_available > $cutoff ) {
+if( $percent_available >= $cutoff ) {
 	$theStatus = "ok";
 } else {
 	$theStatus = "full";
