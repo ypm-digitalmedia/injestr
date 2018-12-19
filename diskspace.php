@@ -1,19 +1,25 @@
 <?php
 
-$total = disk_total_space("/");
-$available = disk_free_space("/");
-$percent_available = ($available/$total)*100;
+//$total = disk_total_space("/");
+//$available = disk_free_space("/");
+//$percent_available = ($available/$total)*100;
 
 $filesize_query = $_REQUEST['filesize'];
 
 
 if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false || strpos($_SERVER['SERVER_NAME'], '172.16.85.92') !== false) {
 		// test environment	
+			$total = disk_total_space("/");
+		$available = disk_free_space("/");
 		$cutoff = 5; //percentage free space needed to continue
 	} else {
-		// production environment	
+		// production environment
+		$total = disk_total_space("/disk2");
+		$available = disk_free_space("/disk2");
 		$cutoff = 25; //percentage free space needed to continue
 	}
+
+$percent_available = ($available/$total)*100;
 
 //echo $available . " of " . $total . " bytes free (" . $percent_available . "%)";
 

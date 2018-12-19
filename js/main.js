@@ -110,7 +110,7 @@ $(document).ready(function () {
 		hiddenInputContainer: "body",
 		ignoreHiddenFiles: false,
 		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
-		maxFilesize: 40000, // MB
+		maxFilesize: 60000, // MB
 //		maxFilesize: 1,
 		maxThumbnailFilesize: 240, //mb
 		maxParallelUploads: 50,
