@@ -16,7 +16,7 @@ if (strpos($_SERVER['SERVER_NAME'], 'localhost') !== false || strpos($_SERVER['S
 		// production environment
 		$total = disk_total_space("/disk2");
 		$available = disk_free_space("/disk2");
-		$cutoff = 25; //percentage free space needed to continue
+		$cutoff = 50; //percentage free space needed to continue
 	}
 
 $percent_available = ($available/$total)*100;
