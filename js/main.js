@@ -4,6 +4,7 @@ var currentFile = null;
 
 var formData = {
 	targetType: null,
+	recipient: null,
 	label: null,
 	target: null,
 	dateStamp: null,
@@ -1105,6 +1106,7 @@ $(document).ready(function () {
 
 	$("#graphicsStepOneNextButton").click(function () {
 		var label = $("#labelForSally").val();
+		var recipient = $("#graphicsRecipient").val();
 		var dummyData = {
 			"irn": "",
 			"number": "",
@@ -1130,10 +1132,14 @@ $(document).ready(function () {
 		searchType = "graphics";
 		setFormData("target", null);
 		setFormData("label", label);
+		setFormData("recipient",recipient);
 		//		$("#dropzoneArea").show();
 		showTabTwo();
 	});
-
+	
+	$("#graphicsRecipient").change(function() {
+		setFormData("recipient",$(this).val() );
+	})
 
 	$('.nav-pills a[href="#searchPaneGraphics"]').on("shown.bs.tab", function (e) {
 		isMorphoSource = false;

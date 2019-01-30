@@ -173,6 +173,20 @@ $randomtwo = $_SESSION['randomtwo'];
 									<div class="tab-pane fade in active" id="searchPaneGraphics">
 										<div class="container-fluid">
 											<div class="row row-pad">
+												<div class="form-group col-sm-2 col-xs-4">
+													<span>Recipient: </span>
+												</div>
+												<div class="form-group col-sm-10 col-xs-8">
+													<select class="selectpicker" id="graphicsRecipient">
+														<option selected value="sp">Sally</option>
+														<option value="kz">Kim</option>
+														<option value="lf">Laura</option>
+														<option value="rv">Rosemary</option>
+													</select>
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row">
 												<div class="form-group col-xs-12">
 													<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
 													<div class="help-block with-errors"></div>
@@ -489,7 +503,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.3.3</strong> | <i class="fas fa-calendar-alt"></i> Dec 19 2018</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.3.4</strong> | <i class="fas fa-calendar-alt"></i> Jan 30 2019</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
