@@ -39,6 +39,7 @@ var jsonDataPeople = {};
 var jsonDataUsers = {};
 var jsonDataEvents = {};
 var jsonDataRecords = {};
+var jsonDataWasabi = {};
 
 var jsonMorphoSourceResults = {};
 var msImageThumbs = [];
@@ -64,6 +65,7 @@ $(document).ready(function () {
 	jsonDataEvents = loadJsonAsVar("../data/ingester-metadata-netx.json?v=" + randomNumber());
 	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json?v=" + randomNumber());
 	jsonDataRecords = loadJsonAsVar("../data/ingester-metadata-specimens.json?v=" + randomNumber());
+	jsonDataWasabi = loadJsonAsVar("../data/ypm_asset_summary.json?v=" + randomNumber());
 
 	detectUser();
 	getPageWidth();
@@ -1466,6 +1468,7 @@ $(document).ready(function () {
 
 
 					printSearchResults(obj, "record");
+					printWasabiQuery(obj, "record");
 					setFormData("target", obj);
 					setFormData("label", null);
 					setFormData("targetType", "record");
@@ -2131,7 +2134,87 @@ function editCommonMetadata(key, value) {
 	console.warn(key + " | " + value);
 }
 
+function printWasabiQuery(obj, type) {
+	
+	var target = obj.irn;
+	
+	if( type == "graphics" ) {
+		alert("this function is not available yet.");
+		return false;
+	} else if( type == "event" ) { 
+		alert("this function is not available yet.");
+		return false;
+	} else if( type == "record" ) {
+		var dest = $("#searchResultsRecord");
+		console.log("Querying Wasabi assets using IRN " + target);
+	}
+	
+	var wasabiDateStamp = jsonDataWasabi.timestamp;
+	var wasabiMatches = _.filter(jsonDataWasabi.asset_summary, function(o) { 
+		return o.irn == target;
+	})
+	console.warn( wasabiMatches.length );
+	console.warn( wasabiMatches );
+	
+	$("#wasabiMatches").remove();
+	
+	if( wasabiMatches.length ) {
+		
+		var match = wasabiMatches[0];
+		var assets = match.assets;
+		
+		var count = match.assets.length;
+		var countStr = count==1?"":"s";
+		
+		var wasabiMatchesHTML = '<div class="alert alert-danger" id="wasabiMatches">';
+			wasabiMatchesHTML += '	<div class="row">';
+			wasabiMatchesHTML += '		<div class="col col-xs-2 col-sm-1">';
+			wasabiMatchesHTML += '			<h4 class="pulsate"><i class="fas fa-exclamation-triangle"></i></h4>';
+			wasabiMatchesHTML += '		</div>';
+			wasabiMatchesHTML += '		<div class="col col-xs-10 col-sm-11">';
+			wasabiMatchesHTML += '			<h4>Warning: '+count+' asset'+countStr+' already in Wasabi</h4>';
+			wasabiMatchesHTML += '			<p><hr /></p>';
+			var num = 1;
+			_.forEach(assets,function(asset) {
+				
+				var filename = asset['asset_url'].substr(asset['asset_url'].lastIndexOf("/") + 1);
+				var manifestFilename = asset['manifest_url'].substr(asset['manifest_url'].lastIndexOf("/") + 1);
+				var ext = filename.substr(filename.lastIndexOf(".") + 1);
+				
+				
+				if( ext == "zip" || ext == "tar" || ext == "rar" || ext == "7z" ) {
+					var icon = '<i class="far fa-file-archive"></i>';
+					var type = "Compressed Archive";
+				} else if ( ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png" || ext == "tif" || ext == "tiff" || ext == "bmp" || ext == "jpe" || ext == "dxf" || ext == "jp2") {
+					var icon = '<i class="far fa-file-image"></i>';
+					var type = "Image";
+				} else if ( ext == "pdf" ) {
+					var icon = '<i class="far fa-file-pdf"></i>';
+					var type = "PDF Document";
+				} else if( ext == "doc" || ext == "txt" || ext == "docx" || ext == "rtf" ) {
+					var icon = '<i class="far fa-file-image"></i>';
+					var type = "Text File";
+				} else if( ext == "xls" || ext == "xlsx" || ext == "csv") {
+					var icon = '<i class="far fa-file-excel"></i>';
+					var type = "Spreadsheet";
+				} else {
+					var icon = '<i class="far fa-file"></i>';
+					var type = "Other";
+				}
+				
+				wasabiMatchesHTML += '			<div class="wasabiAssetContainer"><div class="container-fluid"><div class="row"><div class="col col-xs-2 col-sm-1"><h2 style="margin-top: 0"><br />'+icon+'</h2></div><div class="col col-xs-10 col-sm-11"><p><h4 style="margin-top: 0"><a target="_blank" title="Download Wasabi File: '+filename+'" href="'+asset['asset_url']+'">'+filename+' <i class="fas fa-download"></i></a></h4></p><p><table><tr><td><strong>Type: </strong></td><td>'+type+'</td></tr><tr><td style="padding-right: 25px"><strong>MD5 Checksum: </strong></td><td>'+asset['asset_md5']+'</td></tr><tr><td><strong>Permission: </strong></td><td>'+asset['asset_permission']+'</td></tr><tr><td><strong>Source: </strong></td><td>'+asset['asset_source']+'</td></tr><tr><td><strong>Manifest URL: </strong></td><td><a target="_blank" title="Manifest URL: IRN'+match.irn+'" href="'+asset['manifest_url']+'">'+manifestFilename+'</a></td></tr></table></div></row></div></div><p><hr /></p>';
+				
+				num++;
+			});
+			wasabiMatchesHTML += '			<p class="smaller"><em>(as of '+wasabiDateStamp+')</em></p><br />';
+			wasabiMatchesHTML += '		</div>';
+			wasabiMatchesHTML += '	</div>';
+			wasabiMatchesHTML += '</div>';
 
+		$(dest).append(wasabiMatchesHTML);
+	}
+	
+}
 
 
 function printSearchResults(obj, type) {

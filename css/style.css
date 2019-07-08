@@ -165,6 +165,10 @@ a:active {
 	overflow-x: hidden;
 }
 
+#searchResultsRecord {
+	max-height: none!important;
+}
+
 .result {
 	margin: 10px 0 !important;
 	padding: 10px;
