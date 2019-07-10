@@ -2191,7 +2191,7 @@ function printWasabiQuery(obj, type) {
 //					var manifestAssets = [];
 					var manifest = loadJsonAsVar(asset['manifest_url']);
 //					console.log(manifest);
-					_.forEach(manifest.assets, function(a,index){ 
+					_.forEach(manifest.assets, function(a,index2){ 
 						var mdata = {
 							morphosource: manifest.morphosource,
 							datestamp: manifest.dateStamp,
@@ -2199,7 +2199,8 @@ function printWasabiQuery(obj, type) {
 						};
 
 						if( manifest.morphosource === true) {
-							mdata.filesize = a['media_file'].filesize;
+//							mdata.filesize = a['media_file'].filesize;
+							mdata.filesize = asset['asset_bytes'];
 							mdata.filename = null;
 							mdata['media_file_id'] = a['media_file']['media_file_id'];
 							mdata.title = a['media_file'].title;
@@ -2210,11 +2211,12 @@ function printWasabiQuery(obj, type) {
 							mdata.title = a.title;
 						}
 							
-							manifestAssets.push(mdata);
+							manifestAssets[index] = mdata;
+//							manifestAssets.push(mdata);
 						
 					});
 					manifestAssets = _.uniqWith(manifestAssets,_.isEqual);
-					console.warn(manifestAssets);
+//					console.warn(manifestAssets);
 //				}
 				
 				if( ext == "zip" || ext == "tar" || ext == "rar" || ext == "7z" ) {
@@ -2242,13 +2244,11 @@ function printWasabiQuery(obj, type) {
 				wasabiMatchesHTML += '<p><table>';
 				wasabiMatchesHTML += '<tr><td><strong>Type: </strong></td><td>'+type+'</td></tr>';
 				wasabiMatchesHTML += '<tr><td><strong>Contents: </strong></td><td>'+manifestAssets[index]['title']+'</td></tr>';
+				wasabiMatchesHTML += '<tr><td><strong>Filesize: </strong></td><td>'+formatBytes(manifestAssets[index]['filesize'])+'</td></tr>';
 				wasabiMatchesHTML += '<tr><td><strong>Source: </strong></td><td>'+asset['asset_source']+'</td></tr>';
 				
 				if( manifestAssets[index].morphosource === true ) {
-					wasabiMatchesHTML += '<tr><td><strong>Filesize: </strong></td><td>'+manifestAssets[index]['filesize']+'</td></tr>';
 					wasabiMatchesHTML += '<tr><td><strong>Media File ID: </strong></td><td>'+manifestAssets[index]['media_file_id']+'</td></tr>';
-				} else {
-					wasabiMatchesHTML += '<tr><td><strong>Filesize: </strong></td><td>'+formatBytes(manifestAssets[index]['filesize'])+'</td></tr>';
 				}
 				
 				var ds = manifestAssets[index]['datestamp'];
