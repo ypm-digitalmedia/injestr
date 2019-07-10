@@ -2036,19 +2036,7 @@ $(document).ready(function () {
 	}
 
 
-	function loadJsonAsVar(url) {
-		var obj;
-		$.ajax({
-			url: url,
-			dataType: "json",
-			async: false,
-			//			data: myData,
-			success: function (data) {
-				obj = data;
-			}
-		});
-		return obj;
-	}
+
 
 
 
@@ -2076,6 +2064,20 @@ $(document).ready(function () {
 
 });
 
+
+function loadJsonAsVar(url) {
+	var obj;
+	$.ajax({
+		url: url,
+		dataType: "json",
+		async: false,
+		//			data: myData,
+		success: function (data) {
+			obj = data;
+		}
+	});
+	return obj;
+}
 
 function activateCreatorLookup() {
 	var options = {
@@ -2150,11 +2152,14 @@ function printWasabiQuery(obj, type) {
 	}
 	
 	var wasabiDateStamp = jsonDataWasabi.timestamp;
+	var wdsm = moment(wasabiDateStamp);
+	var wdsmET = wdsm.tz('America/New_York').format('dddd, MMMM D, YYYY @ h:mm a z');  // ET
+	
 	var wasabiMatches = _.filter(jsonDataWasabi.asset_summary, function(o) { 
 		return o.irn == target;
 	})
-	console.warn( wasabiMatches.length );
-	console.warn( wasabiMatches );
+//	console.warn( wasabiMatches.length );
+//	console.warn( wasabiMatches );
 	
 	$("#wasabiMatches").remove();
 	
@@ -2163,7 +2168,7 @@ function printWasabiQuery(obj, type) {
 		var match = wasabiMatches[0];
 		var assets = match.assets;
 		
-		var count = match.assets.length;
+		var count = assets.length;
 		var countStr = count==1?"":"s";
 		
 		var wasabiMatchesHTML = '<div class="alert alert-danger" id="wasabiMatches">';
@@ -2172,28 +2177,58 @@ function printWasabiQuery(obj, type) {
 			wasabiMatchesHTML += '			<h4 class="pulsate"><i class="fas fa-exclamation-triangle"></i></h4>';
 			wasabiMatchesHTML += '		</div>';
 			wasabiMatchesHTML += '		<div class="col col-xs-10 col-sm-11">';
-			wasabiMatchesHTML += '			<h4>Warning: '+count+' asset'+countStr+' already in Wasabi</h4>';
+			wasabiMatchesHTML += '			<h4>Warning: '+count+' asset'+countStr+' already in Wasabi**</h4>';
 			wasabiMatchesHTML += '			<p><hr /></p>';
 			var num = 1;
-			_.forEach(assets,function(asset) {
+			var manifestAssets = [];
+			_.forEach(assets,function(asset,index) {
 				
 				var filename = asset['asset_url'].substr(asset['asset_url'].lastIndexOf("/") + 1);
 				var manifestFilename = asset['manifest_url'].substr(asset['manifest_url'].lastIndexOf("/") + 1);
 				var ext = filename.substr(filename.lastIndexOf(".") + 1);
 				
+//				if( index == 0 ) {
+//					var manifestAssets = [];
+					var manifest = loadJsonAsVar(asset['manifest_url']);
+//					console.log(manifest);
+					_.forEach(manifest.assets, function(a,index){ 
+						var mdata = {
+							morphosource: manifest.morphosource,
+							datestamp: manifest.dateStamp,
+							user: manifest.user
+						};
+
+						if( manifest.morphosource === true) {
+							mdata.filesize = a['media_file'].filesize;
+							mdata.filename = null;
+							mdata['media_file_id'] = a['media_file']['media_file_id'];
+							mdata.title = a['media_file'].title;
+						} else {
+							mdata.filename = a.filename;
+							mdata.filesize = a.filesize;
+							mdata['media_file_id'] = null;
+							mdata.title = a.title;
+						}
+							
+							manifestAssets.push(mdata);
+						
+					});
+					manifestAssets = _.uniqWith(manifestAssets,_.isEqual);
+					console.warn(manifestAssets);
+//				}
 				
 				if( ext == "zip" || ext == "tar" || ext == "rar" || ext == "7z" ) {
 					var icon = '<i class="far fa-file-archive"></i>';
-					var type = "Compressed Archive";
+					var type = "Compressed archive";
 				} else if ( ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png" || ext == "tif" || ext == "tiff" || ext == "bmp" || ext == "jpe" || ext == "dxf" || ext == "jp2") {
 					var icon = '<i class="far fa-file-image"></i>';
 					var type = "Image";
 				} else if ( ext == "pdf" ) {
 					var icon = '<i class="far fa-file-pdf"></i>';
-					var type = "PDF Document";
+					var type = "PDF document";
 				} else if( ext == "doc" || ext == "txt" || ext == "docx" || ext == "rtf" ) {
 					var icon = '<i class="far fa-file-image"></i>';
-					var type = "Text File";
+					var type = "Text file";
 				} else if( ext == "xls" || ext == "xlsx" || ext == "csv") {
 					var icon = '<i class="far fa-file-excel"></i>';
 					var type = "Spreadsheet";
@@ -2202,11 +2237,33 @@ function printWasabiQuery(obj, type) {
 					var type = "Other";
 				}
 				
-				wasabiMatchesHTML += '			<div class="wasabiAssetContainer"><div class="container-fluid"><div class="row"><div class="col col-xs-2 col-sm-1"><h2 style="margin-top: 0"><br />'+icon+'</h2></div><div class="col col-xs-10 col-sm-11"><p><h4 style="margin-top: 0"><a target="_blank" title="Download Wasabi File: '+filename+'" href="'+asset['asset_url']+'">'+filename+' <i class="fas fa-download"></i></a></h4></p><p><table><tr><td><strong>Type: </strong></td><td>'+type+'</td></tr><tr><td style="padding-right: 25px"><strong>MD5 Checksum: </strong></td><td>'+asset['asset_md5']+'</td></tr><tr><td><strong>Permission: </strong></td><td>'+asset['asset_permission']+'</td></tr><tr><td><strong>Source: </strong></td><td>'+asset['asset_source']+'</td></tr><tr><td><strong>Manifest URL: </strong></td><td><a target="_blank" title="Manifest URL: IRN'+match.irn+'" href="'+asset['manifest_url']+'">'+manifestFilename+'</a></td></tr></table></div></row></div></div><p><hr /></p>';
+				wasabiMatchesHTML += '<div class="wasabiAssetContainer"><div class="container-fluid"><div class="row"><div class="col col-xs-2 col-sm-1"><h2 style="margin-top: 0"><br />'+icon+'</h2></div>';
+				wasabiMatchesHTML += '<div class="col col-xs-10 col-sm-11"><p><h4 style="margin-top: 0"><a target="_blank" title="Download Wasabi File: '+filename+'" href="'+asset['asset_url']+'">'+filename+' <i class="fas fa-download"></i></a></h4></p>';
+				wasabiMatchesHTML += '<p><table>';
+				wasabiMatchesHTML += '<tr><td><strong>Type: </strong></td><td>'+type+'</td></tr>';
+				wasabiMatchesHTML += '<tr><td><strong>Contents: </strong></td><td>'+manifestAssets[index]['title']+'</td></tr>';
+				wasabiMatchesHTML += '<tr><td><strong>Source: </strong></td><td>'+asset['asset_source']+'</td></tr>';
+				
+				if( manifestAssets[index].morphosource === true ) {
+					wasabiMatchesHTML += '<tr><td><strong>Filesize: </strong></td><td>'+manifestAssets[index]['filesize']+'</td></tr>';
+					wasabiMatchesHTML += '<tr><td><strong>Media File ID: </strong></td><td>'+manifestAssets[index]['media_file_id']+'</td></tr>';
+				} else {
+					wasabiMatchesHTML += '<tr><td><strong>Filesize: </strong></td><td>'+formatBytes(manifestAssets[index]['filesize'])+'</td></tr>';
+				}
+				
+				var ds = manifestAssets[index]['datestamp'];
+				var dsm = moment(ds);
+				var dsmET = dsm.tz('America/New_York').format('dddd, MMMM D, YYYY @ h:mm a z');  // ET
+				
+				wasabiMatchesHTML += '<tr><td><strong>Uploaded: </strong></td><td>'+dsmET+' by ' + manifestAssets[index]['user']+ '</td></tr>';
+				wasabiMatchesHTML += '<tr><td><strong>Permission: </strong></td><td>'+asset['asset_permission']+'</td></tr>';
+				wasabiMatchesHTML += '<tr><td style="padding-right: 25px"><strong>MD5 Checksum: </strong></td><td>'+asset['asset_md5']+'</td></tr>';
+				wasabiMatchesHTML += '<tr><td><strong>Manifest: </strong></td><td><a target="_blank" title="Manifest URL: IRN'+match.irn+'" href="'+asset['manifest_url']+'">'+manifestFilename+'</a></td></tr>';
+				wasabiMatchesHTML += '</table></div></row></div></div><p><hr /></p>';
 				
 				num++;
 			});
-			wasabiMatchesHTML += '			<p class="smaller"><em>(as of '+wasabiDateStamp+')</em></p><br />';
+			wasabiMatchesHTML += '			<p class="smaller"><em><strong>**as of '+wdsmET+'</strong></em></p><br />';
 			wasabiMatchesHTML += '		</div>';
 			wasabiMatchesHTML += '	</div>';
 			wasabiMatchesHTML += '</div>';

@@ -503,7 +503,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.4.0</strong> | <i class="fas fa-calendar-alt"></i> Jul 8 2019</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.4.1</strong> | <i class="fas fa-calendar-alt"></i> Jul 10 2019</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
@@ -610,6 +610,7 @@ $randomtwo = $_SESSION['randomtwo'];
 		<!--    <script src="js/bootstrap-4.1.3.min.js"></script> -->
 		<script src="js/bootstrap-3.2.0.min.js"></script>
 		<script src="js/validator.min.js"></script>
+		<script src="js/moment-timezone-with-data.min.js"></script>
 		<script src="js/bootstrap-toggle.min.js"></script>
 		<script src="js/bootstrap-select.min.js"></script>
 		<script src="js/bootstrap-dialog.min.js"></script>
