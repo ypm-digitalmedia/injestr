@@ -540,7 +540,9 @@ $(document).ready(function () {
 					console.log("disk space check:\nstatus | available | total | % available | % needed");
 					console.log(response.join(" | "));
 				} else {
-					showPleaseWaitDialog(response);
+					if( CASuser.name == "gjw22" ) {
+						showPleaseWaitDialog(response);
+					}
 				}
 				
 			},
