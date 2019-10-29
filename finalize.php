@@ -3,6 +3,7 @@ $ds          = DIRECTORY_SEPARATOR;
 $storeFolder = 'uploads';
 $sessionFolderName = $_POST['folderName'];
 $targetType = $_POST['type'];
+$wasabiUploadType = $_POST['wasabiUploadType'];
 $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds . $sessionFolderName . $ds;
 
 if (!file_exists($storeFolder . $ds . $sessionFolderName )) {
@@ -127,5 +128,37 @@ if (file_exists($lockfile)) {
 
 //session_unset('folderName');
 //session_destroy();
+
+
+
+
+
+//6. Force download of metadata file if this is a batch Wasabi upload
+if( $targetType == "record" && $wasabiUploadType == "batch") {
+	
+	$targetAsset = $stuff_obj['assets'][0]['filename'];
+	$catalogNum = $stuff_obj['target']['number'];
+	$catalogNumDash = str_replace('.','-',$catalogNum);
+	$newFileName = $targetAsset . '--' . $catalogNumDash . '.json';
+	
+	//Write metafile
+	$metafile = $newFileName;
+	$metafile_all = $storeFolder . $ds . $sessionFolderName . $ds . $metafile;
+	file_put_contents($metafile_all, $newstuff) or die ("unable to write metafile.");
+	echo $metafile_all;
+	
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
+
 
 ?>

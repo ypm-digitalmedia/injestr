@@ -1,6 +1,7 @@
 var myDropzone = null;
 var defaultMsClick = true;
 var currentFile = null;
+var downloadLinkBatchMetaFile = null;
 
 var formData = {
 	targetType: null,
@@ -10,7 +11,7 @@ var formData = {
 	dateStamp: null,
 	guid: null,
 	user: null,
-	morphosource: false,
+	wasabiUploadType: null,
 	private: null,
 	assets: []
 };
@@ -47,8 +48,19 @@ var msPageResponses = [];
 var msData = [];
 var msFinalData = [];
 
-var isMorphoSource = false;
 var isEmbargoed = false;
+var wasabiUploadType = "standard";
+var wasabiUploadTypeHelpText = {
+	"standard": "Standard wasabi upload path: one catalog number with file upload.",
+	"batch": "Alternative upload path: link metadata to a massive ZIP file which is uploaded later.",
+	"morphosource": "Link a catalog number to an existing asset on MorphoSource.  No upload."
+}
+
+var dropzoneHelpText = {
+	"standard": "Standard asset upload.  Files will immediately be copied to server.",
+	"batch": "Select assets from your hard drive as usual.  No files will be uploaded.",
+	"morphosource": "Assets will not be uploaded; Select existing MorphoSource records."
+}
 
 var initialSearchType = "";
 var searchType = "";
@@ -78,20 +90,14 @@ $(document).ready(function () {
 		getPageWidth();
 	});
 
-	
-	
-	// check free space on server
 	checkFreeSpace();
 	
 	
 	
 	
 	myDropzone = new Dropzone("div#dropzoneArea", {
-		//		acceptedFiles: 'image/*,application/pdf,.psd,text/*,.zip,.tar,.tar.gz,.7z,.tif,.tiff,application/msword,.html,.htm', //ex: image/*,application/pdf,.psd
-		//		acceptedFiles: 'image/*',
 		acceptedMimeTypes: null, //DEPRECATED
 		autoProcessQueue: true, //if false, queue will not be processed automatically.
-		//		addRemoveLinks: true, //add a link to every file preview to remove or cancel
 		autoQueue: true, //if false, files added to the dropzone will not be queued by default.
 		capture: null, //null|camera|microphone|camcorder.  multiple=false for apple devices
 		chunking: true,
@@ -114,7 +120,6 @@ $(document).ready(function () {
 		ignoreHiddenFiles: false,
 		maxFiles: 50, //limit the maximum number of files that will be handled by this Dropzone
 		maxFilesize: 60000, // MB
-//		maxFilesize: 1,
 		maxThumbnailFilesize: 240, //mb
 		maxParallelUploads: 50,
 		method: "post",
@@ -137,18 +142,8 @@ $(document).ready(function () {
 		thumbnailMethod: "crop", //crop|contain
 		timeout: 300000, //ms
 		uploadMultiple: false,
-		//		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType,
-		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType,
-		//		url: "javascript:uploadFile()",
+		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType,
 		withCredentials: false,
-
-		//		accept: function (file, done) {
-		//			if (file.name == "justinbieber.jpg") {
-		//				done("Naha, you don't.");
-		//			} else {
-		//				done();
-		//			}
-		//		},
 
 		uploadprogress: function (file, progress, bytesSent) {
 			if (file.previewElement) {
@@ -161,37 +156,6 @@ $(document).ready(function () {
 					progressTrunc + "%";
 			}
 		},
-//		thumbnail: function(file, dataUrl){
-////			console.log(file);
-////			console.log(dataUrl);
-//			
-//			if( file.type.match(/image.jpeg/) || file.type.match(/image.gif/) || file.type.match(/image.png/) ) {
-////				myDropzone.createThumbnailFromUrl(file, dataUrl, undefined, false);
-//				myDropzone.createThumbnailFromUrl(
-//					file,
-//					dataUrl,
-//					function(thumbnail) {
-//						myDropzone.emit('thumbnail', file, thumbnail);
-//						myDropzone.emit("complete", file);
-//					},
-//					true
-//				);
-//				
-//			} else {
-////				myDropzone.createThumbnailFromUrl(file, "img/file_icon.png",undefined, false);
-//				myDropzone.createThumbnailFromUrl(
-//					file,
-//					"img/file_icon.png",
-//					function(thumbnail) {
-//						myDropzone.emit('thumbnail', file, thumbnail);
-//						myDropzone.emit("complete", file);
-//					},
-//					true
-//				);
-//				
-//			}
-//			
-//		},
 		complete: function (file, xhr, formData) {
 			//			console.log(file);
 			if (file.xhr) {
@@ -251,6 +215,7 @@ $(document).ready(function () {
 		}
 	});
 
+	
 	myDropzone.on("queuecomplete", function (file) {
 		if (this.files.length) {
 			$("#enterMetadataMessage").fadeIn();
@@ -261,6 +226,16 @@ $(document).ready(function () {
 	});
 
 	myDropzone.on("addedfile", function (file) {
+
+//		if( wasabiUploadType == "batch" && searchType == "record" ) {
+//			myDropzone.autoProcessQueue = false;
+//			myDropzone.autoQueue = false;
+//		} else {
+//			myDropzone.autoProcessQueue = true;
+//			myDropzone.autoQueue = true;
+//		}
+		
+		
 		var package = {
 			name: file.name,
 			size: file.size,
@@ -283,12 +258,8 @@ $(document).ready(function () {
 						file.lastModified.toString()
 					) {
 						this.removeFile(file);
-						//						console.log(file.upload.filename + " already exists.  skipping...");
 					} else {
-						//						console.log(file.upload.filename + " (" + formatBytes(file.size) + ") added to queue.");
-
 						setFormData("assets", package);
-						//						console.log(file)
 					}
 				}
 			}
@@ -297,26 +268,23 @@ $(document).ready(function () {
 				.removeClass("disabled")
 				.removeClass("btn-disabled")
 				.addClass("btn-primary");
-			//			$("#uploadsInfoCommon").fadeIn();
 		} else {
 			$("#metadataStartButton")
 				.prop("disabled", "disabled")
 				.addClass("disabled")
 				.removeClass("btn-primary")
 				.addClass("btn-disabled");
-			//			$("#uploadsInfoCommon").fadeOut();
 		}
 	});
 
 	myDropzone.on("complete", function (file) {
-		//		console.log(file.upload.filename + " (" + formatBytes(file.size) + ") processed.");
-		//		makeData(file);
+		// do something
 	});
 
 	$("#metadataStartButton").click(function () {
 //----- BEGIN ACTUAL CODE -----
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
 			$(".ms-files-extra").hide();
 			$(".extra-ms-info").fadeIn();
 			$(".mimic-dz-item").not(".ms-file-selected").fadeOut();
@@ -373,7 +341,7 @@ $(document).ready(function () {
 		$("#finalNumSubmitted").html("Ready to submit " + formData.assets.length + " asset" + assetSuffix);
 		var displayData = [];
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
 			var headerHTML = "<th><strong>#</strong></th>";
 			headerHTML += "<th><strong>Media ID</strong></th>";
 			headerHTML += "<th><strong>Media File ID</strong></th>";
@@ -392,11 +360,10 @@ $(document).ready(function () {
 
 		_.forEach(formData.assets, function (asset, index) {
 
-			if (isMorphoSource) {
+			if (wasabiUploadType == "morphosource") {
 
 				var filesizeString = formData.assets[index]['media_file']['filesize'].replace('i', '');
 				var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));
-				//				var filesizeStringFinal = "<strong>" + filesizeString.substr(0, unitsPos) + "</strong> " + filesizeString.substr(unitsPos);
 				var filesizeStringFinal = filesizeString.substr(0, unitsPos) + " " + filesizeString.substr(unitsPos);
 
 
@@ -427,11 +394,11 @@ $(document).ready(function () {
 
 	showMoreInfoPopup = function (index) {
 		var msgHTML = "";
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
+		
 
 			var filesizeString = msFinalData[index].media['filesize'].replace('i', '');
 			var unitsPos = filesizeString.indexOf(filesizeString.match(/[a-zA-Z]/));
-			//				var filesizeStringFinal = "<strong>" + filesizeString.substr(0, unitsPos) + "</strong> " + filesizeString.substr(unitsPos);
 			var filesizeStringFinal = filesizeString.substr(0, unitsPos) + " " + filesizeString.substr(unitsPos);
 
 			var itemType = "MorphoSource Record";
@@ -462,17 +429,19 @@ $(document).ready(function () {
 			if (ext == "tiff" || ext == "tif") {
 				var theId = formData.assets[index]._id;
 				var dest = "#assetThumb_" + theId;
-				//			console.log(dest, fileUrl);
-				// currently broken
 				//			loadTiff(fileUrl, dest);
 
 				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Currently unable to preview TIFF files.</em></p></div>';
 
 			} else if (ext == "jpg" || ext == "jpeg" || ext == "gif" || ext == "png" ) {
 				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" style="background-image: url(\'uploads/' + sessionGUID + '/' + formData.assets[index].filename + '\')"></div>';
-			} else { 
-				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Sorry, no preview available for this file type.</em></p></div>';		   
+			}  else { 
+				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Sorry, no preview is available for this file type.</em></p></div>';		   
 		    }
+			
+			if( wasabiUploadType == "batch" && searchType == "record" ) {
+				var thumbHTML = '<div class="popup-thumbnail" id="assetThumb_' + formData.assets[index]._id + '" ><p align="center"><em>Sorry, no preview is available for this file because it will not be uploaded.</em></p></div>';
+			}
 
 			var sizeStringSimple = $("span[data-dz-size]").eq(index).html().split("<strong>").join("").split("</strong>").join("");
 
@@ -536,7 +505,6 @@ $(document).ready(function () {
 				// status | available | total | percent | cutoff
 				
 				if( response[0] == "ok") {
-//					showNormalDialog("Good to go!",response);
 					console.log("disk space check:\nstatus | available | total | % available | % needed");
 					console.log(response.join(" | "));
 				} else {
@@ -556,7 +524,7 @@ $(document).ready(function () {
 	
 	function makeFilesClickable() {
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
 
 			$(".mimic-dz-thumb.green-border").removeClass("green-border").addClass("red-border");
 			$(".mimic-dz-thumb.green-border-selected").removeClass("green-border-selected").addClass("red-border");
@@ -644,7 +612,8 @@ $(document).ready(function () {
 
 	function activateMetadata(file) {
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
+		
 			var asset = _.findLast(formData.assets, function (a) {
 				return a._id == file.attr('data-media-id') + "|" + file.attr('data-media-file');
 			});
@@ -662,7 +631,8 @@ $(document).ready(function () {
 		var num = formData.assets.indexOf(asset);
 
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
+		
 			var upload = $(".ms-file-selected-target").eq(num);
 			console.log(upload)
 			var uploadElement = $(".ms-file-selected-target").eq(num);
@@ -739,7 +709,8 @@ $(document).ready(function () {
 				e.preventDefault();
 				//                console.log("ready to set data.");
 
-				if (isMorphoSource) {
+				if (wasabiUploadType == "morphosource") {
+				
 					var upload = $(".ms-file-selected-target").eq(activeAsset);
 					var uploadElement = $(".ms-file-selected-target").eq(activeAsset);
 				} else {
@@ -786,23 +757,73 @@ $(document).ready(function () {
 		// write manifest file
 		// write lockfile
 
-		//		setFormData('datestamp', moment().toISOString());
 		
 		var dataSanitized = JSON.stringify(formData);
 		dataSanitized = encodeURIComponent(dataSanitized);
-
-		showFinalProcessingDialog();
 		
+		if( searchType == "record" ) {
+			if( wasabiUploadType == "standard" ) {
+				showFinalProcessingDialog();
+				goFinalize(dataSanitized);
+			} else if( wasabiUploadType == "morphosource") {
+				// do nothing
+				console.log('no processing dialog - morphosource');
+				goFinalize(dataSanitized);
+			} else if( wasabiUploadType == "batch" ) {
+				// do nothing
+				console.log('no processing dialog - batch');
+				goFinalize(dataSanitized);
+			} else {
+				// i dunno
+				showFinalProcessingDialog();
+				goFinalize(dataSanitized);
+			}
+		} else if( searchType == "graphics" ) {
+			showFinalProcessingDialog();
+			goFinalize(dataSanitized);
+		} else if( searchType == "event" ) {
+			showFinalProcessingDialog();
+			goFinalize(dataSanitized);
+		} else {
+			showFinalProcessingDialog();
+			goFinalize(dataSanitized);
+		}
+		
+
+	});
+
+	function goFinalize(dataSanitized) {
+		var theFile = formData.assets[0].filename;
+		if( typeof formData.target == "Object" )  { 
+			var theCatalogNum = formData.target.number; 
+		} else { 
+			var theCatalogNum = ""; 
+		}
+		
+		var newFileName = theFile + '--' + theCatalogNum.split('.').join('-') +'.json';
 		$.ajax({
 			type: 'POST',
 			url: 'finalize.php',
+			async: false,
 			dataType: 'text',
-			//			data: 'data=' + JSON.stringify(formData),
-			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType,
-			//			data: 'data=' + JSON.stringify(formData) + '&folderName=' + sessionGUID + "&type=" + searchType,
+			data: 'data=' + dataSanitized + '&folderName=' + sessionGUID + "&type=" + searchType + '&wasabiUploadType=' + wasabiUploadType,
 			success: function (result) {
 				// check result object for what you returned
-				showFinalSuccessDialog(result);
+//				showFinalSuccessDialog(result);
+//				alert(wasabiUploadType + "|" + searchType)
+				if( wasabiUploadType == "batch" && searchType == "record") {
+					var theMessage = 'Thanks for your submission.  Your browser will now attempt to download a metadata file called:<br /><strong>' + newFileName + '</strong><br /><br />Please save this file on your computer <strong>in the same folder as the asset(s) you have just ingested</strong>.  You will use a third-party tool to submit the actual file(s) with this metadata file.';
+					theMessage += '<br /><br />If your file did not download automatically, <strong><a href="'+ result +'" target="_blank">click here</a></strong> and save the .json file manually using the default filename mentioned above.'
+					downloadBatchMetaFile(JSON.stringify(formData),newFileName);
+					showFinalSuccessDialog(theMessage);
+				} else if( wasabiUploadType == "morphosource" && searchType == "record" ) {
+					var theMessage = 'Your submission was successful. Please allow time for these assets to propagate throughout the necessary systems.';
+						theMessage += '<br /><br />Since this session targets MorphoSource, no files have been uploaded</strong>.  After you recieve final upload confirmation, please verify its success in the necessary locations.';
+					showFinalSuccessDialog(theMessage);
+				} else {
+					showFinalSuccessDialog();
+				}
+				console.log(result);
 			},
 			error: function (jqXHR, textStatus, errorThrown) {
 				// check error object or return error
@@ -810,11 +831,30 @@ $(document).ready(function () {
 				console.warn(jqXHR, textStatus, errorThrown);
 			}
 		});
+	}
 
-//		showFinalSuccessDialog();
-	})
+	function downloadBatchMetaFile(data, fileName, type="text/plain") {
+	  // Create an invisible A element
+	  downloadLinkBatchMetaFile = document.createElement("a");
+	  downloadLinkBatchMetaFile.style.display = "none";
+	  document.body.appendChild(downloadLinkBatchMetaFile);
 
-	
+	  // Set the HREF to a Blob representation of the data to be downloaded
+	  downloadLinkBatchMetaFile.href = window.URL.createObjectURL(
+		new Blob([data], { type })
+	  );
+
+	  // Use download attribute to set set desired file name
+	  downloadLinkBatchMetaFile.setAttribute("download", fileName);
+
+	  // Trigger the download by simulating click
+	  downloadLinkBatchMetaFile.click();
+
+	  // Cleanup -- NOT NEEDED
+//	  window.URL.revokeObjectURL(downloadLinkBatchMetaFile.href);
+//	  document.body.removeChild(downloadLinkBatchMetaFile);
+	}
+
 	
 	function showNormalDialog(title,message) {
 		if( !message || typeof(message) == "undefined") { var theText = "Hello!"; } else { var theText = message; }
@@ -861,12 +901,17 @@ $(document).ready(function () {
 	}
 
 	function showFinalSuccessDialog(result) {
-		console.log(result);
+		if( !result ) {
+			var theMessage = 'Your submission was successful. Please allow time for these assets to propagate throughout the necessary systems.';
+		} else {
+			var theMessage = result;
+		}
+//		console.log(result);
 		BootstrapDialog.show({
 			type: BootstrapDialog.TYPE_SUCCESS,
 			closable: false,
 			title: '<h4>Success!</h4>',
-			message: '<p>Your submission was successful. Please allow time for these assets to propagate throughout the necessary systems.</p>',
+			message: '<p>' + theMessage + '</p>',
 			buttons: [{
 				label: '<i class="fas fa-sync-alt"></i>&nbsp;Start over',
 				cssClass: 'btn-default',
@@ -931,7 +976,6 @@ $(document).ready(function () {
 
 		if (!CASuser.name || CASuser.name == "") {
 			// no user name passed in via query string
-			// var noUser = prompt("Enter your CAS username:");
 			CASuser.name = noUser;
 
 			if (_.includes(recordBasedUsers, noUser)) {
@@ -1022,24 +1066,10 @@ $(document).ready(function () {
 			userName = CASuser.name;
 		}
 
-		//		if (!userName || userName == "null") {
-		//			alert("not logged in!");
-		//			stripQs("cas");
-		//			location.reload();
-		//		} else {
-		//			//all good, let's go
-		//
-		//			makeUserLink(CASuser);
-		//			makeLookupSwitcher();
-		//		}
-
-		//		alert(CASuser);
 		makeUserLink(CASuser);
 		makeLookupSwitcher();
 
-		//		setFormData("targetType", searchType);
 		setFormData("user", CASuser.name);
-
 
 		sessionGUID = makeGUID();
 		setFormData("guid", sessionGUID);
@@ -1060,54 +1090,18 @@ $(document).ready(function () {
 		}
 	}
 
-	//	$("#labelForSally").on("keyup", function () {
-	//		var label = $(this).val();
-	//		console.warn(label);
-	//		if (!label || label == "") {
-	//			$("#graphicsStepOneNextButton").prop("disabled", "disabled");
-	//			$("#graphicsStepOneNextButton")
-	//				.removeClass("btn-primary")
-	//				.addClass("btn-disabled");
-	//			$("#graphicsStepOneNextButton").click(function () {
-	//				void(0);
-	//			});
-	//			$("#dropzoneArea").hide();
-	//		} else {
-	//			$("#graphicsStepOneNextButton").prop("disabled", false);
-	//			$("#graphicsStepOneNextButton")
-	//				.removeClass("btn-disabled")
-	//				.addClass("btn-primary");
-	//
-	//			var dummyData = {
-	//				"irn": "",
-	//				"number": "",
-	//				"date": {
-	//					"start": "",
-	//					"end": ""
-	//				},
-	//				"department": "",
-	//				"description": "",
-	//				"type": "",
-	//				"concat": ""
-	//			}
-	//
-	//			$("#graphicsStepOneNextButton").click(function () {
-	//				searchType = "graphics";
-	//				printSearchResults(dummyData, "graphics");
-	//				setFormData("targetType", "graphics");
-	//				searchType = "graphics";
-	//				setFormData("target", null);
-	//				setFormData("label", label);
-	//				showTabTwo();
-	//			});
-	//			$("#dropzoneArea").show();
-	//		}
-	//
-	//	});
-
-
-
-
+	
+	$("#recordStepOneNextButton").click(function () {
+		searchType = "record";
+		setFormData("targetType","record");
+		myDropzone.options.url = "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType;
+//		alert(myDropzone.options.url);
+	});
+		
+//	$("#eventStepOneNextButton").click(function () {
+//		
+//	});
+	
 	$("#graphicsStepOneNextButton").click(function () {
 		var label = $("#labelForSally").val();
 		var recipient = $("#graphicsRecipient").val();
@@ -1123,14 +1117,15 @@ $(document).ready(function () {
 			"type": "",
 			"concat": ""
 		}
-
-
+		searchType = "graphics";
+		myDropzone.options.url = "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType;
+//		alert(myDropzone.options.url);
+		
 		$("#morphoSourceApiResults").hide();
 		$("#morphoSourceHeading").hide();
 		$("#dropzoneArea").show();
 		$("#dropzoneHeading").show();
 
-		searchType = "graphics";
 		printSearchResults(dummyData, "graphics");
 		setFormData("targetType", "graphics");
 		searchType = "graphics";
@@ -1141,28 +1136,6 @@ $(document).ready(function () {
 		showTabTwo();
 	});
 	
-	$("#graphicsRecipient").change(function() {
-		setFormData("recipient",$(this).val() );
-	})
-
-	$('.nav-pills a[href="#searchPaneGraphics"]').on("shown.bs.tab", function (e) {
-		isMorphoSource = false;
-		setFormData("morphosource", false);
-		printFormData();
-	});
-
-	$('.nav-pills a[href="#searchPaneEvent"]').on("shown.bs.tab", function (e) {
-		isMorphoSource = false;
-		setFormData("morphosource", false);
-		printFormData();
-	});
-
-	$('.nav-pills a[href="#searchPaneRecord"]').on("shown.bs.tab", function (e) {
-		isMorphoSource = $("#searchByRecordMorphoSource").prop("checked");
-		setFormData("morphosource", $("#searchByRecordMorphoSource").prop("checked"));
-		printFormData();
-	});
-
 
 
 	function showDebugPanel() {
@@ -1199,28 +1172,6 @@ $(document).ready(function () {
 	});
 
 
-
-
-	//	$("#lookupToggle").change(function () {
-	//		var status = $(this).prop("checked");
-	//		var statusText = "";
-	//		if (status === true) {
-	//			statusText = "event";
-	//			searchText = "event";
-	//			setFormData("targetType", "event");
-	//			$("#searchPaneRecord").hide();
-	//			$("#searchPaneEvent").fadeIn();
-	//		} else {
-	//			statusText = "record";
-	//			searchText = "record";
-	//			setFormData("targetType", "record");
-	//			$("#searchPaneEvent").hide();
-	//			$("#searchPaneRecord").fadeIn();
-	//		}
-	//
-	//		console.log("Toggle: " + status + " | " + statusText);
-	//	});
-
 	function makeLookupSwitcher() {
 
 		if (CASuser.type == "event") {
@@ -1236,8 +1187,44 @@ $(document).ready(function () {
 			$("#tabcontrol13").show();
 		}
 
+		
+		$("#graphicsRecipient").change(function() {
+			setFormData("recipient",$(this).val() );
+		})
 
+		$('.nav-pills a[href="#searchPaneGraphics"]').on("shown.bs.tab", function (e) {
+			printFormData();
+		});
 
+		$('.nav-pills a[href="#searchPaneEvent"]').on("shown.bs.tab", function (e) {
+			printFormData();
+		});
+
+		$('.nav-pills a[href="#searchPaneRecord"]').on("shown.bs.tab", function (e) {
+			printFormData();
+		});
+
+		wasabiUploadType = $('label input[type=radio][name=wasabiUploadType]').val();
+		$("#wasabiUploadTypeHelpText").html(wasabiUploadTypeHelpText[wasabiUploadType]);
+		setFormData("wasabiUploadType", wasabiUploadType);
+		printFormData();
+
+		$('label input[type=radio][name=wasabiUploadType]').on("change",function() {
+			wasabiUploadType = $(this).val();
+			$("#wasabiUploadTypeHelpText").html(wasabiUploadTypeHelpText[wasabiUploadType]);
+			
+			if( wasabiUploadType == "standard" ) {
+				$("#recordStepOneNextButton").html('Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
+			} else {
+				$("#recordStepOneNextButton").html('Select Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
+			}
+			
+			myDropzone.options.url = "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType;
+			
+			setFormData("wasabiUploadType", wasabiUploadType);
+			printFormData();
+		});
+		
 		// make toggle switch for 'record' path options (step 1)
 		$("#searchByRecordMorphoSource").bootstrapToggle({
 			on: "Yes",
@@ -1250,54 +1237,17 @@ $(document).ready(function () {
 			onstyle: "danger",
 			offstyle: "success"
 		});
+		
 
-		$("#searchByRecordMorphoSource").change(function () {
-			isMorphoSource = $(this).prop("checked");
-
-			setFormData("morphosource", isMorphoSource);
-			console.log("MorphoSource record: " + isMorphoSource);
-
-			if (isMorphoSource) {
-				$("#recordStepOneNextButton").html('Select Media&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
-			} else {
-				$("#recordStepOneNextButton").html('Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i>');
-			}
-
-			printFormData();
-		});
 
 		$("#searchByRecordEmbargoed").change(function () {
 			isEmbargoed = $(this).prop("checked");
 			setFormData("private", isEmbargoed);
-
 			console.log("Embargoed/private data: " + isEmbargoed);
-
 			printFormData();
 		});
 
-		// make toggle switch (first version) 
-		//		if (CASuser.type == "event" || CASuser.type == "both") {
-		//			$("#lookupToggle").prop("checked", true);
-		//		} else {
-		//			$("#lookupToggle").prop("checked", false);
-		//		}
-
-		//		if (CASuser.type == "event") {
-		//			$("#searchByLabelEvent").show();
-		//			$("#lookupToggle").hide();
-		//		} else if (CASuser.type == "record") {
-		//			$("#searchByLabelRecord").show();
-		//			$("#searchPaneEvent").hide();
-		//			$("#searchPaneRecord").show();
-		//			$("#lookupToggle").hide();
-		//		} else {
-		//			$("#lookupToggle").bootstrapToggle({
-		//				on: "Event",
-		//				off: "Record",
-		//				onstyle: "default",
-		//				offstyle: "default"
-		//			});
-		//		}
+		
 
 		// ========================================================================
 		// ===================== LOOKUP - EVENTS ==================================
@@ -1361,6 +1311,10 @@ $(document).ready(function () {
 					setFormData("target", obj);
 					setFormData("label", null);
 					setFormData("targetType", "event");
+					
+					myDropzone.options.url = "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType;
+//					alert(myDropzone.options.url);
+					
 				},
 				onShowListEvent: function () {
 					creatorNameListOpen = true;
@@ -1374,7 +1328,6 @@ $(document).ready(function () {
 			template: {
 				type: "custom",
 				method: function (value, item) {
-					//					return value + "<br /><span class='smaller'>IRN " + item.irn + " &bull; " + item.number + "</span>";
 
 					var valArr = value.split("|");
 					var html = "";
@@ -1408,7 +1361,6 @@ $(document).ready(function () {
 		};
 
 		var optsRecords = {
-			//			url: "data/ingester-metadata-netx.json?v=" + randomNumber(),
 			url: "../data/ingester-metadata-specimens.json?v=" + randomNumber(),
 
 			//			getValue: "description",
@@ -1429,7 +1381,6 @@ $(document).ready(function () {
 				onChooseEvent: function () {
 					searchType = "record";
 					var obj = $("#searchRecordAll").getSelectedItemData();
-					//					console.log(obj);
 					$("#searchRecordAll").val(searchTextRecord);
 
 					if ($("#recordStepOneNextButton").hasClass("btn-disabled")) {
@@ -1437,19 +1388,24 @@ $(document).ready(function () {
 						$("#recordStepOneNextButton")
 							.removeClass("btn-disabled")
 							.addClass("btn-primary");
-						//						showTabTwo();
+						// showTabTwo();
 						// don't automatically go to step 2 for 'record'
 
 						$("#recordStepOneNextButton").click(function () {
 							searchType = "record";
-							isMorphoSource = $("#searchByRecordMorphoSource").prop("checked");
-							setFormData("morphosource", isMorphoSource);
 							printFormData();
+							$("#dropzoneHelpText").html(dropzoneHelpText[wasabiUploadType]);
+							if( wasabiUploadType != "morphosource") {
+								$("#dropzoneHelpText").show();
+							} else {
+								$("#dropzoneHelpText").show();
+							}
+							
 							showTabTwo();
 						});
 
-						//						alert("don't show dropzone if it's a morphosource record!  use the API lookup instead.\n\nPut new fields into manifest json (collector, geography, etc.)")
-						if (isMorphoSource) {
+						
+						if (wasabiUploadType == "morphosource") {
 							$("#morphoSourceApiResults").show();
 							$("#morphoSourceHeading").show();
 							$("#dropzoneArea").hide();
@@ -1462,10 +1418,7 @@ $(document).ready(function () {
 						}
 					}
 
-					//					obj.private = isEmbargoed;
-					//					obj.morphosource = isMorphoSource;
 
-					setFormData("morphosource", isMorphoSource);
 					setFormData("private", isEmbargoed);
 
 
@@ -1474,12 +1427,14 @@ $(document).ready(function () {
 					setFormData("target", obj);
 					setFormData("label", null);
 					setFormData("targetType", "record");
+					
+					myDropzone.options.url = "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType;
+					
 				}
 			},
 			template: {
 				type: "custom",
 				method: function (value, item) {
-					//					return value + "<br /><span class='smaller'>IRN " + item.irn + " &bull; " + item.number + "</span>";
 
 					var valArr = value.split("|");
 					var html = "";
@@ -1519,7 +1474,6 @@ $(document).ready(function () {
 					return html;
 				}
 			},
-			//			theme: "blue-light"
 			theme: "bootstrap"
 		};
 
@@ -1546,9 +1500,6 @@ $(document).ready(function () {
 		var asset = formData.assets[target];
 
 		// set formData values
-		//		asset.creatorName.last = $("#uploadsInfoCommonCreatorLast").val();
-		//		asset.creatorName.first = $("#uploadsInfoCommonCreatorFirst").val();
-		//		asset.creatorName.middle = $("#uploadsInfoCommonCreatorMiddle").val();
 
 		// if user hasn't selected a valid autocomplete entry, set creatorName object as <inputVal>|"new"
 		if (creatorName.creator == "" && creatorName.irn == "") {
@@ -1566,7 +1517,7 @@ $(document).ready(function () {
 		asset.credit = $("#uploadsInfoCommonSpecialCreditLine").val();
 		asset.usage = $("#uploadsInfoCommonSpecialUsage").val();
 
-		if (isMorphoSource) {
+		if (wasabiUploadType == "morphosource") {
 			$(".ms-file-selected-target").eq(target).addClass("dz-success");
 			setTimeout(function () {
 				$(".ms-file-selected-target").eq(target).removeClass("dz-success");
@@ -1584,8 +1535,7 @@ $(document).ready(function () {
 
 		if (target != formData.assets.length - 1) {
 			//advance
-			if (isMorphoSource) {
-				//				alert(parseInt(target + 1))
+			if (wasabiUploadType == "morphosource") {
 				activateMetadata($(".ms-file-selected-target").eq(parseInt(target + 1)));
 			} else {
 				activateMetadata(myDropzone.files[parseInt(target + 1)]);
@@ -1644,8 +1594,6 @@ $(document).ready(function () {
 			media_file: obj,
 			id: item_media_id + "|" + item_media_file
 		};
-		//		setFormData("assets", package);
-		//		printFormData();
 
 		//		alert(formData.assets.length);
 	}
@@ -1680,11 +1628,7 @@ $(document).ready(function () {
 			if (key == "assets") {
 				var obj = {
 					valid: false,
-					//					creatorName: {
-					//						first: $("#uploadsInfoCommonCreatorFirst").val(),
-					//						middle: $("#uploadsInfoCommonCreatorMiddle").val(),
-					//						last: $("#uploadsInfoCommonCreatorLast").val()
-					//					},
+
 					creatorName: {
 						creator: creatorName.creator,
 						irn: creatorName.irn
@@ -1703,7 +1647,8 @@ $(document).ready(function () {
 					_id: value.id,
 					chunked: value.chunked
 				};
-				if (formData.morphosource) {
+//				if (formData.morphosource) {
+				if (formData.wasabiUploadType == "morphosource") {
 					formData[key].push(obj);
 				} else {
 					if (
@@ -1752,32 +1697,6 @@ $(document).ready(function () {
 		}
 	});
 
-	//	$("#uploadsInfoCommonKeywords").tagsInput({
-	//		'height': '68px',
-	//		'width': '100%',
-	//		'interactive': true,
-	//		'defaultText': "Enter keyword",
-	//		'onAddTag': function () {
-	//
-	//			//			$("#mainForm").validator('validate');
-	//		},
-	//		'onRemoveTag': function () {},
-	//		'onChange': function () {
-	//			//			$("#mainForm").validator("validate");
-	//			var tags = $(this).val();
-	//			//			if (tags == "") {
-	//			//				$("#mainForm").validator("validate", function () {
-	//			//
-	//			//					$("#uploadsInfoCommonKeywords").focus();
-	//			//				});
-	//			//			}
-	//		},
-	//		'delimiter': [',', ';', '|'], // Or a string with a single delimiter. Ex: ';'
-	//		'removeWithBackspace': true,
-	//		'minChars': 0,
-	//		'maxChars': 0, // if not provided there is no limit
-	//	});
-
 	// ============================================================================
 
 	// dynamic DOM elements workaround
@@ -1797,28 +1716,21 @@ $(document).ready(function () {
 		} else if ($(event.target).hasClass("mimic-dz-thumb")) {
 			if (defaultMsClick) {
 				var item = $(event.target);
-				//			$(item).toggleClass('green-border-selected');
-				//			$(".green-border-selected").removeClass("green-border-selected").addClass("green-border");
 
 				var item_media_id = $(item).attr('data-media-id');
 				var item_media_file = $(item).attr('data-media-file');
 
 				//			console.warn(item_media_id, item_media_file);
 
-				//				var isAdded = _.find(formData.assets, function (o) {
-				//					return o.media_id == item_media_id && o.media_file.media_file_id == item_media_file;
-				//				});
 
 				var isAdded = $(".ms-file-selected-target[data-media-file='" + item_media_file + "'][data-media-id='" + item_media_id + "']");
 				//				console.log(isAdded)
 
 				if (isAdded.length) {
-					//					removeMorphosourceAsset(item_media_id, item_media_file);
 					$(item).removeClass('green-border-selected').removeClass('green-border').addClass('red-border');
 					$(item).parent().removeClass("ms-file-selected");
 					$(item).removeClass("ms-file-selected-target");
 				} else {
-					//					addMorphosourceAsset(item_media_id, item_media_file);
 					$('.green-border-selected').not(item).removeClass('green-border-selected').addClass('green-border');
 					$(item).removeClass('red-border-selected').removeClass('red-border').addClass('green-border-selected');
 					$(item).parent().addClass("ms-file-selected");
@@ -1828,16 +1740,12 @@ $(document).ready(function () {
 			}
 		}
 
-		//		if ($(event.target).not(".eac-item") && creatorNameListOpen) {
-		//			alert("you didn't pick anything");
-		//		}
 
 	});
 
 	$('.nav-tabs a[href="#tab1"]').on("shown.bs.tab", function (e) {
 		//e.target // newly activated tab
 		//e.relatedTarget // previous active tab
-		//		$("#searchEventAll").focus();
 
 		if (initialSearchType == "event") {
 			$("#searchEventAll").focus();
@@ -1848,7 +1756,7 @@ $(document).ready(function () {
 
 	$('.nav-tabs a[href="#tab2"]').on("shown.bs.tab", function (e) {
 
-		if (isMorphoSource && searchType == "record") {
+		if (searchType == "record" && wasabiUploadType == "morphosource") {
 			$("#morphoSourceApiResults").show();
 			$("#morphoSourceHeading").show();
 			$("#dropzoneArea").hide();
@@ -1904,7 +1812,6 @@ $(document).ready(function () {
 			var dept = cn[0].toLowerCase();
 			var num = cn[1];
 			var endpointBase = "https://www.morphosource.org/api/v1/find/media?q=catalog_number:";
-			//			var endpoint = endpointBase + "ypm " + dept + " " + num;
 			var endpoint = endpointBase + "ypm%20" + dept + "%20" + num;
 			var q = "ypm+" + dept + "+" + num;
 			console.log(endpoint);
@@ -1930,8 +1837,6 @@ $(document).ready(function () {
 				jsonMorphoSourceResults = JSON.parse(jsonMorphoSourceResults);
 
 				console.log(jsonMorphoSourceResults);
-
-				// $("#morphoSourceApiResults").html(JSON.stringify(jsonMorphoSourceResults, null, 2));
 
 				if (jsonMorphoSourceResults.totalResults == 0) {
 					$("#morphoSourceApiResults").html("No results found.  To edit your search, <a href='javascript:void(0)' class='edit-record-search-link'>click here</a>.");
@@ -1981,8 +1886,6 @@ $(document).ready(function () {
 						$("#morphoSourceApiResultsRows").append("<div class='row ms-files-extra'><h4><a href='" + msUrl + "' target='_blank'><i class='far fa-file-image'></i> M" + result['medium.media_id'] + "</a></h4></div> ");
 
 						$("#morphoSourceApiResultsRows").append("<div class='row ms-files-extra'><strong>" + numMediaFiles + " Media file" + numMediaFilesSuffix + ":" + "</strong></div>");
-
-						// $("#morphoSourceApiResultsRows").append("<div class='row' id='morphosourceMediaRows_" + result['medium.media_id'] + "'></p>");
 
 						var resultRow = document.createElement("div");
 						resultRow.className = "row msMediaRow msMediaRow-" + i;
@@ -2036,11 +1939,6 @@ $(document).ready(function () {
 			alert("bad request.");
 		}
 	}
-
-
-
-
-
 
 	function loadTiff(filename, dest) {
 		// destination expressed as jquery selector
@@ -2112,22 +2010,6 @@ function activateCreatorLookup() {
 			}
 		},
 
-		//		template: {
-		//			type: "custom",
-		//			method: function (value, item) {
-		//
-		//				var valArr = value.split("|");
-		//				var html = "";
-		//
-		//				html +=
-		//					"<span class='result-line'><em>" + valArr[1] + "</span>";
-		//				html +=
-		//					"<span class='result-line smaller'>" + valArr[0] + "</span>";
-		//
-		//				return html;
-		//			}
-		//		},
-
 		theme: "bootstrap"
 	};
 
@@ -2189,8 +2071,6 @@ function printWasabiQuery(obj, type) {
 				var manifestFilename = asset['manifest_url'].substr(asset['manifest_url'].lastIndexOf("/") + 1);
 				var ext = filename.substr(filename.lastIndexOf(".") + 1);
 				
-//				if( index == 0 ) {
-//					var manifestAssets = [];
 					var manifest = loadJsonAsVar(asset['manifest_url']);
 //					console.log(manifest);
 					_.forEach(manifest.assets, function(a,index2){ 
@@ -2218,8 +2098,6 @@ function printWasabiQuery(obj, type) {
 						
 					});
 					manifestAssets = _.uniqWith(manifestAssets,_.isEqual);
-//					console.warn(manifestAssets);
-//				}
 				
 				if( ext == "zip" || ext == "tar" || ext == "rar" || ext == "7z" ) {
 					var icon = '<i class="far fa-file-archive"></i>';
@@ -2298,8 +2176,6 @@ function printSearchResults(obj, type) {
 
 	var tplEdit = tpl.replace("{{{description}}}", obj.description);
 	tplEdit = tplEdit.replace("{{{type}}}", obj.type);
-	//	tplEdit = tplEdit.replace("{{{startDate}}}", obj.date.start);
-	//	tplEdit = tplEdit.replace("{{{endDate}}}", obj.date.end);
 	tplEdit = tplEdit.replace("{{{name}}}", obj.name);
 	tplEdit = tplEdit.replace("{{{date}}}", obj.date);
 	tplEdit = tplEdit.replace("{{{geography}}}", obj.geography);
@@ -2546,7 +2422,6 @@ function searchByEvent(obj) {
 		return eval(filterEvalString);
 	});
 
-	//	printSearchResults(results, "#searchResultsEvent", "event");
 }
 
 // ============================================================

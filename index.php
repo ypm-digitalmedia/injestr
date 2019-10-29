@@ -131,18 +131,6 @@ $randomtwo = $_SESSION['randomtwo'];
 					<div class="tab-content">
 						<div class="tab-pane fade in active" id="tab1">
 
-
-
-							<!--
-							<div class="container-fluid search-pane" id="searchPaneSelector">
-								<div class="row row-pad">
-									<div class="col-xs-12">
-										<span id="searchByLabel"><strong>Search by&nbsp;</strong><strong id="searchByLabelRecord">Record</strong><strong id="searchByLabelEvent">Event</strong></span>
-										<input type="checkbox" id="lookupToggle" checked></input>
-									</div>
-								</div>
-							</div>
--->
 							<!-- SEARCH TYPE SELECTOR -->
 
 							<div class="container-fluid">
@@ -245,16 +233,31 @@ $randomtwo = $_SESSION['randomtwo'];
 										<div class="container-fluid">
 											<div class="row row-pad">
 												<div class="col-sm-4 col-xs-8">
-													<span>MorphoSource Record? </span>
-												</div>
-												<div class="col-sm-2 col-xs-4">
-													<input type="checkbox" id="searchByRecordMorphoSource" checked value="true" />
-												</div>
-												<div class="col-sm-4 col-xs-8">
 													<span>Private/Embargoed Data? </span>
 												</div>
 												<div class="col-sm-2 col-xs-4">
 													<input type="checkbox" id="searchByRecordEmbargoed" value="false" />
+												</div>
+												<div class="col-sm-4 col-xs-8"></div>
+												<div class="col-sm-2 col-xs-4"></div>
+											</div>
+											<div class="row row-pad">
+												<div class="col-sm-3 col-xs-12">
+													Upload Type:
+												</div>
+												<div class="col-sm-9 col-xs-12">
+													<div class="btn-group btn-group-toggle" data-toggle="buttons">
+													  <label class="btn btn-primary btn-toggle active">
+														<input type="radio" name="wasabiUploadType" id="wasabiUploadTypeOpt1" autocomplete="off" checked value="standard"> Standard
+													  </label>
+													  <label class="btn btn-primary btn-toggle">
+														<input type="radio" name="wasabiUploadType" id="wasabiUploadTypeOpt2" autocomplete="off" value="batch"> Batch
+													  </label>
+													  <label class="btn btn-primary btn-toggle">
+														<input type="radio" name="wasabiUploadType" id="wasabiUploadTypeOpt3" autocomplete="off" value="morphosource"> MorphoSource
+													  </label>
+													</div><br />
+													<p id="wasabiUploadTypeHelpText"></p>
 												</div>
 											</div>
 											<div class="row row-pad">
@@ -263,17 +266,18 @@ $randomtwo = $_SESSION['randomtwo'];
 													<div class="help-block with-errors"></div>
 												</div>
 											</div>
-											<div class="row row-pad">
-												<div class="col-xs-12">
-													<div id="searchResultsRecord" class="search-results-container"></div>
-												</div>
-											</div>
 
 											<div class="row row-pad">
 												<div class="col-xs-12 align-center">
 													<p align="center" class="align-center">
 														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Select Media&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 													</p>
+												</div>
+											</div>
+											
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsRecord" class="search-results-container"></div>
 												</div>
 											</div>
 
@@ -314,6 +318,7 @@ $randomtwo = $_SESSION['randomtwo'];
 									<div class="col-xs-12">
 										<div class="mimic-form-control dropzone" id="dropzoneArea"></div>
 										<div class="mimic-form-control search-results-container" id="morphoSourceApiResults"></div>
+										<p id="dropzoneHelpText"></p>
 									</div>
 								</div>
 
@@ -503,7 +508,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.4.2</strong> | <i class="fas fa-calendar-alt"></i> Aug 28 2019</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.1</strong> | <i class="fas fa-calendar-alt"></i> 29 Oct 2019</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

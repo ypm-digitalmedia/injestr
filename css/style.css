@@ -10,6 +10,21 @@ body {
 	background-color: slategray;
 }
 
+.btn-primary.btn-toggle {
+	background: none;
+	color: #6788b2;
+}
+
+.btn-primary.btn-toggle:hover {
+	background-color: #eeeeee;
+	color: #3f577a;
+}
+
+.btn-primary.btn-toggle.active {
+	background-color: #6788b2;
+	color: white;
+}
+
 .navbar-inverse {
 	background-color: #6788b2;
 	border-color: transparent;
@@ -301,6 +316,20 @@ button:disabled {
 .tab-btn:focus {
 	cursor: pointer;
 	color: #39577d;
+}
+
+#wasabiUploadTypeHelpText {
+	font-size: 0.85em;
+	padding-top: 1em;
+	font-style: italic;
+}
+
+#dropzoneHelpText {
+	display: none;
+	text-align: center;
+	font-size: 0.85em;
+	padding-top: 0.5em;
+	font-style: italic;
 }
 
 #dropzoneArea {
