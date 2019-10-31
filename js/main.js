@@ -146,15 +146,26 @@ $(document).ready(function () {
 		withCredentials: false,
 
 		uploadprogress: function (file, progress, bytesSent) {
+//			var allowUpload = true;
+//			
+//			if( searchType == "record") {
+//				if( wasabiUploadType == "batch" || wasabiUploadType == "morphosource" ) {
+//					allowUpload = false;
+//				}
+//			}
+			
 			if (file.previewElement) {
 				var progressElement = file.previewElement.querySelector(
 					"[data-dz-uploadprogress]"
 				);
 				var progressTrunc = parseFloat(progress).toFixed(1);
 				progressElement.style.width = progress + "%";
-				progressElement.querySelector(".progress-text").textContent =
-					progressTrunc + "%";
+				progressElement.querySelector(".progress-text").textContent = progressTrunc + "%";
 			}
+			
+//			if( !allowUpload && progress > 0 ) {
+//				myDropzone.cancelUploadAlt(file);
+//			}
 		},
 		complete: function (file, xhr, formData) {
 			//			console.log(file);
@@ -186,6 +197,66 @@ $(document).ready(function () {
 		}
 
 	});
+	
+	//create new class to force cancel upload
+/*	_createClass(Dropzone, [{
+		key: "cancelUploadAlt",
+		value: function cancelUploadAlt(file) {
+		  alert('using custom cancel function')
+		  if (file.status === Dropzone.UPLOADING) {
+			var groupedFiles = this._getFilesWithXhr(file.xhr);
+			for (var _iterator20 = groupedFiles, _isArray20 = true, _i21 = 0, _iterator20 = _isArray20 ? _iterator20 : _iterator20[Symbol.iterator]();;) {
+			  var _ref19;
+
+			  if (_isArray20) {
+				if (_i21 >= _iterator20.length) break;
+				_ref19 = _iterator20[_i21++];
+			  } else {
+				_i21 = _iterator20.next();
+				if (_i21.done) break;
+				_ref19 = _i21.value;
+			  }
+
+			  var groupedFile = _ref19;
+
+			  groupedFile.status = Dropzone.CANCELED;
+			}
+			if (typeof file.xhr !== 'undefined') {
+			  file.xhr.abort();
+			}
+			for (var _iterator21 = groupedFiles, _isArray21 = true, _i22 = 0, _iterator21 = _isArray21 ? _iterator21 : _iterator21[Symbol.iterator]();;) {
+			  var _ref20;
+
+			  if (_isArray21) {
+				if (_i22 >= _iterator21.length) break;
+				_ref20 = _iterator21[_i22++];
+			  } else {
+				_i22 = _iterator21.next();
+				if (_i22.done) break;
+				_ref20 = _i22.value;
+			  }
+
+			  var _groupedFile = _ref20;
+
+			  this.emit("canceled", _groupedFile);
+			}
+			if (this.options.uploadMultiple) {
+			  this.emit("canceledmultiple", groupedFiles);
+			}
+		  } else if (file.status === Dropzone.ADDED || file.status === Dropzone.QUEUED) {
+			file.status = Dropzone.CANCELED;
+			this.emit("canceled", file);
+			if (this.options.uploadMultiple) {
+			  this.emit("canceledmultiple", [file]);
+			}
+		  }
+
+		  if (this.options.autoProcessQueue) {
+			return this.processQueue();
+		  }
+		}
+	}]);
+*/
 
 	function uploadFile(file) {
 		console.warn(file);
@@ -226,15 +297,30 @@ $(document).ready(function () {
 	});
 
 	myDropzone.on("addedfile", function (file) {
-
-//		if( wasabiUploadType == "batch" && searchType == "record" ) {
-//			myDropzone.autoProcessQueue = false;
-//			myDropzone.autoQueue = false;
-//		} else {
-//			myDropzone.autoProcessQueue = true;
-//			myDropzone.autoQueue = true;
-//		}
 		
+		// prevent upload if certain type of upload session
+		var allowUpload = true;
+		if( searchType == "record") {
+			if( wasabiUploadType == "batch" || wasabiUploadType == "morphosource" ) {
+				allowUpload = false;
+				console.warn("upload PHP script disabled.")
+				myDropzone.options.autoProcessQueue = false;
+				myDropzone.options.autoQueue = false;
+				$(".dropzone .dz-preview .dz-progress").css("opacity",0);
+			} else {
+				allowUpload = true;
+				console.warn("upload PHP script enabled.")
+				myDropzone.options.autoProcessQueue = true;
+				myDropzone.options.autoQueue = true;
+				$(".dropzone .dz-preview .dz-progress").css("opacity",1);
+			}
+		} else {
+			allowUpload = true;
+			console.warn("upload PHP script enabled.")
+			myDropzone.options.autoProcessQueue = true;
+			myDropzone.options.autoQueue = true;
+			$(".dropzone .dz-preview .dz-progress").css("opacity",1);
+		}		
 		
 		var package = {
 			name: file.name,
@@ -764,29 +850,29 @@ $(document).ready(function () {
 		if( searchType == "record" ) {
 			if( wasabiUploadType == "standard" ) {
 				showFinalProcessingDialog();
-				goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 			} else if( wasabiUploadType == "morphosource") {
 				// do nothing
 				console.log('no processing dialog - morphosource');
-				goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 			} else if( wasabiUploadType == "batch" ) {
 				// do nothing
 				console.log('no processing dialog - batch');
-				goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 			} else {
 				// i dunno
 				showFinalProcessingDialog();
-				goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 			}
 		} else if( searchType == "graphics" ) {
 			showFinalProcessingDialog();
-			goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 		} else if( searchType == "event" ) {
 			showFinalProcessingDialog();
-			goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 		} else {
 			showFinalProcessingDialog();
-			goFinalize(dataSanitized);
+				setTimeout(function() { goFinalize(dataSanitized);},300);
 		}
 		
 
@@ -794,10 +880,10 @@ $(document).ready(function () {
 
 	function goFinalize(dataSanitized) {
 		var theFile = formData.assets[0].filename;
-		if( typeof formData.target == "Object" )  { 
-			var theCatalogNum = formData.target.number; 
-		} else { 
+		if( !formData.target )  { 
 			var theCatalogNum = ""; 
+		} else { 
+			var theCatalogNum = formData.target.number; 
 		}
 		
 		var newFileName = theFile + '--' + theCatalogNum.split('.').join('-') +'.json';
@@ -1423,7 +1509,7 @@ $(document).ready(function () {
 
 
 					printSearchResults(obj, "record");
-					printWasabiQuery(obj, "record");
+//					printWasabiQuery(obj, "record");
 					setFormData("target", obj);
 					setFormData("label", null);
 					setFormData("targetType", "record");
