@@ -14,7 +14,7 @@ $stuff = urldecode($_POST['data']);
 $stuff_obj = json_decode($stuff);
 
 //1. Parse manifest data & write assets to array
-echo("=========== FINALIZATION SUMMARY ==========\n");
+echo("\n\n=========== FINALIZATION SUMMARY ==========\n");
 echo("===========================================\n");
 echo("=========== Target Type: " . $targetType . "\n");
 echo("=========== Upload Type: " . $wasabiUploadType . "\n");
@@ -30,14 +30,16 @@ if( $targetType == "record") {
 	}
 }
 
-if( $handleFiles == true ) {
+//if( $handleFiles == true ) {
 	foreach( $assets as $a ) {
 		$asset_path = $targetPath . $a->filename;
 		$asset_chunked = $a->chunked;
 		$aaa = array("filename"=>$a->filename,"path"=>$asset_path,"chunked"=>$asset_chunked);
 		array_push($assets_arr, $aaa);
 	}
-}
+//}
+
+
 //echo("phase 1 complete. parsed manifest data:\n");
 //echo($assets_arr);
 //echo("\n");
@@ -90,12 +92,17 @@ if( $doChunkStuff == true ) {
 
 //3. Iterate through assets again
 //Run MD5 checksum on whole files
+//Write stub files if necessary
 //except for wasabi or morphosource records
 
 $doMd5 = true;
+$makeStubs = false;
 if( $targetType == "record") {
 	if( $wasabiUploadType == "batch" || $wasabiUploadType == "morphosource") {
 		$doMd5 = false;
+	}
+	if( $wasabiUploadType == "batch" ) {
+		$makeStubs = true;
 	}
 }
 
@@ -125,9 +132,33 @@ if( $doMd5 == true ) {
 	echo( date('Y-m-d H:i:s T') . " - MD5 checksum calculation not performed - no upload.\n");
 }
 
+$stuff_obj = json_decode(json_encode($stuff_obj),true);
+// make stubfiles
+if( $makeStubs == true ) {
+	
+	$theAssets = $stuff_obj['assets'];
+	
+//	foreach( $theAssets as $theAsset ) {
+	for( $x=0; $x<count($theAssets); $x++ ) {
+		
+//		$fileName = $theAsset['filename'];
+		$fileName = $theAssets[$x]['filename'];
+		// write empty stub
+		$stubtext = $fileName;
+		$stubfile = $storeFolder . $ds . $sessionFolderName . $ds . "." . $fileName . ".stub";
+		if (!file_exists( $stubfile )) {
+			file_put_contents($stubfile, $stubtext) or die ("unable to create stubfile.");
+		}
+	}
+	echo( date('Y-m-d H:i:s T') . " - Stub files (". count($stuff_obj['assets']) . ") written as placeholders.\n");
+	
+} else {
+	echo( date('Y-m-d H:i:s T') . " - Stub files not created - no upload.\n");
+}
+
 //4. Add new data into data object
 
-$stuff_obj = json_decode(json_encode($stuff_obj),true);
+//$stuff_obj = json_decode(json_encode($stuff_obj),true);
 echo( date('Y-m-d H:i:s T') . " - Adding new data to manifest file.\n");
 for( $i=0; $i<count($stuff_obj['assets']); $i++ ) {
 
