@@ -1,7 +1,7 @@
 <?php
 //session_start(); 
 //session_unset();
-require("utilities.php");
+include_once("utilities.php");
 
 //if( isset($_SESSION['folderName']) ) {	session_unset(); }
 //$_SESSION['folderName']= getGUID();
@@ -508,7 +508,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.3</strong> | <i class="fas fa-calendar-alt"></i> 5 Nov 2019</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.4</strong> | <i class="fas fa-calendar-alt"></i> 5 Jun 2020</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

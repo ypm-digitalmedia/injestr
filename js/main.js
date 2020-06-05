@@ -1885,6 +1885,26 @@ $(document).ready(function () {
 
 	}
 
+	function getJSON(url, callback) {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', url, true);
+		xhr.responseType = 'json';
+		
+		xhr.onload = function() {
+		
+			var status = xhr.status;
+			
+			if (status == 200) {
+				callback(null, xhr.response);
+			} else {
+				callback(status);
+			}
+		};
+		
+		xhr.send();
+	}
+
 	function getMorphoSourceResults(catalogNum) {
 		//		alert(catalogNum);
 
@@ -1906,16 +1926,25 @@ $(document).ready(function () {
 
 			$.ajaxSetup({
 				crossOrigin: true,
-				proxy: "proxy.php"
+				proxy: "proxy_c.php"
 			});
-			$.getJSON(endpoint, null, function (data) {
+
+			// $.getJSON(endpoint, null, function (data) {
+			getJSON(endpoint,  function(err, data) {
+				var data_t = JSON.stringify(data);
+				if (err != null) {
+					console.error(err);
+				} else {
+					console.log(data);
+					console.log(data_t);
+				}
 
 				msData = [];
 
-				var dataStart = data.indexOf("{");
-
+				var dataStart = data_t.indexOf("{");
+				console.log("starting curly bracket: Position " + dataStart);
 				if (dataStart == 0 || typeof data === 'object') {
-					jsonMorphoSourceResults = data;
+					jsonMorphoSourceResults = data_t;
 				} else {
 					jsonMorphoSourceResults = data.substr(dataStart);
 				}
