@@ -317,10 +317,10 @@ $(document).ready(function () {
 			// MAY 2023 - accept only valid filenames
 			// a-z,A-Z,0-9_-
 
-			if( !safeFilename(file.name) ){
-				showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
-				this.removeFile(file);
-			}
+			// if( !safeFilename(file.name) ){
+			// 	showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
+			// 	this.removeFile(file);
+			// }
 
 
 		} else {
