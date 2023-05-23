@@ -1,5 +1,6 @@
 uploads
 uploads/*
+data/users.json
 phpinfo.php
 test.php
 uploadchunks.php
