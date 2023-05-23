@@ -145,19 +145,19 @@ $(document).ready(function () {
 		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType,
 		withCredentials: false,
 
-		accept: function(file) {
-			// MAY 2023 - accept only valid filenames
-			// a-z,A-Z,0-9_-
-			if( searchType == "record" ) {
-				if( !safeFilename(file.name) ){
-					showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
-					// this.removeFile(file);
-					done();
-				} else { done(); }
-			} else {
-				done();
-			}
-		},
+		// accept: function(file) {
+		// 	// MAY 2023 - accept only valid filenames
+		// 	// a-z,A-Z,0-9_-
+		// 	if( searchType == "record" ) {
+		// 		if( !safeFilename(file.name) ){
+		// 			showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
+		// 			// this.removeFile(file);
+		// 			done();
+		// 		} else { done(); }
+		// 	} else {
+		// 		done();
+		// 	}
+		// },
 
 		uploadprogress: function (file, progress, bytesSent) {
 //			var allowUpload = true;
@@ -211,66 +211,6 @@ $(document).ready(function () {
 		}
 
 	});
-	
-	//create new class to force cancel upload
-/*	_createClass(Dropzone, [{
-		key: "cancelUploadAlt",
-		value: function cancelUploadAlt(file) {
-		  alert('using custom cancel function')
-		  if (file.status === Dropzone.UPLOADING) {
-			var groupedFiles = this._getFilesWithXhr(file.xhr);
-			for (var _iterator20 = groupedFiles, _isArray20 = true, _i21 = 0, _iterator20 = _isArray20 ? _iterator20 : _iterator20[Symbol.iterator]();;) {
-			  var _ref19;
-
-			  if (_isArray20) {
-				if (_i21 >= _iterator20.length) break;
-				_ref19 = _iterator20[_i21++];
-			  } else {
-				_i21 = _iterator20.next();
-				if (_i21.done) break;
-				_ref19 = _i21.value;
-			  }
-
-			  var groupedFile = _ref19;
-
-			  groupedFile.status = Dropzone.CANCELED;
-			}
-			if (typeof file.xhr !== 'undefined') {
-			  file.xhr.abort();
-			}
-			for (var _iterator21 = groupedFiles, _isArray21 = true, _i22 = 0, _iterator21 = _isArray21 ? _iterator21 : _iterator21[Symbol.iterator]();;) {
-			  var _ref20;
-
-			  if (_isArray21) {
-				if (_i22 >= _iterator21.length) break;
-				_ref20 = _iterator21[_i22++];
-			  } else {
-				_i22 = _iterator21.next();
-				if (_i22.done) break;
-				_ref20 = _i22.value;
-			  }
-
-			  var _groupedFile = _ref20;
-
-			  this.emit("canceled", _groupedFile);
-			}
-			if (this.options.uploadMultiple) {
-			  this.emit("canceledmultiple", groupedFiles);
-			}
-		  } else if (file.status === Dropzone.ADDED || file.status === Dropzone.QUEUED) {
-			file.status = Dropzone.CANCELED;
-			this.emit("canceled", file);
-			if (this.options.uploadMultiple) {
-			  this.emit("canceledmultiple", [file]);
-			}
-		  }
-
-		  if (this.options.autoProcessQueue) {
-			return this.processQueue();
-		  }
-		}
-	}]);
-*/
 
 	function uploadFile(file) {
 		console.warn(file);
@@ -366,6 +306,10 @@ $(document).ready(function () {
 						this.files[_i].lastModified.toString() ===
 						file.lastModified.toString()
 					) {
+						this.removeFile(file);
+					} else if ( searchType == "record" && !safeFilename(this.files[_i].name) ) { 
+						// MAY 2023 - accept only valid filenames
+						showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
 						this.removeFile(file);
 					} else {
 						setFormData("assets", package);
