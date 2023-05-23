@@ -508,7 +508,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.4</strong> | <i class="fas fa-calendar-alt"></i> 5 Jun 2020</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.5</strong> | <i class="fas fa-calendar-alt"></i> 23 May 2023</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

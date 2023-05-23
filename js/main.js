@@ -314,6 +314,15 @@ $(document).ready(function () {
 				myDropzone.options.autoQueue = true;
 				$(".dropzone .dz-preview .dz-progress").css("opacity",1);
 			}
+			// MAY 2023 - accept only valid filenames
+			// a-z,A-Z,0-9_-
+
+			if( !safeFilename(file.name) ){
+				showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
+				this.removeFile(file);
+			}
+
+
 		} else {
 			allowUpload = true;
 			console.warn("upload PHP script enabled.")
@@ -2557,4 +2566,29 @@ function randomNumber() {
 function feedbackEmail() {
 	var v = $("#appVersion").text();
 	window.open('mailto:peabody.webmaster@yale.edu?subject=Injestr issue: v' + v);
+}
+
+function safeFilename(val) {       
+	var filenameGroups = val.split(".");
+	var regexp = /^[a-zA-Z0-9-_\ \.]+$/;
+	var regexpext = /^[a-zA-Z0-9]+$/;
+
+	if( Array.isArray(filenameGroups) && filenameGroups.length == 2) {
+		
+		if( filenameGroups[1].length >= 1 && filenameGroups[1].search(regexpext) !== -1 ) {
+			if( filenameGroups[0].length >= 1 && filenameGroups[0].search(regexp) !== -1 ) {
+				// console.log("VALID");
+				return true;
+			} else {
+				// console.log("INVALID FILENAME");
+				return false;
+			}
+		} else {
+			// console.log("INVALID EXTENSION");
+			return false;
+		}
+	} else {
+		// console.log("INVALID FORMAT");
+		return false;
+	}
 }
