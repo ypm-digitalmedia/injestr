@@ -145,20 +145,6 @@ $(document).ready(function () {
 		url: "upload.php?folderName=" + sessionGUID + "&type=" + searchType + "&wasabiUploadType=" + wasabiUploadType,
 		withCredentials: false,
 
-		accept: function(file) {
-			// MAY 2023 - accept only valid filenames
-			// a-z,A-Z,0-9_-
-			if( searchType == "record" ) {
-				if( !safeFilename(file.name) ){
-					// showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
-					// this.removeFile(file);
-					done("All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.");
-				} else { done(); }
-			} else {
-				done();
-			}
-		},
-
 		uploadprogress: function (file, progress, bytesSent) {
 //			var allowUpload = true;
 //			
@@ -268,14 +254,6 @@ $(document).ready(function () {
 				myDropzone.options.autoQueue = true;
 				$(".dropzone .dz-preview .dz-progress").css("opacity",1);
 			}
-			// MAY 2023 - accept only valid filenames
-			// a-z,A-Z,0-9_-
-
-			// if( !safeFilename(file.name) ){
-			// 	showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
-			// 	this.removeFile(file);
-			// }
-
 
 		} else {
 			allowUpload = true;
@@ -284,7 +262,14 @@ $(document).ready(function () {
 			myDropzone.options.autoQueue = true;
 			$(".dropzone .dz-preview .dz-progress").css("opacity",1);
 		}		
-		
+		// MAY 2023 - accept only valid filenames
+			// a-z,A-Z,0-9_-
+
+		if( !safeFilename(file.name) ){
+			showFinalErrorDialog('<p><strong>Invalid Filename:</strong></p><p>All submitted files must conform to EMu naming guidelines (only alphanumeric characters, dash (-) or underscore (_). Periods and spaces are not preferred.</p><p>Please rename your file and re-upload.');
+			this.removeFile(file);
+		}
+
 		var package = {
 			name: file.name,
 			size: file.size,
