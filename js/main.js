@@ -2508,31 +2508,51 @@ function feedbackEmail() {
 	window.open('mailto:peabody.webmaster@yale.edu?subject=Injestr issue: v' + v);
 }
 
-function safeFilename(val) {       
+function safeFilename(val) {
+	// MAY 2023       
 	var filenameGroups = val.split(".");
 	var regexp = /^[a-zA-Z0-9-_\ \.]+$/;
 	var regexpext = /^[a-zA-Z0-9]+$/;
 
 	var validTypes = jsonDataFileTypes.allowedFileTypes; //array
-	console.log("VALID FILE TYPES:");
+	console.log("valid filetypes:");
 	console.log(validTypes);
 
 	if( Array.isArray(filenameGroups) && filenameGroups.length == 2) {
 		
 		if( filenameGroups[1].length >= 1 && filenameGroups[1].search(regexpext) !== -1 ) {
-			if( filenameGroups[0].length >= 1 && filenameGroups[0].search(regexp) !== -1 ) {
-				// console.log("VALID");
-				return true;
+			// JULY 2023
+			// check if filename is in valid types dictionary
+			var validFileType = false;
+			_.forEach(validTypes,function(f){
+				var isMatch = false;
+				if( filenameGroups[1].toLowerCase() == f.toLowerCase()) {
+					validFileType = true;
+					isMatch = true;
+				} else {
+					isMatch = false;
+				}
+			});
+			console.log("file type match: " + isMatch);
+
+			if( filenameGroups[0].length >= 1 && filenameGroups[0].search(regexp) !== -1) {
+				if( validFileType ) {
+					console.log("VALID");
+					return true;
+				} else {
+					console.log("ILLEGAL FILE TYPE");
+					return false;
+				}
 			} else {
-				// console.log("INVALID FILENAME");
+				console.log("INVALID FILENAME");
 				return false;
 			}
 		} else {
-			// console.log("INVALID EXTENSION");
+			console.log("INVALID EXTENSION FORMAT");
 			return false;
 		}
 	} else {
-		// console.log("INVALID FORMAT");
+		console.log("INVALID FORMAT");
 		return false;
 	}
 }
