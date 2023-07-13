@@ -2533,7 +2533,7 @@ function safeFilename(val) {
 					isMatch = false;
 				}
 			});
-			console.log("file type match: " + isMatch);
+			console.log("file type match: " + validFileType);
 
 			if( filenameGroups[0].length >= 1 && filenameGroups[0].search(regexp) !== -1) {
 				if( validFileType ) {
