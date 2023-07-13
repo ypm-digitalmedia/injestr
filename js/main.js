@@ -41,6 +41,7 @@ var jsonDataUsers = {};
 var jsonDataEvents = {};
 var jsonDataRecords = {};
 var jsonDataWasabi = {};
+var jsonDataFileTypes = {};
 
 var jsonMorphoSourceResults = {};
 var msImageThumbs = [];
@@ -78,6 +79,7 @@ $(document).ready(function () {
 	jsonDataPeople = loadJsonAsVar("../data/ingester-metadata-people.json?v=" + randomNumber());
 	jsonDataRecords = loadJsonAsVar("../data/ingester-metadata-specimens.json?v=" + randomNumber());
 	jsonDataWasabi = loadJsonAsVar("../data/ypm_asset_summary.json?v=" + randomNumber());
+	jsonDataFileTypes = loadJsonAsVar("../data/filetypes.json?v=" + randomNumber());
 
 	detectUser();
 	getPageWidth();
@@ -2510,6 +2512,10 @@ function safeFilename(val) {
 	var filenameGroups = val.split(".");
 	var regexp = /^[a-zA-Z0-9-_\ \.]+$/;
 	var regexpext = /^[a-zA-Z0-9]+$/;
+
+	var validTypes = jsonDataFileTypes.allowedFileTypes; //array
+	console.log("VALID FILE TYPES:");
+	console.log(validTypes);
 
 	if( Array.isArray(filenameGroups) && filenameGroups.length == 2) {
 		
