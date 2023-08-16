@@ -31,6 +31,7 @@ if (!empty($_FILES)) {
      
     $tempFile = $_FILES['file']['tmp_name'];          //3
 	$fileName = $_FILES['file']['name'];
+	$fileName = str_replace(' ','_',$fileName);		// new - remove spaces - August 2023
     
     $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds . $sessionFolderName . $ds;  //4
      
