@@ -3,7 +3,8 @@ body {
 }
 
 .btn-primary {
-	background-color: #6788b2;
+	background-color: #113567;
+	border-radius: 0!important;
 }
 
 .btn-primary:hover {
@@ -26,7 +27,7 @@ body {
 }
 
 .navbar-inverse {
-	background-color: #6788b2;
+	background-color: #113567;
 	border-color: transparent;
 }
 
@@ -95,17 +96,17 @@ ul.nav-tabs li a:hover {
 .nav-pills > li.active > a,
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
-	background-color: #6788b2;
+	background-color: #113567;
 }
 
 a:link,
 a:visited {
-	color: #6788b2;
+	color: #113567;
 }
 
 a:hover,
 a:active {
-	color: #39577d;
+	color: #113567;
 }
 
 .smaller {
@@ -308,7 +309,7 @@ button:disabled {
 }
 
 .tab-btn {
-	color: #6788b2;
+	color: #113567;
 	text-decoration: none;
 }
 
@@ -662,7 +663,7 @@ textarea.mimic-form-control {
 }
 
 .scroller:hover {
-	background-color: #6788b2;
+	background-color: #113567;
 	color: white;
 	border-radius: 4px;
 	-webkit-transition: 0.2s all ease-in;

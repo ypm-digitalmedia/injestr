@@ -80,8 +80,10 @@ $randomtwo = $_SESSION['randomtwo'];
                     <span class="icon-bar"></span>
                 </button>
 						<a class="navbar-brand" href="http://peabody.yale.edu" target="_blank">
-                    <img class="logo-single" src="img/ypm_wordmark_single_small_white.png" />
-                    <img class="logo-double" src="img/ypm_wordmark_double_small_white.png" />
+                   <!-- <img class="logo-single" src="img/ypm_wordmark_single_small_white.png" />
+                    <img class="logo-double" src="img/ypm_wordmark_double_small_white.png" /> -->
+					<img class="logo-single" src="img/ypm_mallory_logo_single_white.png" />
+                    <img class="logo-double" src="img/ypm_mallory_logo_double_white.png" />
                 </a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
@@ -508,7 +510,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.7</strong> | <i class="fas fa-calendar-alt"></i> 16 Aug 2023</p>
+			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.8</strong> | <i class="fas fa-calendar-alt"></i> 17 Aug 2023</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
