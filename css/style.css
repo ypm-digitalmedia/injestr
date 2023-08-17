@@ -7,6 +7,10 @@ body {
 	border-radius: 0!important;
 }
 
+.btn-lg {
+	border-radius: 0!important;
+}
+
 .btn-primary:hover {
 	background-color: slategray;
 }
