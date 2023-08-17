@@ -1677,7 +1677,8 @@ $(document).ready(function () {
 					keywords: $("#uploadsInfoCommonKeywords").val(),
 					credit: $("#uploadsInfoCommonSpecialCreditLine").val(),
 					usage: $("#uploadsInfoCommonSpecialUsage").val(),
-					filename: value.name,
+					//filename: value.name,
+					filename: value.name.split(" ").join("_"),	// August 2023 fix - remove spaces from filenames
 					filesize: value.size,
 					filetype: value.type,
 					media_id: value.media_id,
