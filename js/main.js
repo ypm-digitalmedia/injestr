@@ -16,13 +16,50 @@ var formData = {
 	assets: []
 };
 
-var creatorNames = [];
-var creatorName = {
-	creator: "",
-	irn: ""
+var creatorNames = [];					// DEPRECATE
+var agentNames = {
+	"creator": [],
+	"uploader": [],
+	"depicted": []
 };
 
-var creatorNameListOpen = false;
+var agentFields = {
+	"creator": "#uploadsInfoCommonAgentCreator",
+	"uploader": "#uploadsInfoCommonAgentUploader",
+	"depicted": "#uploadsInfoCommonAgentDepicted"
+};
+
+var agentDateFields = {
+	"creator": "#uploadsInfoCommonAgentDateCreator",
+	"uploader": "#uploadsInfoCommonAgentDateUploader",
+	"depicted": "#uploadsInfoCommonAgentDateDepicted"
+};
+
+var creatorName = {						// ^
+	creator: "",						// DEPRECATE
+	irn: ""								// |
+};										// V
+var agentName = {
+	"creator": {
+		"name": "",
+		"irn": ""
+	},
+	"uploader": {
+		"name": "",
+		"irn": ""
+	},
+	"depicted": {
+		"name": "",
+		"irn": ""
+	},
+}
+
+var creatorNameListOpen = false;		// DEPRECATE
+var agentNameListOpen = {
+	"creator": false,
+	"uploader": false,
+	"depicted": false
+};
 
 var showMoreInfoPopup;
 
@@ -84,7 +121,9 @@ $(document).ready(function () {
 	detectUser();
 	getPageWidth();
 	resetSelects();
-	activateAgentLookup();
+	activateAgentLookup("creator");
+	activateAgentLookup("uploader");
+	activateAgentLookup("depicted");
 
 	clearForm();
 
@@ -486,9 +525,12 @@ $(document).ready(function () {
 			var tableHTML = '<table class="table table-striped">';
 			tableHTML += '<tr><td><strong>File Name</td><td>' + formData.assets[index].filename + '</td></tr>';
 			tableHTML += '<tr><td><strong>File Size</td><td>' + sizeStringSimple + '</td></tr>';
-			tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.creator + '</td></tr>';
+			// tableHTML += '<tr><td><strong>Creator Name</strong></td><td>' + formData.assets[index].creatorName.creator + '</td></tr>';	// DEP.
+			tableHTML += '<tr><td><strong>Uploader/Digitizer</strong></td><td>' + formData.assets[index].agentName["uploader"].name + '<br />'+ formData.assets[index].agentName["uploader"].date +'</td></tr>';
+			tableHTML += '<tr><td><strong>Photographer/Creator</strong></td><td>' + formData.assets[index].agentName["creator"].name + '<br />'+ formData.assets[index].agentName["creator"].date +'</td></tr>';
+			tableHTML += '<tr><td><strong>Person Depicted</strong></td><td>' + formData.assets[index].agentName["depicted"].name + '<br />'+ formData.assets[index].agentName["depicted"].date +'</td></tr>';
 			tableHTML += '<tr><td><strong>Title</strong></td><td>' + formData.assets[index].title + '</td></tr>';
-			tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';
+			// tableHTML += '<tr><td><strong>Date</strong></td><td>' + formData.assets[index].date + '</td></tr>';	// DEP.
 			tableHTML += '<tr><td><strong>Keywords</strong></td><td>' + formData.assets[index].keywords + '</td></tr>';
 			tableHTML += '<tr><td><strong>Special Credit Line</strong></td><td>' + formData.assets[index].credit + '</td></tr>';
 			tableHTML += '<tr><td><strong>Special Usage Permissions</strong></td><td>' + formData.assets[index].usage + '</td></tr>';
@@ -601,8 +643,23 @@ $(document).ready(function () {
 					msFinalData.push(obj);
 
 					$(this).find(".mimic-dz-thumb").removeClass("dz-success");
-					creatorNames.push({
-						creator: "",
+					// creatorNames.push({		// DEPRECATE
+					// 	creator: "",
+					// 	irn: ""
+					// });
+
+					agentNames["creator"].push({
+						name: "",
+						irn: ""
+					});
+
+					agentNames["uploader"].push({
+						name: "",
+						irn: ""
+					});
+
+					agentNames["depicted"].push({
+						name: "",
 						irn: ""
 					});
 
@@ -617,8 +674,23 @@ $(document).ready(function () {
 		} else {
 			_.forEach(myDropzone.files, function (f) {
 				f.previewElement.classList.remove("dz-success");
-				creatorNames.push({
-					creator: "",
+				// creatorNames.push({			// DEPRECATE
+				// 	creator: "",
+				// 	irn: ""
+				// });
+
+				agentNames["creator"].push({
+					name: "",
+					irn: ""
+				});
+
+				agentNames["uploader"].push({
+					name: "",
+					irn: ""
+				});
+
+				agentNames["depicted"].push({
+					name: "",
 					irn: ""
 				});
 			});
@@ -716,10 +788,17 @@ $(document).ready(function () {
 				if (asset.valid || (!asset.valid && num == 0)) {
 					// preload with data from formData if asset is valid or it's the first time around
 
-					$("#uploadsInfoCommonCreator").val(asset.creatorName.creator);
-
+					// $("#uploadsInfoCommonCreator").val(asset.creatorName.creator);	// DEPRECATE
+					$(agentFields["creator"]).val(asset.agentName["creator"].name);
+					$(agentFields["uploader"]).val(asset.agentName["uploader"].name);
+					$(agentFields["depicted"]).val(asset.agentName["depicted"].name);
+					
+					// $("#uploadsInfoCommonDate").val(asset.date);	// DEPRECATE
+					$(agentDateFields["creator"]).val(asset.agentName["creator"].date);
+					$(agentDateFields["uploader"]).val(asset.agentName["uploader"].date);
+					$(agentDateFields["depicted"]).val(asset.agentName["depicted"].date);
+					
 					$("#uploadsInfoCommonTitle").val(asset.title);
-					$("#uploadsInfoCommonDate").val(asset.date);
 					$("#uploadsInfoCommonKeywords").val(asset.keywords);
 					$("#uploadsInfoCommonSpecialCreditLine").val(asset.credit);
 					$("#uploadsInfoCommonSpecialUsage").val(asset.usage);
@@ -1355,10 +1434,14 @@ $(document).ready(function () {
 					
 				},
 				onShowListEvent: function () {
-					creatorNameListOpen = true;
+					agentNameListOpen["creator"] = true;
+					agentNameListOpen["uploader"] = true;
+					agentNameListOpen["depicted"] = true;
 				},
 				onHideListEvent: function () {
-					creatorNameListOpen = false;
+					agentNameListOpen["creator"] = false;
+					agentNameListOpen["uploader"] = false;
+					agentNameListOpen["depicted"] = false;
 				}
 
 
@@ -1539,16 +1622,50 @@ $(document).ready(function () {
 
 		// set formData values
 
+		// DEPRECATE -----
 		// if user hasn't selected a valid autocomplete entry, set creatorName object as <inputVal>|"new"
-		if (creatorName.creator == "" && creatorName.irn == "") {
+
+		// if (creatorName.creator == "" && creatorName.irn == "") {
+		// 	//			alert("This is a custom person!")
+		// 	creatorName.creator = $("#uploadsInfoCommonCreator").val();
+		// 	creatorName.irn = "new";
+		// }
+		// ---------------------
+
+		if (agentName["creator"].name == "" && agentName["creator"].irn == "") {
 			//			alert("This is a custom person!")
-			creatorName.creator = $("#uploadsInfoCommonCreator").val();
-			creatorName.irn = "new";
+			agentName["creator"].name = $("#uploadsInfoCommonAgentCreator").val();
+			agentName["creator"].irn = "new";
+		}
+		if (agentName["uploader"].name == "" && agentName["uploader"].irn == "") {
+			//			alert("This is a custom person!")
+			agentName["uploader"].name = $("#uploadsInfoCommonAgentUploader").val();
+			agentName["uploader"].irn = "new";
+		}
+		if (agentName["depicted"].name == "" && agentName["depicted"].irn == "") {
+			//			alert("This is a custom person!")
+			agentName["depicted"].name = $("#uploadsInfoCommonAgentDepicted").val();
+			agentName["depicted"].irn = "new";
 		}
 
-		asset.creatorName.creator = creatorName.creator;
-		asset.creatorName.irn = creatorName.irn;
-		asset.date = $("#uploadsInfoCommonDate").val();
+		// console.log("UPDATE!");
+		// console.log(asset.agentName);
+		// console.log(agentName);
+		
+		// asset.creatorName.creator = creatorName.creator;	// DEPRECATE
+		asset.agentName["creator"].name = agentName["creator"].name;
+		asset.agentName["uploader"].name = agentName["uploader"].name;
+		asset.agentName["depicted"].name = agentName["depicted"].name;
+		// asset.creatorName.irn = creatorName.irn;			// DEPRECATE
+		asset.agentName["creator"].irn = agentName["creator"].irn;
+		asset.agentName["uploader"].irn = agentName["uploader"].irn;
+		asset.agentName["depicted"].irn = agentName["depicted"].irn;
+
+		// asset.date = $("#uploadsInfoCommonDate").val();		// DEPRECATE
+
+		asset.agentName["creator"].date = $(agentDateFields["creator"]).val();
+		asset.agentName["uploader"].date = $(agentDateFields["uploader"]).val();
+		asset.agentName["depicted"].date = $(agentDateFields["depicted"]).val();
 
 		asset.title = $("#uploadsInfoCommonTitle").val();
 		asset.keywords = $("#uploadsInfoCommonKeywords").val();
@@ -1580,11 +1697,17 @@ $(document).ready(function () {
 			}
 		}
 
-		// reset creator object after selection.
+		// reset named objects after selection.
 		// if user selects from autoComplete, it sets this object with selection
-		// if user types and doesn't select, creatorName will be defined with logic above
-		creatorName.creator = "";
-		creatorName.irn = "";
+		// if user types and doesn't select, agentName will be defined with logic above
+		// creatorName.creator = "";	// DEPRECATE
+		// agentName["creator"].name = "";
+		// agentName["uploader"].name = "";
+		// agentName["depicted"].name = "";
+		// // creatorName.irn = "";		// DEPRECATE
+		// agentName["creator"].irn = "";
+		// agentName["uploader"].irn = "";
+		// agentName["depicted"].irn = "";
 
 	}
 
@@ -1667,13 +1790,31 @@ $(document).ready(function () {
 				var obj = {
 					valid: false,
 
-					creatorName: {
-						creator: creatorName.creator,
-						irn: creatorName.irn
+					// creatorName: {						// DEPRECATE
+					// 	creator: creatorName.creator,	//
+					// 	irn: creatorName.irn			//
+					// },									//
+
+					agentName: {
+						creator: {						
+							name: agentName["creator"].name,
+							irn: agentName["creator"].irn,
+							date: $(agentDateFields["creator"]).val()
+						},
+						uploader: {						
+							name: agentName["uploader"].name,
+							irn: agentName["uploader"].irn,
+							date: $(agentDateFields["uploader"]).val()
+						},
+						depicted: {						
+							name: agentName["depicted"].name,
+							irn: agentName["depicted"].irn,
+							date: $(agentDateFields["depicted"]).val()
+						}
 					},
 
 					title: $("#uploadsInfoCommonTitle").val(),
-					date: $("#uploadsInfoCommonDate").val(),
+					// date: $("#uploadsInfoCommonDate").val(),
 					keywords: $("#uploadsInfoCommonKeywords").val(),
 					credit: $("#uploadsInfoCommonSpecialCreditLine").val(),
 					usage: $("#uploadsInfoCommonSpecialUsage").val(),
@@ -1726,7 +1867,25 @@ $(document).ready(function () {
 	}
 
 	// initiate datepickers
-	$("#uploadsInfoCommonDate").datepicker({
+	$(agentDateFields["creator"]).datepicker({
+		dropupAuto: false,
+		dateFormat: "yy-mm-dd",
+		onSelect: function (dateText, inst) {
+			$("#mainForm").validator("validate");
+			//				console.warn(inst)
+			//				searchByEventDateStart(inst);
+		}
+	});
+	$(agentDateFields["uploader"]).datepicker({
+		dropupAuto: false,
+		dateFormat: "yy-mm-dd",
+		onSelect: function (dateText, inst) {
+			$("#mainForm").validator("validate");
+			//				console.warn(inst)
+			//				searchByEventDateStart(inst);
+		}
+	});
+	$(agentDateFields["depicted"]).datepicker({
 		dropupAuto: false,
 		dateFormat: "yy-mm-dd",
 		onSelect: function (dateText, inst) {
@@ -2047,14 +2206,15 @@ function loadJsonAsVar(url) {
 	return obj;
 }
 
-function activateAgentLookup() {
+function activateAgentLookup(agentType) {
 	var options = {
 
 		url: "../data/ingester-metadata-people.json?v=" + randomNumber(),
 
 		getValue: function (element) {
 			//			return element.concat;
-			return element.creator;
+			// return element.creator;		// DEPRECATE
+			return element.name
 		},
 
 		list: {
@@ -2065,23 +2225,32 @@ function activateAgentLookup() {
 			sort: {
 				enabled: true
 			},
-			onChooseEvent: function () {
-				creatorChosen = true;
-				var obj = $("#uploadsInfoCommonCreator").getSelectedItemData();
+			onChooseEvent: function () {				
+				// var obj = $("#uploadsInfoCommonCreator").getSelectedItemData();		// DEPRECATE
+				var obj = $(agentFields[agentType]).getSelectedItemData();
 				console.log(obj, activeAsset);
-				editCommonMetadata("creator", obj.irn + "|" + obj.creator);
-				creatorNames[activeAsset].creator = obj.creator;
-				creatorNames[activeAsset].irn = obj.irn;
+				// editCommonMetadata("creator", obj.irn + "|" + obj.creator);
+				editCommonMetadata(agentType, obj.irn + "|" + obj.name);
+				// creatorNames[activeAsset].creator = obj.creator;		// DEPRECATE
+				agentNames[agentType][activeAsset].name = obj.name;
+				// creatorNames[activeAsset].irn = obj.irn;		// DEPRECATE
+				agentNames[agentType][activeAsset].irn = obj.irn;
 
-				creatorName.creator = obj.creator;
-				creatorName.irn = obj.irn;
+				// console.log("SELECTION!");
+				// console.log(agentNames[agentType]);
+
+				// creatorName.creator = obj.creator;		// DEPRECATE
+				agentName[agentType].name = obj.name;
+				// creatorName.irn = obj.irn;		// DEPRECATE
+				agentName[agentType].irn = obj.irn;
 			}
 		},
 
 		theme: "bootstrap"
 	};
 
-	$("#uploadsInfoCommonCreator").easyAutocomplete(options);
+	// $("#uploadsInfoCommonCreator").easyAutocomplete(options);		// DEPRECATE
+	$(agentFields[agentType]).easyAutocomplete(options);
 }
 
 function editCommonMetadata(key, value) {

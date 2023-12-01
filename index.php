@@ -384,16 +384,36 @@ $randomtwo = $_SESSION['randomtwo'];
 
 								<div class="row">
 									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonCreator" class="control-label ms-irrelevant">Creator Name</label>
-										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonCreator" placeholder="Creator name" required data-error="Creator name required.">
+										<label for="uploadsInfoCommonAgentUploader" class="control-label ms-irrelevant">Uploader / Digitizer</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentUploader" placeholder="Type something here..." required data-error="This field is required.">
+										<div class="help-block with-errors ms-irrelevant"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonAgentCreator" class="control-label ms-irrelevant">Photographer / Creator</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentCreator" placeholder="Type something here..." data-error="">
+										<div class="help-block with-errors ms-irrelevant"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonAgentDepicted" class="control-label ms-irrelevant">Person Depicted</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentDepicted" placeholder="Type something here..." data-error="">
 										<div class="help-block with-errors ms-irrelevant"></div>
 									</div>
 								</div>
 								
 								<div class="row">
 									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonDate" class="control-label ms-irrelevant">Date</label>
-										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
+										<label for="uploadsInfoCommonAgentDateUploader" class="control-label ms-irrelevant">Date</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentDateUploader" placeholder="Click to enter date" required data-error="This field is required."><span class="smaller"><em>Upload/Digitization date</em></span>
+										<div class="help-block with-errors ms-irrelevant" onchange="#"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonAgentDateCreator" class="control-label ms-irrelevant">Date</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentDateCreator" placeholder="Click to enter date" data-error=""><span class="smaller"><em>Photo/Creation date</em></span>
+										<div class="help-block with-errors ms-irrelevant" onchange="#"></div>
+									</div>
+									<div class="form-group col-sm-4">
+										<label for="uploadsInfoCommonAgentDateDepicted" class="control-label ms-irrelevant">Date</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonAgentDateDepicted" placeholder="Click to enter date" data-error=""><span class="smaller"><em>Depiction date</em></span>
 										<div class="help-block with-errors ms-irrelevant" onchange="#"></div>
 									</div>
 								</div>
@@ -523,7 +543,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center" class="align-center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.6.0</strong> | <i class="fas fa-calendar-alt"></i> 28 Nov 2023</p>
+			<p align="center" class="align-center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.6.0</strong> | <i class="fas fa-calendar-alt"></i> 1 Dec 2023</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->
