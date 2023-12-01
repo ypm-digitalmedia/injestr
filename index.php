@@ -143,95 +143,27 @@ $randomtwo = $_SESSION['randomtwo'];
 											<h5>Select:</h5>
 										</li>
 
-										<li class="active" id="tabcontrol11">
+										<li id="tabcontrol13" class="active">
+											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-cloud-upload-alt"></i>&nbsp;<strong>EMu/NetX/Preservica</strong></a>
+										</li>
+										<li id="tabcontrol11">
 											<a href="#searchPaneGraphics" data-toggle="tab" role="tab"><i class="fas fa-camera"></i>&nbsp;<strong>Graphics</strong></a>
 										</li>
-										<li id="tabcontrol12">
+										<!-- 
+										<li id="tabcontrol12" style="visibility: hidden;">
 											<a href="#searchPaneEvent" data-toggle="tab" role="tab"><i class="fas fa-images"></i>&nbsp;<strong>EMu/NetX</strong></a>
 										</li>
-										<li id="tabcontrol13">
-											<a href="#searchPaneRecord" data-toggle="tab" role="tab"><i class="fas fa-cloud-upload-alt"></i>&nbsp;<strong>Wasabi</strong></a>
-										</li>
+										-->
 									</ul>
 								</div>
 
 								<!-- Tab panes -->
 
 								<div class="tab-content">
-									<!-- SEND TO SALLY -->
-
-									<div class="tab-pane fade in active" id="searchPaneGraphics">
-										<div class="container-fluid">
-											<div class="row row-pad">
-												<div class="form-group col-sm-2 col-xs-4">
-													<span>Recipient: </span>
-												</div>
-												<div class="form-group col-sm-10 col-xs-8">
-													<select class="selectpicker" id="graphicsRecipient">
-														<option selected value="sp">Sally</option>
-														<option value="kz">Kim</option>
-														<option value="lf">Laura</option>
-														<option value="rv">Rosemary</option>
-													</select>
-													<div class="help-block with-errors"></div>
-												</div>
-											</div>
-											<div class="row">
-												<div class="form-group col-xs-12">
-													<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
-													<div class="help-block with-errors"></div>
-												</div>
-											</div>
-											<div class="row row-pad">
-												<div class="col-xs-12">
-													<div id="searchResultsGraphics" class="search-results-container"></div>
-												</div>
-											</div>
-
-											<div class="row row-pad">
-												<div class="col-xs-12 align-center">
-													<p align="center" class="align-center">
-														<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-													</p>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<!-- END -->
-
-									<!-- SEARCH BY EVENT -->
-
-									<div class="search-pane tab-pane fade" id="searchPaneEvent">
-										<div class="container-fluid">
-											<div class="row row-pad">
-												<div class="form-group col-xs-12">
-													<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, EMu number, or type" />
-													<div class="help-block with-errors"></div>
-												</div>
-											</div>
-											<div class="row row-pad">
-												<div class="col-xs-12">
-													<div id="searchResultsEvent" class="search-results-container"></div>
-												</div>
-											</div>
-
-											<div class="row row-pad">
-												<div class="col-xs-12 align-center">
-													<p align="center" class="align-center">
-														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
-													</p>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<!-- END -->
-
 
 									<!-- SEARCH BY RECORD -->
 
-									<div class="search-pane tab-pane fade" id="searchPaneRecord">
+									<div class="search-pane tab-pane fade in active" id="searchPaneRecord">
 										<div class="container-fluid">
 											<div class="row row-pad">
 												<div class="col-sm-4 col-xs-8">
@@ -245,7 +177,7 @@ $randomtwo = $_SESSION['randomtwo'];
 											</div>
 											<div class="row row-pad">
 												<div class="col-sm-3 col-xs-12">
-													Upload Type:
+													Select Upload Type:
 												</div>
 												<div class="col-sm-9 col-xs-12">
 													<div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -288,6 +220,78 @@ $randomtwo = $_SESSION['randomtwo'];
 
 									</div>
 
+
+									<!-- END -->
+
+
+
+									<!-- SEND TO GRAPHICS -->
+
+									<div class="tab-pane fade" id="searchPaneGraphics">
+										<div class="container-fluid">
+											<div class="row row-pad">
+												<div class="form-group col-sm-2 col-xs-4">
+													<span>Recipient: </span>
+												</div>
+												<div class="form-group col-sm-10 col-xs-8">
+													<select class="selectpicker" id="graphicsRecipient">
+														<option selected value="sp">Sally</option>
+														<option value="kz">Kim</option>
+														<option value="lf">Laura</option>
+														<option value="rv">Rosemary</option>
+													</select>
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="labelForSally" placeholder="Briefly, what is the purpose/project for this upload?" data-error="Please fill out this field." />
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsGraphics" class="search-results-container"></div>
+												</div>
+											</div>
+
+											<div class="row row-pad">
+												<div class="col-xs-12 align-center">
+													<p align="center" class="align-center">
+														<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- END -->
+
+									<!-- SEARCH BY EVENT -- DEPRECATED -->
+
+									<div class="search-pane tab-pane fade" id="searchPaneEvent" style="display:none">
+										<div class="container-fluid">
+											<div class="row row-pad">
+												<div class="form-group col-xs-12">
+													<input type="text" class="form-control" id="searchEventAll" placeholder="Enter description, year, department, IRN, EMu number, or type" />
+													<div class="help-block with-errors"></div>
+												</div>
+											</div>
+											<div class="row row-pad">
+												<div class="col-xs-12">
+													<div id="searchResultsEvent" class="search-results-container"></div>
+												</div>
+											</div>
+
+											<div class="row row-pad">
+												<div class="col-xs-12 align-center">
+													<p align="center" class="align-center">
+														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
 
 									<!-- END -->
 
@@ -363,30 +367,39 @@ $randomtwo = $_SESSION['randomtwo'];
 
 
 								<div class="row row-pad-top">
+									
+									<div class="form-group col-sm-6">
+										<label for="uploadsInfoCommonTitle" class="control-label ms-irrelevant">Brief Descriptive Title</label>
+										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
+										<div class="help-block with-errors ms-irrelevant"></div>
+									</div>
+									<div class="form-group col-sm-6">
+										<label id="metadataLabelKeywords" for="uploadsInfoCommonKeywords" class="control-label">Notes/Keywords</label>
+										<input type="text" class="form-control enter-metadata" required id="uploadsInfoCommonKeywords" placeholder="Type something here..." data-error="Note/Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
+										<div class="help-block with-errors"></div>
+									</div>
+								</div>
+
+								<hr class="nopad" />
+
+								<div class="row">
 									<div class="form-group col-sm-4">
 										<label for="uploadsInfoCommonCreator" class="control-label ms-irrelevant">Creator Name</label>
 										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonCreator" placeholder="Creator name" required data-error="Creator name required.">
 										<div class="help-block with-errors ms-irrelevant"></div>
 									</div>
-									<div class="form-group col-sm-4">
-										<label for="uploadsInfoCommonTitle" class="control-label ms-irrelevant">Brief Descriptive Title</label>
-										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonTitle" placeholder="Enter title" required data-error="Title required." onchange="editCommonMetadata('title',this.value)">
-										<div class="help-block with-errors ms-irrelevant"></div>
-									</div>
+								</div>
+								
+								<div class="row">
 									<div class="form-group col-sm-4">
 										<label for="uploadsInfoCommonDate" class="control-label ms-irrelevant">Date</label>
 										<input type="text" class="form-control enter-metadata ms-irrelevant" id="uploadsInfoCommonDate" placeholder="Click to enter date" required data-error="Date required.">
 										<div class="help-block with-errors ms-irrelevant" onchange="#"></div>
 									</div>
 								</div>
+								
+								<hr class="nopad" />
 
-								<div class="row">
-									<div class="form-group col-xs-12">
-										<label id="metadataLabelKeywords" for="uploadsInfoCommonKeywords" class="control-label">Notes/Keywords</label>
-										<input type="text" class="form-control enter-metadata" required id="uploadsInfoCommonKeywords" placeholder="Type something here..." data-error="Note/Keywords required."><span class="smaller"><em>separate tags with a semicolon (;)</em></span>
-										<div class="help-block with-errors"></div>
-									</div>
-								</div>
 								<div class="row">
 									<div class="form-group col-sm-6">
 										<label for="uploadsInfoCommonSpecialCreditLine" class="control-label ms-irrelevant">Special Credit Line</label>
@@ -405,7 +418,7 @@ $randomtwo = $_SESSION['randomtwo'];
 										</p>
 									</div>
 									<div class="col-xs-6">
-										<p align="right">
+										<p align="right" style="text-align: right">
 											<button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
 										</p>
 									</div>
@@ -457,7 +470,7 @@ $randomtwo = $_SESSION['randomtwo'];
 										</p>
 									</div>
 									<div class="col-xs-6">
-										<p align="right">
+										<p align="right" style="text-align: right">
 											<button class="btn btn-lg btn-success" style="clear: both; margin:0;" type="button" id="finalSubmitButton"><h2 style="margin: 0;">Submit&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></h2></button>
 											<!--
 										<p align="center" class="align-center">
@@ -488,7 +501,7 @@ $randomtwo = $_SESSION['randomtwo'];
 				<div class="container">
 					<div class="row row-pad">
 						<div class="col-xs-12 align-center">
-							<p align="center">
+							<p align="center" class="align-center">
 								<button title="Show/hide output console" class="btn btn-default" id="outputToggle"><i class="fas fa-caret-up"></i></button>
 							</p>
 							<pre id="output"></pre>
@@ -510,7 +523,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.5.8</strong> | <i class="fas fa-calendar-alt"></i> 17 Aug 2023</p>
+			<p align="center" class="align-center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.6.0</strong> | <i class="fas fa-calendar-alt"></i> 28 Nov 2023</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

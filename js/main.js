@@ -52,7 +52,7 @@ var msFinalData = [];
 var isEmbargoed = false;
 var wasabiUploadType = "standard";
 var wasabiUploadTypeHelpText = {
-	"standard": "Standard wasabi upload path: one catalog number with file upload.",
+	"standard": "Standard upload path: one EMu catalog number plus file upload.",
 	"batch": "Alternative upload path: link metadata to a massive ZIP file which is uploaded later.",
 	"morphosource": "Link a catalog number to an existing asset on MorphoSource.  No upload."
 }
@@ -84,7 +84,7 @@ $(document).ready(function () {
 	detectUser();
 	getPageWidth();
 	resetSelects();
-	activateCreatorLookup();
+	activateAgentLookup();
 
 	clearForm();
 
@@ -1548,9 +1548,9 @@ $(document).ready(function () {
 
 		asset.creatorName.creator = creatorName.creator;
 		asset.creatorName.irn = creatorName.irn;
+		asset.date = $("#uploadsInfoCommonDate").val();
 
 		asset.title = $("#uploadsInfoCommonTitle").val();
-		asset.date = $("#uploadsInfoCommonDate").val();
 		asset.keywords = $("#uploadsInfoCommonKeywords").val();
 		asset.credit = $("#uploadsInfoCommonSpecialCreditLine").val();
 		asset.usage = $("#uploadsInfoCommonSpecialUsage").val();
@@ -2047,7 +2047,7 @@ function loadJsonAsVar(url) {
 	return obj;
 }
 
-function activateCreatorLookup() {
+function activateAgentLookup() {
 	var options = {
 
 		url: "../data/ingester-metadata-people.json?v=" + randomNumber(),

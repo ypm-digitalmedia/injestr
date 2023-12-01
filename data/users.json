@@ -9,18 +9,18 @@
 			"djd45",
 			"eal5",
 			"lr253",
-			"at2335"
-        ],
-		"events": [
+			"at2335",
 			"eg392",
 			"nmp6"
+        ],
+		"events": [
         ],
 		"both": [
 			"admin",
             "ner36",
             "am2946",
             "lfg2",
-	    "gjm66"
+	    	"gjm66"
 		]
 	}
 }
