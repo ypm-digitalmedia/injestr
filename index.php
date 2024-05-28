@@ -1,6 +1,7 @@
 <?php
 //session_start(); 
 //session_unset();
+// include_once "hosts.php";
 include_once("utilities.php");
 
 //if( isset($_SESSION['folderName']) ) {	session_unset(); }
@@ -203,7 +204,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 											<div class="row row-pad">
 												<div class="col-xs-12 align-center">
-													<p align="center" class="align-center">
+													<p style="text-align:center" class="align-center">
 														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="recordStepOneNextButton">Select Media&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 													</p>
 												</div>
@@ -257,7 +258,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 											<div class="row row-pad">
 												<div class="col-xs-12 align-center">
-													<p align="center" class="align-center">
+													<p style="text-align:center" class="align-center">
 														<button class="btn btn-lg btn-primary" style="clear: both; margin-bottom: 15px;" type="button" id="graphicsStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 													</p>
 												</div>
@@ -285,7 +286,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 											<div class="row row-pad">
 												<div class="col-xs-12 align-center">
-													<p align="center" class="align-center">
+													<p style="text-align:center" class="align-center">
 														<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="eventStepOneNextButton">Upload Assets&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 													</p>
 												</div>
@@ -310,7 +311,7 @@ $randomtwo = $_SESSION['randomtwo'];
 								<div class="row row-pad">
 									<div class="col-xs-12">
 										<div id="confirmedResultStepTwo" class="search-results-container">
-											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-search-link">select a destination</a> first.</p>
+											<p style="text-align:center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-search-link">select a destination</a> first.</p>
 										</div>
 									</div>
 								</div>
@@ -330,20 +331,20 @@ $randomtwo = $_SESSION['randomtwo'];
 
 								<div class="row row-pad-top" id="enterMetadataMessageContainer">
 									<div class="col-xs-12 align-center">
-										<p align="center" class="align-center" id="enterMetadataMessage">
+										<p style="text-align:center" class="align-center" id="enterMetadataMessage">
 											Done uploading files?
 										</p>
-										<p align="center" class="align-center" id="enterMetadataMessageMs">
+										<p style="text-align:center" class="align-center" id="enterMetadataMessageMs">
 											Done selecting media?
 										</p>
-										<p align="center" class="align-center">
+										<p style="text-align:center" class="align-center">
 											<button class="btn btn-lg btn-disabled" disabled="disabled" style="clear: both; margin-bottom: 15px;" type="button" id="metadataStartButton">Enter Metadata&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></button>
 										</p>
 									</div>
 								</div>
 								<div class="row row-pad-top" id="goToSubmitButtonContainer">
 									<div class="col-xs-12 align-center">
-										<p align="center" class="align-center">
+										<p style="text-align:center" class="align-center">
 											<button class="btn btn-lg btn-primary" style="clear: both; margin: 20px 0;" type="button" id="goToSubmitButton"><h2 style="margin: 0;"><i class="fas fa-clipboard-check"></i>&nbsp;Done</h2></button>
 										</p>
 										<!--                                    <p align="center">Click to submit</p>-->
@@ -357,7 +358,7 @@ $randomtwo = $_SESSION['randomtwo'];
 										<b><em id="currentMetadataItem"></em></b>
 									</div>
 									<div class="col-sm-6">
-										<p align="right" style="margin-top: 20px">
+										<p style="text-align:right; margin-top: 20px">
 											<button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
 										</p>
 									</div>
@@ -433,12 +434,12 @@ $randomtwo = $_SESSION['randomtwo'];
 
 								<div class="row row-pad">
 									<div class="col-xs-6">
-										<p align="left">
+										<p style="text-align:left">
 											<button onclick="document.location.reload()" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
 										</p>
 									</div>
 									<div class="col-xs-6">
-										<p align="right" style="text-align: right">
+										<p style="text-align: right">
 											<button type="submit" class="btn btn-lg btn-success metadataButtonNext">Apply&nbsp;<i class="fas fa-check"></i></button>
 										</p>
 									</div>
@@ -455,7 +456,7 @@ $randomtwo = $_SESSION['randomtwo'];
 								<div class="row row-pad">
 									<div class="col-xs-12">
 										<div id="confirmedResultStepThree" class="search-results-container">
-											<p align="center" style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a destination</a> first.</p>
+											<p style="text-align: center">Please <a href="javascript:void(0)" class="edit-event-search-link">select a destination</a> first.</p>
 										</div>
 									</div>
 								</div>
@@ -485,12 +486,12 @@ $randomtwo = $_SESSION['randomtwo'];
 
 								<div class="row row-pad-top" id="finalSubmitButtonContainer">
 									<div class="col-xs-6">
-										<p align="left">
+										<p style="text-align:left">
 											<button onclick="document.location.reload()" class="btn btn-danger start-over" style="margin-bottom: 15px;" type="button"><i class="fas fa-sync-alt"></i>&nbsp;Start over</button>
 										</p>
 									</div>
 									<div class="col-xs-6">
-										<p align="right" style="text-align: right">
+										<p style="text-align:right" style="text-align: right">
 											<button class="btn btn-lg btn-success" style="clear: both; margin:0;" type="button" id="finalSubmitButton"><h2 style="margin: 0;">Submit&nbsp;<i class="fas fa-arrow-alt-circle-right"></i></h2></button>
 											<!--
 										<p align="center" class="align-center">
@@ -521,7 +522,7 @@ $randomtwo = $_SESSION['randomtwo'];
 				<div class="container">
 					<div class="row row-pad">
 						<div class="col-xs-12 align-center">
-							<p align="center" class="align-center">
+							<p style="text-align:center" class="align-center">
 								<button title="Show/hide output console" class="btn btn-default" id="outputToggle"><i class="fas fa-caret-up"></i></button>
 							</p>
 							<pre id="output"></pre>
@@ -543,7 +544,7 @@ $randomtwo = $_SESSION['randomtwo'];
 
 		<footer>
 			<hr />
-			<p align="center" class="align-center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.6.0</strong> | <i class="fas fa-calendar-alt"></i> 1 Dec 2023</p>
+			<p style="text-align:center" class="align-center"><a href="javascript:feedbackEmail()">Report an issue</a> | <i class="fas fa-code-branch"></i> <strong id="appVersion">0.6.1</strong> | <i class="fas fa-calendar-alt"></i> 28 May 2024</p>
 		</footer>
 
 		<!-- TEMPLATES START ----------------------------------------------------------------------------->

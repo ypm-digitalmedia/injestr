@@ -1,4 +1,5 @@
 <?php
+	include_once "hosts.php";
 	$headers = apache_request_headers();
 	
 	$default_cas_username = "admin";
@@ -9,7 +10,8 @@
 
 	$hostname = $_SERVER['HTTP_HOST'];
 
-	if( $hostname == "10.5.33.98" ) {
+	if( in_array($hostname,$knownHosts) ) {
+	// if( $hostname == "10.5.33.98" ) {
 		
 		$logoutUrl = "https://secure.its.yale.edu/cas/logout";
 		

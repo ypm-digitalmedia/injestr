@@ -1,4 +1,5 @@
 <?php
+include_once "hosts.php";
 echo "all headers: <br />";
 $headers = apache_request_headers();
 
@@ -9,7 +10,8 @@ echo "<br /><br /><br />";
 
 $hostname = $_SERVER['HTTP_HOST'];
 
-if( $hostname == "10.5.33.98" ) {
+if( in_array($hostname,$knownHosts) ) {
+// if( $hostname == "10.5.33.98" ) {
 
     // get entire cookie string
     $cookie = $_SERVER['HTTP_COOKIE'];
