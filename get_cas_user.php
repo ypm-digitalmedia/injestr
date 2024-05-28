@@ -1,13 +1,13 @@
 <?php
-	include_once "hosts.php";
 	$headers = apache_request_headers();
 	
 	$default_cas_username = "admin";
-
+	
 	foreach ($headers as $header => $value) {
 		#echo "$header: $value <br />\n";
 	}
-
+	
+	include_once "hosts.php";
 	$hostname = $_SERVER['HTTP_HOST'];
 
 	if( in_array($hostname,$knownHosts) ) {

@@ -1,5 +1,4 @@
 <?php
-include_once "hosts.php";
 echo "all headers: <br />";
 $headers = apache_request_headers();
 
@@ -8,6 +7,7 @@ foreach ($headers as $header => $value) {
 }
 echo "<br /><br /><br />";
 
+include_once "hosts.php";
 $hostname = $_SERVER['HTTP_HOST'];
 
 if( in_array($hostname,$knownHosts) ) {
