@@ -10,8 +10,9 @@
 	include_once "hosts.php";
 	$hostname = $_SERVER['HTTP_HOST'];
 
-	if( in_array($hostname,$knownHosts) ) {
+	// if( in_array($hostname,$knownHosts) ) {
 	// if( $hostname == "10.5.33.98" ) {
+	if( $hostname == "10.5.34.189" ) {
 		
 		$logoutUrl = "https://secure.its.yale.edu/cas/logout";
 		
